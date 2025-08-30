@@ -37,6 +37,11 @@ struct ImportButton: View {
         } label: {
             Label("Import File", systemImage: "plus")
         }
+        .foregroundStyle(.background)
+        .font(.headline)
+        .menuStyle(.button)
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.circle)
         .menuOrder(.fixed)
         .fileImporter(isPresented: $showFileImporter, allowedContentTypes: GeoFileType.allCases.map(\.type)) { result in
             switch result {

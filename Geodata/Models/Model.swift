@@ -57,20 +57,31 @@ class Model {
             try FileManager.default.copyItem(at: source, to: file.url)
             source.stopAccessingSecurityScopedResource()
             
-            loadFile(file: file, context: context)
+            load(file: file, context: context)
         } catch {
             print(error)
             fail(error: .writeFile)
         }
     }
     
-    func loadFile(file: File, context: ModelContext) {
+    func load(file: File, context: ModelContext) {
         do {
-            let geoData = try GeoParser().parse(url: file.url)
+            let data = try GeoParser().parse(file: file)
             file.date = .now
-            path.append(FileData(file: file, data: geoData))
+            path.append(GeoFile(file: file, data: data))
             context.insert(file)
             Haptics.tap()
+        } catch {
+            fail(error: error)
+        }
+    }
+    
+    func load(folder: Folder) {
+        do {
+            let parser = GeoParser()
+            let data = try folder.files.map(parser.parse).data
+            folder.date = .now
+            path.append(GeoFolder(folder: folder, data: data))
         } catch {
             fail(error: error)
         }

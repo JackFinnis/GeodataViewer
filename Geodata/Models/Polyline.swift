@@ -13,33 +13,33 @@ import CoreGPX
 class Polyline: Annotation {
     let mkPolyline: MKPolyline
     
-    init(mkPolyline: MKPolyline, color: UIColor?, properties: Properties) {
+    init(file: File, mkPolyline: MKPolyline, color: UIColor?, properties: Properties) {
         self.mkPolyline = mkPolyline
         let coordinate = mkPolyline.coordinates.middle ?? mkPolyline.coordinate
-        super.init(coordinate: coordinate, properties: properties, color: color)
+        super.init(file: file, coordinate: coordinate, properties: properties, color: color)
     }
 }
 
 extension Polyline {
-    convenience init(route: GPXRoute) {
+    convenience init(file: File, route: GPXRoute) {
         let coords = route.points.compactMap(\.coord)
         let mkPolyline = MKPolyline(coords: coords)
-        self.init(mkPolyline: mkPolyline, color: nil, properties: route.properties)
+        self.init(file: file, mkPolyline: mkPolyline, color: nil, properties: route.properties)
     }
     
-    convenience init(segment: GPXTrackSegment) {
+    convenience init(file: File, segment: GPXTrackSegment) {
         let coords = segment.points.compactMap(\.coord)
         let mkPolyline = MKPolyline(coords: coords)
-        self.init(mkPolyline: mkPolyline, color: nil, properties: .empty)
+        self.init(file: file, mkPolyline: mkPolyline, color: nil, properties: .empty)
     }
     
-    convenience init(mkPolyline: MKPolyline, properties: Properties?) {
-        self.init(mkPolyline: mkPolyline, color: properties?.color, properties: properties ?? .empty)
+    convenience init(file: File, mkPolyline: MKPolyline, properties: Properties?) {
+        self.init(file: file, mkPolyline: mkPolyline, color: properties?.color, properties: properties ?? .empty)
     }
     
-    convenience init(line: GMULineString, placemark: GMUPlacemark, style: GMUStyle?) {
+    convenience init(file: File, line: GMULineString, placemark: GMUPlacemark, style: GMUStyle?) {
         let mkPolyline = MKPolyline(coords: line.path.coords)
-        self.init(mkPolyline: mkPolyline, color: style?.strokeColor, properties: placemark.properties)
+        self.init(file: file, mkPolyline: mkPolyline, color: style?.strokeColor, properties: placemark.properties)
     }
 }
 

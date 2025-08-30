@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 
-// Add more than one file
 // Query on the name attribute or others
 // Android version
 

@@ -10,10 +10,9 @@ import MapKit
 
 struct Map: UIViewRepresentable {
     @Binding var selectedAnnotation: Annotation?
-
-    let file: File
-    let data: GeoData
+    let data: FileData
     let mapStandard: Bool
+    let resetAnnotations: Bool
     let preview: Bool
     
     let mapView = MKMapView()
@@ -58,8 +57,8 @@ struct Map: UIViewRepresentable {
             }
         }
         
-        if !preview, file.titleKey != context.coordinator.titleKey {
-            context.coordinator.titleKey = file.titleKey
+        if !preview, resetAnnotations != context.coordinator.resetAnnotations {
+            context.coordinator.resetAnnotations = resetAnnotations
             mapView.removeAnnotations(data.polylines)
             mapView.removeAnnotations(data.polygons)
             mapView.removeAnnotations(data.points)
@@ -71,7 +70,7 @@ struct Map: UIViewRepresentable {
     
     class Coordinator: NSObject, MKMapViewDelegate {
         let parent: Map
-        var titleKey: String? = ""
+        var resetAnnotations: Bool?
         
         init(_ parent: Map) {
             self.parent = parent
@@ -109,8 +108,6 @@ struct Map: UIViewRepresentable {
         
         func mapView(_ mapView: MKMapView, viewFor annotation: any MKAnnotation) -> MKAnnotationView? {
             if let annotation = annotation as? Annotation {
-                annotation.updateTitle(key: titleKey)
-                
                 if let point = annotation as? Point {
                     let marker = mapView.dequeueReusableAnnotationView(withIdentifier: MKMarkerAnnotationView.id, for: point) as? MKMarkerAnnotationView
                     marker?.titleVisibility = parent.preview ? .hidden : .adaptive

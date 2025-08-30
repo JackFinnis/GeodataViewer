@@ -20,16 +20,16 @@ class Point: Annotation {
 }
 
 extension Point {
-    convenience init?(waypoint: GPXWaypoint) {
+    convenience init?(file: File, waypoint: GPXWaypoint) {
         guard let coord = waypoint.coord else { return nil }
-        self.init(coordinate: coord, properties: waypoint.properties, color: nil)
+        self.init(file: file, coordinate: coord, properties: waypoint.properties, color: nil)
     }
     
-    convenience init(point: GMUPoint, placemark: GMUPlacemark, style: GMUStyle?) {
-        self.init(coordinate: point.coordinate, properties: placemark.properties, color: style?.fillColor)
+    convenience init(file: File, point: GMUPoint, placemark: GMUPlacemark, style: GMUStyle?) {
+        self.init(file: file, coordinate: point.coordinate, properties: placemark.properties, color: style?.fillColor)
     }
     
-    convenience init(coordinate: CLLocationCoordinate2D, properties: Properties?) {
-        self.init(coordinate: coordinate, properties: properties ?? .empty, color: properties?.color)
+    convenience init(file: File, coordinate: CLLocationCoordinate2D, properties: Properties?) {
+        self.init(file: file, coordinate: coordinate, properties: properties ?? .empty, color: properties?.color)
     }
 }

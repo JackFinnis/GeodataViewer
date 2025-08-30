@@ -9,17 +9,17 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @Bindable var file: File
-    let data: GeoData
-    let namespace: Namespace.ID
+    let data: FileData
+    let folder: Bool
     
     @State var mapStandard = true
+    @State var resetAnnotations = true
     @State var selectedAnnotation: Annotation?
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                Map(selectedAnnotation: $selectedAnnotation, file: file, data: data, mapStandard: mapStandard, preview: false)
+                Map(selectedAnnotation: $selectedAnnotation, data: data, mapStandard: mapStandard, resetAnnotations: resetAnnotations, preview: false)
                     .ignoresSafeArea()
                 
                 Button {
@@ -43,22 +43,20 @@ struct MapView: View {
                 }
             }
         }
-        .navigationTitle($file.name)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: .init {
-            selectedAnnotation is Point || selectedAnnotation?.properties.dict.isNotEmpty ?? false
+            selectedAnnotation != nil
         } set: { isPresented in
             if !isPresented {
                 selectedAnnotation = nil
             }
         }) {
             if let selectedAnnotation {
-                PropertiesView(file: file, annotation: selectedAnnotation)
+                PropertiesView(resetAnnotations: $resetAnnotations, annotation: selectedAnnotation, folder: folder)
             }
         }
         .onAppear {
             CLLocationManager().requestWhenInUseAuthorization()
         }
-        .zoomChild(id: file.id, in: namespace)
     }
 }

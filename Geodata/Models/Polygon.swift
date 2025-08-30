@@ -12,22 +12,22 @@ import GoogleMapsUtils
 class Polygon: Annotation {
     let mkPolygon: MKPolygon
     
-    init(mkPolygon: MKPolygon, color: UIColor?, properties: Properties) {
+    init(file: File, mkPolygon: MKPolygon, color: UIColor?, properties: Properties) {
         self.mkPolygon = mkPolygon
-        super.init(coordinate: mkPolygon.coordinate, properties: properties, color: color)
+        super.init(file: file, coordinate: mkPolygon.coordinate, properties: properties, color: color)
     }
 }
 
 extension Polygon {
-    convenience init(polygon: GMUPolygon, placemark: GMUPlacemark, style: GMUStyle?) {
+    convenience init(file: File, polygon: GMUPolygon, placemark: GMUPlacemark, style: GMUStyle?) {
         let exteriorCoords = polygon.paths.first?.coords ?? []
         let interiorCoords = polygon.paths.dropFirst().map(\.coords)
         let mkPolygon = MKPolygon(exteriorCoords: exteriorCoords, interiorCoords: interiorCoords)
-        self.init(mkPolygon: mkPolygon, color: style?.strokeColor ?? style?.fillColor, properties: placemark.properties)
+        self.init(file: file, mkPolygon: mkPolygon, color: style?.strokeColor ?? style?.fillColor, properties: placemark.properties)
     }
     
-    convenience init(mkPolygon: MKPolygon, properties: Properties?) {
-        self.init(mkPolygon: mkPolygon, color: properties?.color, properties: properties ?? .empty)
+    convenience init(file: File, mkPolygon: MKPolygon, properties: Properties?) {
+        self.init(file: file, mkPolygon: mkPolygon, color: properties?.color, properties: properties ?? .empty)
     }
 }
 

@@ -16,16 +16,16 @@ struct FileRow: View {
     @Environment(\.modelContext) var context
     @Environment(Model.self) var model
     @Query(sort: \Folder.name) var folders: [Folder]
-    @State var geoData: GeoData?
+    @State var geoData: FileData?
     
     var body: some View {
         Button {
-            model.loadFile(file: file, context: context)
+            model.load(file: file, context: context)
         } label: {
             VStack(alignment: .leading) {
                 ZStack {
                     if let geoData {
-                        Map(selectedAnnotation: .constant(.none), file: file, data: geoData, mapStandard: true, preview: true)
+                        Map(selectedAnnotation: .constant(.none), data: geoData, mapStandard: true, resetAnnotations: false, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)
@@ -33,7 +33,7 @@ struct FileRow: View {
                                 ProgressView()
                             }
                             .onAppear {
-                                geoData = try? GeoParser().parse(url: file.url)
+                                geoData = try? GeoParser().parse(file: file)
                             }
                     }
                 }
@@ -46,15 +46,16 @@ struct FileRow: View {
                 
                 Text(file.name)
                     .multilineTextAlignment(.leading)
+                    .font(.callout)
                 if showFolder {
                     Label(file.folder?.name ?? "Files", systemImage: "folder")
-                        .font(.callout)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
             .lineLimit(1)
             .padding(8)
-            .background(.background)
+            .background(Color(.systemGroupedBackground))
         }
         .buttonStyle(.plain)
         .contextMenu {
