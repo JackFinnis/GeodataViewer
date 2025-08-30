@@ -25,7 +25,7 @@ struct FileRow: View {
             VStack(alignment: .leading) {
                 ZStack {
                     if let geoData {
-                        MapView(selectedAnnotation: .constant(.none), file: file, data: geoData, mapStandard: true, preview: true)
+                        Map(selectedAnnotation: .constant(.none), file: file, data: geoData, mapStandard: true, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)

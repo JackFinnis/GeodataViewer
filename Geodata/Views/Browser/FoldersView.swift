@@ -63,15 +63,15 @@ struct FoldersView: View {
             }
             .navigationDestination(for: Folder.self) { folder in
                 @Bindable var folder = folder
-                FilesView(files: folder.files, folder: folder, namespace: namespace)
+                FolderView(files: folder.files, folder: folder, namespace: namespace)
                     .navigationTitle($folder.name)
             }
             .navigationDestination(for: Bool.self) { all in
-                FilesView(files: all ? files : noFolder, folder: nil, namespace: namespace)
+                FolderView(files: all ? files : noFolder, folder: nil, namespace: namespace)
                     .navigationTitle(all ? "All Files" : "Files")
             }
             .navigationDestination(for: FileData.self) { fileData in
-                FileView(file: fileData.file, data: fileData.data, namespace: namespace)
+                MapView(file: fileData.file, data: fileData.data, namespace: namespace)
             }
         }
         .alert("Import Failed", isPresented: $model.showAlert) {} message: {

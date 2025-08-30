@@ -1,5 +1,5 @@
 //
-//  FileView.swift
+//  MapView.swift
 //  Geojson
 //
 //  Created by Jack Finnis on 11/03/2024.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct MapView: UIViewRepresentable {
+struct Map: UIViewRepresentable {
     @Binding var selectedAnnotation: Annotation?
 
     let file: File
@@ -70,10 +70,10 @@ struct MapView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, MKMapViewDelegate {
-        let parent: MapView
+        let parent: Map
         var titleKey: String? = ""
         
-        init(_ parent: MapView) {
+        init(_ parent: Map) {
             self.parent = parent
         }
         

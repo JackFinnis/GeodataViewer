@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct FilesView: View {
+struct FolderView: View {
     let files: [File]
     let folder: Folder?
     let namespace: Namespace.ID

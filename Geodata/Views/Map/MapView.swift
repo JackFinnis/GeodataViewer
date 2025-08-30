@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct FileView: View {
+struct MapView: View {
     @Bindable var file: File
     let data: GeoData
     let namespace: Namespace.ID
@@ -19,7 +19,7 @@ struct FileView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                MapView(selectedAnnotation: $selectedAnnotation, file: file, data: data, mapStandard: mapStandard, preview: false)
+                Map(selectedAnnotation: $selectedAnnotation, file: file, data: data, mapStandard: mapStandard, preview: false)
                     .ignoresSafeArea()
                 
                 Button {

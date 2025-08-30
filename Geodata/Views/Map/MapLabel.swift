@@ -1,5 +1,5 @@
 //
-//  AnnotationView.swift
+//  MapLabel.swift
 //  Geojson
 //
 //  Created by Jack Finnis on 13/02/2025.
@@ -7,6 +7,21 @@
 
 import MapKit
 import UIKit
+
+class MapLabel: UILabel {
+    override func drawText(in rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        context?.setLineWidth(2)
+        context?.setLineJoin(CGLineJoin.round)
+        context?.setTextDrawingMode(CGTextDrawingMode.stroke)
+        textColor = .systemBackground
+        super.drawText(in: rect)
+        
+        context?.setTextDrawingMode(.fill)
+        textColor = .label
+        super.drawText(in: rect)
+    }
+}
 
 class AnnotationView: MKAnnotationView {
     let label = MapLabel()
@@ -42,20 +57,5 @@ class AnnotationView: MKAnnotationView {
     
     override func prepareForReuse() {
         label.text = nil
-    }
-}
-
-class MapLabel: UILabel {
-    override func drawText(in rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
-        context?.setLineWidth(2)
-        context?.setLineJoin(CGLineJoin.round)
-        context?.setTextDrawingMode(CGTextDrawingMode.stroke)
-        textColor = .systemBackground
-        super.drawText(in: rect)
-        
-        context?.setTextDrawingMode(.fill)
-        textColor = .label
-        super.drawText(in: rect)
     }
 }
