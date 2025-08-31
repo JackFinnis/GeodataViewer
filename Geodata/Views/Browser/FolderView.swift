@@ -47,10 +47,10 @@ struct FolderView: View {
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if let folder, folder.files.isNotEmpty {
+            if files.isNotEmpty {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        model.load(folder: folder)
+                        model.load(files: files)
                     } label: {
                         Label("View on Map", systemImage: "map")
                     }

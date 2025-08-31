@@ -1,5 +1,5 @@
 //
-//  GeoData.swift
+//  FileData.swift
 //  Geojson
 //
 //  Created by Jack Finnis on 10/03/2024.

@@ -11,7 +11,7 @@ import MapKit
 
 struct FoldersView: View {
     @State var model = Model()
-    @Environment(\.modelContext) var context
+    @Environment(\.modelContext) var modelContext
     @Query(sort: \Folder.name) var folders: [Folder]
     @Query(sort: \File.name) var files: [File]
     @Namespace var namespace
@@ -38,7 +38,7 @@ struct FoldersView: View {
                     }
                     .contextMenu {
                         Button(role: .destructive) {
-                            context.delete(folder)
+                            modelContext.delete(folder)
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
@@ -70,16 +70,15 @@ struct FoldersView: View {
                 FolderView(files: all ? files : noFolder, folder: nil, namespace: namespace, showFolder: all)
                     .navigationTitle(all ? "All Files" : "Files")
             }
-            .navigationDestination(for: GeoFile.self) { geoFile in
-                @Bindable var file = geoFile.file
-                MapView(data: geoFile.data, folder: false)
-                    .navigationTitle($file.name)
-                    .zoomChild(id: file.id, in: namespace)
-            }
-            .navigationDestination(for: GeoFolder.self) { geoFolder in
-                @Bindable var folder = geoFolder.folder
-                MapView(data: geoFolder.data, folder: true)
-                    .zoomChild(id: folder.id, in: namespace)
+            .navigationDestination(for: MapData.self) { map in
+                if let file = map.file {
+                    @Bindable var file = file
+                    MapView(data: map.data, folder: false)
+                        .navigationTitle($file.name)
+                        .zoomChild(id: file.id, in: namespace)
+                } else {
+                    MapView(data: map.data, folder: true)
+                }
             }
         }
         .alert("Import Failed", isPresented: $model.showAlert) {} message: {
@@ -88,7 +87,7 @@ struct FoldersView: View {
             }
         }
         .onOpenURL { url in
-            model.importFile(url: url, webURL: nil, folder: nil, context: context)
+            model.handleImportFile(url: url, folder: nil, context: modelContext)
         }
         .onAppear {
             model.path.append(folders.isNotEmpty)
@@ -98,7 +97,7 @@ struct FoldersView: View {
     
     func newFolder() {
         let folder = Folder()
-        context.insert(folder)
+        modelContext.insert(folder)
         model.path.append(folder)
     }
 }

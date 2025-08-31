@@ -13,19 +13,19 @@ struct FileRow: View {
     let namespace: Namespace.ID
     let showFolder: Bool
     
-    @Environment(\.modelContext) var context
+    @Environment(\.modelContext) var modelContext
     @Environment(Model.self) var model
     @Query(sort: \Folder.name) var folders: [Folder]
-    @State var geoData: FileData?
+    @State var data: FileData?
     
     var body: some View {
         Button {
-            model.load(file: file, context: context)
+            model.load(file: file)
         } label: {
             VStack(alignment: .leading) {
                 ZStack {
-                    if let geoData {
-                        Map(selectedAnnotation: .constant(.none), data: geoData, mapStandard: true, resetAnnotations: false, preview: true)
+                    if let data {
+                        Map(selectedAnnotation: .constant(.none), data: data, mapStandard: true, refreshAnnotations: false, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)
@@ -33,7 +33,7 @@ struct FileRow: View {
                                 ProgressView()
                             }
                             .onAppear {
-                                geoData = try? GeoParser().parse(file: file)
+                                data = try? GeoParser().parse(file: file)
                             }
                     }
                 }
@@ -63,7 +63,7 @@ struct FileRow: View {
                 Button {
                     Task {
                         file.delete()
-                        await model.fetchFile(url: url, folder: file.folder, context: context)
+                        await model.handleFetchFile(webURL: url, folder: file.folder, context: modelContext)
                     }
                 } label: {
                     Label("Refresh", systemImage: "arrow.clockwise")
@@ -97,6 +97,7 @@ struct FileRow: View {
     
     func moveToNewFolder() {
         let folder = Folder()
+        modelContext.insert(folder)
         file.folder = folder
         model.path.append(folder)
     }

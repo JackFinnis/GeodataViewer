@@ -15,40 +15,98 @@ class Model {
     var error: GeoError?
     var showAlert: Bool = false
     
-    func fetchFile(url: URL, folder: Folder?, context: ModelContext) async {
-        guard UIApplication.shared.canOpenURL(url) else {
-            fail(error: .invalidURL)
-            return
+    func handleFetchFile(webURL: URL, folder: Folder?, context: ModelContext) async {
+        do {
+            let tempURL = try await fetchFile(webURL: webURL)
+            let file = try importFile(from: tempURL, webURL: webURL, folder: folder, context: context)
+            load(file: file)
+        } catch {
+            fail(error: error)
+        }
+    }
+    
+    func handleImportFile(url: URL, folder: Folder?, context: ModelContext) {
+        do {
+            let file = try importFile(from: url, webURL: nil, folder: folder, context: context)
+            load(file: file)
+        } catch {
+            fail(error: error)
+        }
+    }
+    
+    func handleImportFiles(urls: [URL], folder: Folder?, context: ModelContext) {
+        do {
+            var files: [File] = []
+            for url in urls {
+                let file = try importFile(from: url, webURL: nil, folder: folder, context: context)
+                files.append(file)
+            }
+            load(files: files)
+        } catch {
+            fail(error: error)
+        }
+    }
+    
+    func load(file: File) {
+        do {
+            let data = try GeoParser().parse(file: file)
+            file.date = .now
+            path.append(MapData(file: file, data: data))
+            Haptics.tap()
+        } catch {
+            fail(error: error)
+            file.delete()
+        }
+    }
+    
+    func load(files: [File]) {
+        do {
+            let parser = GeoParser()
+            let data = try files.map(parser.parse).data
+            path.append(MapData(file: nil, data: data))
+            Haptics.tap()
+        } catch {
+            fail(error: error)
+        }
+    }
+    
+    private func fail(error: GeoError) {
+        self.error = error
+        self.showAlert = true
+        Haptics.error()
+    }
+    
+    private func fetchFile(webURL: URL) async throws(GeoError) -> URL {
+        guard UIApplication.shared.canOpenURL(webURL) else {
+            throw .invalidURL
         }
         
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await URLSession.shared.data(from: url)
+            (data, response) = try await URLSession.shared.data(from: webURL)
         } catch {
             print(error)
-            fail(error: .noInternet)
-            return
+            throw .noInternet
         }
         
         guard let filename = response.suggestedFilename else {
-            fail(error: .unsupportedFileType)
-            return
+            throw .unsupportedFileType
         }
         
         do {
             let temp = URL.temporaryDirectory.appending(path: filename)
             try data.write(to: temp)
-            importFile(url: temp, webURL: url, folder: folder, context: context)
+            return temp
         } catch {
             print(error)
-            fail(error: .writeFile)
+            throw .writeFile
         }
     }
     
-    func importFile(url source: URL, webURL: URL?, folder: Folder?, context: ModelContext) {
+    private func importFile(from source: URL, webURL: URL?, folder: Folder?, context: ModelContext) throws(GeoError) -> File {
         let fileExtension = source.pathExtension
-        let name = String(source.lastPathComponent.dropLast(fileExtension.count + 1))
+        let name = source.deletingPathExtension().lastPathComponent
         let file = File(fileExtension: fileExtension, name: name, webURL: webURL, folder: folder)
         
         do {
@@ -56,40 +114,11 @@ class Model {
             _ = source.startAccessingSecurityScopedResource()
             try FileManager.default.copyItem(at: source, to: file.url)
             source.stopAccessingSecurityScopedResource()
-            
-            load(file: file, context: context)
+            context.insert(file)
+            return file
         } catch {
             print(error)
-            fail(error: .writeFile)
+            throw .writeFile
         }
-    }
-    
-    func load(file: File, context: ModelContext) {
-        do {
-            let data = try GeoParser().parse(file: file)
-            file.date = .now
-            path.append(GeoFile(file: file, data: data))
-            context.insert(file)
-            Haptics.tap()
-        } catch {
-            fail(error: error)
-        }
-    }
-    
-    func load(folder: Folder) {
-        do {
-            let parser = GeoParser()
-            let data = try folder.files.map(parser.parse).data
-            folder.date = .now
-            path.append(GeoFolder(folder: folder, data: data))
-        } catch {
-            fail(error: error)
-        }
-    }
-    
-    func fail(error: GeoError) {
-        self.error = error
-        self.showAlert = true
-        Haptics.error()
     }
 }

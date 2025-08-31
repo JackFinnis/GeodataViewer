@@ -13,13 +13,13 @@ struct MapView: View {
     let folder: Bool
     
     @State var mapStandard = true
-    @State var resetAnnotations = true
+    @State var refreshAnnotations = true
     @State var selectedAnnotation: Annotation?
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                Map(selectedAnnotation: $selectedAnnotation, data: data, mapStandard: mapStandard, resetAnnotations: resetAnnotations, preview: false)
+                Map(selectedAnnotation: $selectedAnnotation, data: data, mapStandard: mapStandard, refreshAnnotations: refreshAnnotations, preview: false)
                     .ignoresSafeArea()
                 
                 Button {
@@ -52,7 +52,7 @@ struct MapView: View {
             }
         }) {
             if let selectedAnnotation {
-                PropertiesView(resetAnnotations: $resetAnnotations, annotation: selectedAnnotation, folder: folder)
+                PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: selectedAnnotation, folder: folder)
             }
         }
         .onAppear {

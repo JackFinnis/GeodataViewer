@@ -12,7 +12,7 @@ import GoogleMapsUtils
 import UniformTypeIdentifiers
 
 class GeoParser {
-    var geoData: FileData {
+    var data: FileData {
         .init(points: points, polylines: polylines, polygons: polygons)
     }
     
@@ -44,11 +44,11 @@ class GeoParser {
             try parseGPX(file: file)
         }
         
-        guard !geoData.empty else {
+        guard !data.empty else {
             throw GeoError.fileEmpty
         }
         
-        return geoData
+        return data
     }
     
     // MARK: - Parse GeoJSON

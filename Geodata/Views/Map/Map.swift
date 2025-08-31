@@ -12,7 +12,7 @@ struct Map: UIViewRepresentable {
     @Binding var selectedAnnotation: Annotation?
     let data: FileData
     let mapStandard: Bool
-    let resetAnnotations: Bool
+    let refreshAnnotations: Bool
     let preview: Bool
     
     let mapView = MKMapView()
@@ -57,8 +57,8 @@ struct Map: UIViewRepresentable {
             }
         }
         
-        if !preview, resetAnnotations != context.coordinator.resetAnnotations {
-            context.coordinator.resetAnnotations = resetAnnotations
+        if !preview, refreshAnnotations != context.coordinator.refreshAnnotations {
+            context.coordinator.refreshAnnotations = refreshAnnotations
             mapView.removeAnnotations(data.polylines)
             mapView.removeAnnotations(data.polygons)
             mapView.removeAnnotations(data.points)
@@ -70,7 +70,7 @@ struct Map: UIViewRepresentable {
     
     class Coordinator: NSObject, MKMapViewDelegate {
         let parent: Map
-        var resetAnnotations: Bool?
+        var refreshAnnotations: Bool?
         
         init(_ parent: Map) {
             self.parent = parent

@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct PropertiesView: View {
-    @Binding var resetAnnotations: Bool
+    @Binding var refreshAnnotations: Bool
     let annotation: Annotation
     let folder: Bool
     
     @Environment(Model.self) var model
-    @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     
@@ -25,7 +24,7 @@ struct PropertiesView: View {
                 Button {
                     if folder {
                         dismiss()
-                        model.load(file: file, context: modelContext)
+                        model.load(file: file)
                     }
                 } label: {
                     PropertyRow(key: "File", value: annotation.file.name)
@@ -50,16 +49,16 @@ struct PropertiesView: View {
                         if title {
                             Button(role: .destructive) {
                                 file.titleKey = nil
-                                resetAnnotations.toggle()
+                                refreshAnnotations.toggle()
                             } label: {
                                 Label("Remove Label", systemImage: "star.slash")
                             }
                         } else {
                             Button {
                                 file.titleKey = key
-                                resetAnnotations.toggle()
+                                refreshAnnotations.toggle()
                             } label: {
-                                Label("Use as Map Label", systemImage: "star")
+                                Label("Add Map Label", systemImage: "star")
                             }
                         }
                     } label: {

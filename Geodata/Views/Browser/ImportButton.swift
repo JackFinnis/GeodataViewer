@@ -12,30 +12,30 @@ struct ImportButton: View {
     let folder: Folder?
     
     @Environment(Model.self) var model
-    @Environment(\.modelContext) var context
+    @Environment(\.modelContext) var modelContext
     @State var showFileImporter = false
     
     var body: some View {
         Menu {
-            Section("Import File") {
+            Section("Import Files") {
                 Button {
                     showFileImporter = true
                 } label: {
-                    Label("Choose File...", systemImage: "folder")
+                    Label("Choose Files...", systemImage: "folder")
                 }
                 Button {
                     guard let string = UIPasteboard.general.string,
                           let url = URL(string: string)
                     else { return }
                     Task {
-                        await model.fetchFile(url: url, folder: folder, context: context)
+                        await model.handleFetchFile(webURL: url, folder: folder, context: modelContext)
                     }
                 } label: {
                     Label("Paste File URL", systemImage: "document.on.clipboard")
                 }
             }
         } label: {
-            Label("Import File", systemImage: "plus")
+            Label("Import Files", systemImage: "plus")
         }
         .foregroundStyle(.background)
         .font(.headline)
@@ -43,12 +43,16 @@ struct ImportButton: View {
         .buttonStyle(.borderedProminent)
         .buttonBorderShape(.circle)
         .menuOrder(.fixed)
-        .fileImporter(isPresented: $showFileImporter, allowedContentTypes: GeoFileType.allCases.map(\.type)) { result in
+        .fileImporter(isPresented: $showFileImporter, allowedContentTypes: GeoFileType.allCases.map(\.type), allowsMultipleSelection: true) { result in
             switch result {
             case .failure(let error):
                 print(error)
-            case .success(let url):
-                model.importFile(url: url, webURL: nil, folder: folder, context: context)
+            case .success(let urls):
+                if urls.count == 1 {
+                    model.handleImportFile(url: urls.first!, folder: folder, context: modelContext)
+                } else {
+                    model.handleImportFiles(urls: urls, folder: folder, context: modelContext)
+                }
             }
         }
     }
