@@ -20,6 +20,10 @@ class Polyline: Annotation {
     }
 }
 
+extension Polyline: MKOverlay {
+    var boundingMapRect: MKMapRect { mkPolyline.boundingMapRect }
+}
+
 extension Polyline {
     convenience init(file: File, route: GPXRoute) {
         let coords = route.points.compactMap(\.coord)

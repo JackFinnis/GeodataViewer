@@ -10,13 +10,12 @@ import SwiftData
 
 struct FileRow: View {
     @Bindable var file: File
-    let namespace: Namespace.ID
     let showFolder: Bool
     
     @Environment(\.modelContext) var modelContext
     @Environment(Model.self) var model
     @Query(sort: \Folder.name) var folders: [Folder]
-    @State var data: FileData?
+    @State var data: MapData?
     
     var body: some View {
         Button {
@@ -25,7 +24,7 @@ struct FileRow: View {
             VStack(alignment: .leading) {
                 ZStack {
                     if let data {
-                        Map(selectedAnnotation: .constant(.none), data: data, mapStandard: true, refreshAnnotations: false, preview: true)
+                        Map(selectedAnnotation: .constant(nil), zoomToAnnotation: .constant(nil), refreshAnnotations: .constant(false), data: data, mapStandard: true, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)
@@ -42,7 +41,6 @@ struct FileRow: View {
                 .allowsHitTesting(false)
                 .compositingGroup()
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(.separator))
-                .zoomParent(id: file.id, in: namespace)
                 
                 Text(file.name)
                     .multilineTextAlignment(.leading)

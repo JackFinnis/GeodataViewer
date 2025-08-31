@@ -10,23 +10,23 @@ import MapKit
 
 struct Map: UIViewRepresentable {
     @Binding var selectedAnnotation: Annotation?
-    let data: FileData
+    @Binding var zoomToAnnotation: Annotation?
+    @Binding var refreshAnnotations: Bool
+    let data: MapData
     let mapStandard: Bool
-    let refreshAnnotations: Bool
     let preview: Bool
-    
-    let mapView = MKMapView()
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
     func makeUIView(context: Context) -> MKMapView {
+        let mapView = context.coordinator.mapView
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
         mapView.selectableMapFeatures = .pointsOfInterest
-        mapView.layoutMargins = .init(length: preview ? -25 : 5)
+        mapView.layoutMargins = preview ? .init(length: -25) : .init(top: 44 + 10 + 5, left: 5, bottom: 350, right: 5)
         mapView.showsUserTrackingButton = !preview
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
         
@@ -49,7 +49,9 @@ struct Map: UIViewRepresentable {
     func updateUIView(_ mapView: MKMapView, context: Context) {
         mapView.preferredConfiguration = mapStandard ? MKStandardMapConfiguration(elevationStyle: .realistic) : MKHybridMapConfiguration(elevationStyle: .realistic)
         
-        if selectedAnnotation == nil {
+        if let selectedAnnotation {
+            mapView.selectAnnotation(selectedAnnotation, animated: true)
+        } else {
             mapView.selectedAnnotations.forEach { annotation in
                 if let point = annotation as? Point {
                     mapView.deselectAnnotation(point, animated: true)
@@ -57,8 +59,10 @@ struct Map: UIViewRepresentable {
             }
         }
         
-        if !preview, refreshAnnotations != context.coordinator.refreshAnnotations {
-            context.coordinator.refreshAnnotations = refreshAnnotations
+        if !preview, refreshAnnotations {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                refreshAnnotations = false
+            }
             mapView.removeAnnotations(data.polylines)
             mapView.removeAnnotations(data.polygons)
             mapView.removeAnnotations(data.points)
@@ -66,11 +70,27 @@ struct Map: UIViewRepresentable {
             mapView.addAnnotations(data.polygons)
             mapView.addAnnotations(data.points)
         }
+        
+        if let annotation = zoomToAnnotation {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                zoomToAnnotation = nil
+            }
+            if let point = annotation as? Point {
+                if !mapView.visibleMapRect.contains(MKMapPoint(point.coordinate)) {
+                    mapView.setCenter(point.coordinate, animated: true)
+                }
+            } else if let overlay = annotation as? MKOverlay {
+                if !mapView.visibleMapRect.contains(overlay.boundingMapRect) {
+                    mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(length: 10), animated: true)
+                }
+            }
+        }
     }
     
     class Coordinator: NSObject, MKMapViewDelegate {
         let parent: Map
-        var refreshAnnotations: Bool?
+        
+        let mapView = MKMapView()
         
         init(_ parent: Map) {
             self.parent = parent
@@ -83,7 +103,10 @@ struct Map: UIViewRepresentable {
         
         func mapView(_ mapView: MKMapView, didSelect annotation: any MKAnnotation) {
             if let annotation = annotation as? Annotation {
-                parent.selectedAnnotation = annotation
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.parent.selectedAnnotation = annotation
+                    self.parent.zoomToAnnotation = annotation
+                }
             }
         }
         
@@ -123,7 +146,6 @@ struct Map: UIViewRepresentable {
         
         @objc
         func handleTap(_ tap: UITapGestureRecognizer) {
-            let mapView = parent.mapView
             let location = tap.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let overlay = parent.data.closestOverlay(to: coord)
@@ -132,7 +154,6 @@ struct Map: UIViewRepresentable {
         
         @objc
         func handleLongPress(_ press: UILongPressGestureRecognizer) {
-            let mapView = parent.mapView
             guard press.state == .began else { return }
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)

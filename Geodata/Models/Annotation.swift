@@ -7,7 +7,8 @@
 
 import MapKit
 
-class Annotation: NSObject, MKAnnotation {
+class Annotation: NSObject, MKAnnotation, Identifiable {
+    let id = UUID()
     let file: File
     let coordinate: CLLocationCoordinate2D
     let properties: Properties
@@ -16,11 +17,37 @@ class Annotation: NSObject, MKAnnotation {
     var title: String? {
         properties.getTitle(key: file.titleKey)
     }
+    var type: AnnotationType {
+        switch self {
+        case is Point:
+            return .point
+        case is Polyline:
+            return .polyline
+        case is Polygon:
+            return .polygon
+        default: fatalError()
+        }
+    }
     
     init(file: File, coordinate: CLLocationCoordinate2D, properties: Properties, color: UIColor?) {
         self.file = file
         self.coordinate = coordinate
         self.properties = properties
         self.color = color
+    }
+}
+
+enum AnnotationType {
+    case point, polyline, polygon
+    
+    var systemImage: String {
+        switch self {
+        case .point:
+            return "mappin"
+        case .polyline:
+            return "point.topleft.down.to.point.bottomright.curvepath.fill"
+        case .polygon:
+            return "pentagon"
+        }
     }
 }

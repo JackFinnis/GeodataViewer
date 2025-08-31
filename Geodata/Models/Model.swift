@@ -41,7 +41,9 @@ class Model {
                 let file = try importFile(from: url, webURL: nil, folder: folder, context: context)
                 files.append(file)
             }
-            load(files: files)
+            if folder == nil {
+                path.append(true)
+            }
         } catch {
             fail(error: error)
         }
@@ -51,7 +53,7 @@ class Model {
         do {
             let data = try GeoParser().parse(file: file)
             file.date = .now
-            path.append(MapData(file: file, data: data))
+            path.append(FileData(file: file, data: data))
             Haptics.tap()
         } catch {
             fail(error: error)
@@ -59,11 +61,11 @@ class Model {
         }
     }
     
-    func load(files: [File]) {
+    func load(folder: Folder) {
         do {
             let parser = GeoParser()
-            let data = try files.map(parser.parse).data
-            path.append(MapData(file: nil, data: data))
+            let data = try folder.files.map(parser.parse).data
+            path.append(FolderData(folder: folder, data: data))
             Haptics.tap()
         } catch {
             fail(error: error)

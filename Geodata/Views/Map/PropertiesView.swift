@@ -29,6 +29,10 @@ struct PropertiesView: View {
                 } label: {
                     PropertyRow(key: "File", value: annotation.file.name)
                 }
+                if annotation is Point {
+                    PropertyRow(key: "Latitude", value: String(format: "%.5f", annotation.coordinate.latitude))
+                    PropertyRow(key: "Longitude", value: String(format: "%.5f", annotation.coordinate.longitude))
+                }
                 ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
                     let string = "\(value)"
                     let title = key == file.titleKey
@@ -49,14 +53,14 @@ struct PropertiesView: View {
                         if title {
                             Button(role: .destructive) {
                                 file.titleKey = nil
-                                refreshAnnotations.toggle()
+                                refreshAnnotations = true
                             } label: {
                                 Label("Remove Label", systemImage: "star.slash")
                             }
                         } else {
                             Button {
                                 file.titleKey = key
-                                refreshAnnotations.toggle()
+                                refreshAnnotations = true
                             } label: {
                                 Label("Add Map Label", systemImage: "star")
                             }
@@ -99,7 +103,8 @@ struct PropertiesView: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationBackgroundInteraction(.enabled)
+        .presentationDetents([.partial, .large])
     }
 }
 

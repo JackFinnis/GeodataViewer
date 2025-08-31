@@ -11,7 +11,6 @@ import SwiftData
 struct FolderView: View {
     let files: [File]
     let folder: Folder?
-    let namespace: Namespace.ID
     let showFolder: Bool
     
     @Environment(Model.self) var model
@@ -28,7 +27,7 @@ struct FolderView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 0, alignment: .top)], spacing: 0) {
                 ForEach(filteredFiles) { file in
-                    FileRow(file: file, namespace: namespace, showFolder: showFolder)
+                    FileRow(file: file, showFolder: showFolder)
                 }
             }
             .padding(.horizontal, 8)
@@ -47,10 +46,10 @@ struct FolderView: View {
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if files.isNotEmpty {
+            if let folder, folder.files.isNotEmpty {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        model.load(files: files)
+                        model.load(folder: folder)
                     } label: {
                         Label("View on Map", systemImage: "map")
                     }

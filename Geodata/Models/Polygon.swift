@@ -18,6 +18,10 @@ class Polygon: Annotation {
     }
 }
 
+extension Polygon: MKOverlay {
+    var boundingMapRect: MKMapRect { mkPolygon.boundingMapRect }
+}
+
 extension Polygon {
     convenience init(file: File, polygon: GMUPolygon, placemark: GMUPlacemark, style: GMUStyle?) {
         let exteriorCoords = polygon.paths.first?.coords ?? []

@@ -14,7 +14,6 @@ struct FoldersView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Folder.name) var folders: [Folder]
     @Query(sort: \File.name) var files: [File]
-    @Namespace var namespace
     
     var body: some View {
         let noFolder = files.filter { $0.folder == nil }
@@ -63,22 +62,20 @@ struct FoldersView: View {
             }
             .navigationDestination(for: Folder.self) { folder in
                 @Bindable var folder = folder
-                FolderView(files: folder.files, folder: folder, namespace: namespace, showFolder: false)
+                FolderView(files: folder.files, folder: folder, showFolder: false)
                     .navigationTitle($folder.name)
             }
             .navigationDestination(for: Bool.self) { all in
-                FolderView(files: all ? files : noFolder, folder: nil, namespace: namespace, showFolder: all)
+                FolderView(files: all ? files : noFolder, folder: nil, showFolder: all)
                     .navigationTitle(all ? "All Files" : "Files")
             }
-            .navigationDestination(for: MapData.self) { map in
-                if let file = map.file {
-                    @Bindable var file = file
-                    MapView(data: map.data, folder: false)
-                        .navigationTitle($file.name)
-                        .zoomChild(id: file.id, in: namespace)
-                } else {
-                    MapView(data: map.data, folder: true)
-                }
+            .navigationDestination(for: FileData.self) { fileData in
+                @Bindable var file = fileData.file
+                MapView(title: $file.name, data: fileData.data, folder: false)
+            }
+            .navigationDestination(for: FolderData.self) { folderData in
+                @Bindable var folder = folderData.folder
+                MapView(title: $folder.name, data: folderData.data, folder: true)
             }
         }
         .alert("Import Failed", isPresented: $model.showAlert) {} message: {

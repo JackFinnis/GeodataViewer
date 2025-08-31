@@ -19,12 +19,18 @@ struct Properties {
     var color: UIColor? {
         getStrings("color", "colour").first?.hexColor
     }
+    var string: String {
+        String(describing: dict)
+    }
     
     func getTitle(key: String?) -> String? {
         key.map(getString) ?? title
     }
     func getString(_ key: String) -> String? {
-        dict[key].map(String.init(describing:))
+        guard let string = dict[key].map(String.init(describing:)),
+              string.isNotEmpty
+        else { return nil }
+        return string
     }
     func getStrings(_ keys: String...) -> [String] {
         keys.compactMap(getString)

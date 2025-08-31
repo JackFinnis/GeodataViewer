@@ -9,19 +9,33 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    let data: FileData
+    @Binding var title: String
+    let data: MapData
     let folder: Bool
     
+    @Environment(Model.self) var model
     @State var mapStandard = true
-    @State var refreshAnnotations = true
+    @State var showAnnotationsView = true
+    @State var zoomToAnnotation: Annotation?
     @State var selectedAnnotation: Annotation?
+    @State var refreshAnnotations = true
     
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                Map(selectedAnnotation: $selectedAnnotation, data: data, mapStandard: mapStandard, refreshAnnotations: refreshAnnotations, preview: false)
-                    .ignoresSafeArea()
-                
+        ZStack(alignment: .top) {
+            Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, data: data, mapStandard: mapStandard, preview: false)
+                .ignoresSafeArea()
+            
+            HStack {
+                Button {
+                    showAnnotationsView = false
+                    model.path.removeLast()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .fontWeight(.semibold)
+                        .mapBox()
+                }
+                .mapButton()
+                Spacer()
                 Button {
                     mapStandard.toggle()
                 } label: {
@@ -30,33 +44,35 @@ struct MapView: View {
                         .mapBox()
                 }
                 .mapButton()
-                .position(x: geo.size.width - 32, y: -22)
             }
+            .padding(10)
         }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    mapStandard.toggle()
-                } label: {
-                    Image(systemName: "map")
-                        .foregroundStyle(.clear)
+        .navigationBarBackButtonHidden()
+        .deleteDisabled(true)
+        .toolbar(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showAnnotationsView) {
+            AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
+                .sheet(item: $selectedAnnotation) { annotation in
+                    PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: annotation, folder: folder)
                 }
-            }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: .init {
-            selectedAnnotation != nil
-        } set: { isPresented in
-            if !isPresented {
-                selectedAnnotation = nil
-            }
-        }) {
-            if let selectedAnnotation {
-                PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: selectedAnnotation, folder: folder)
-            }
         }
         .onAppear {
             CLLocationManager().requestWhenInUseAuthorization()
         }
+    }
+}
+
+extension View {
+    func mapBox() -> some View {
+        frame(width: 44, height: 44)
+    }
+    
+    func mapButton() -> some View {
+        self
+            .foregroundStyle(Color.accentColor)
+            .buttonStyle(.plain)
+            .font(.system(size: 20))
+            .background(.ultraThickMaterial)
+            .clipShape(.rect(cornerRadius: 8))
     }
 }
