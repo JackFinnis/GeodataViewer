@@ -39,7 +39,7 @@ struct AnnotationsView: View {
             }
             .animation(.default, value: filteredAnnotations)
             .listStyle(.plain)
-            .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always))
+            .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search Features, Properties"))
             .searchAvoidsHidingContent()
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)

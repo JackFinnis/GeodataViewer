@@ -31,6 +31,7 @@ class RecordModel: NSObject {
         lines.map(\.meters).reduce(0) { $0 + $1 }
     }
     
+    var requested = false
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     let locationManager = CLLocationManager()
     
@@ -43,6 +44,10 @@ class RecordModel: NSObject {
         locationManager.delegate = self
         locationManager.activityType = .fitness
         locationManager.showsBackgroundLocationIndicator = true
+    }
+    
+    func requestAuthorization() {
+        requested = true
         locationManager.requestAlwaysAuthorization()
     }
     
@@ -52,15 +57,17 @@ class RecordModel: NSObject {
     
     func resume() {
         locationManager.startUpdatingLocation()
-        currentStart = .now
         locationManager.allowsBackgroundLocationUpdates = true
+        
+        currentStart = .now
         state = .recording
     }
     
     func pause() {
         locationManager.stopUpdatingLocation()
-        previousSeconds += currentStart.distance(to: .now)
         locationManager.allowsBackgroundLocationUpdates = false
+        
+        previousSeconds += currentStart.distance(to: .now)
         state = .paused
         if currentLine.isNotEmpty {
             previousLines.append(currentLine)

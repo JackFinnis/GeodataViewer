@@ -18,6 +18,7 @@ struct RecordView: View {
     @State var selectedFeature: MapFeature?
     @State var mapPosition: MapCameraPosition = .userLocation(fallback: .automatic)
     @State var mapStandard = true
+    @State var confirmDiscard = false
     @Namespace var mapScope
     
     var body: some View {
@@ -29,20 +30,24 @@ struct RecordView: View {
             }
         }
         .mapStyle(mapStandard ? .standard(elevation: .realistic) : .hybrid(elevation: .realistic))
-        .contentMargins(.bottom, 255)
+        .contentMargins(.bottom, 200 + 5)
         .contentMargins(5)
         .mapControls {}
         .overlay(alignment: .topLeading) {
             VStack(spacing: 10) {
                 Button {
-                    dismiss()
+                    switch recordModel.state {
+                    case .notStarted:
+                        dismiss()
+                    case .recording, .paused, .stopped:
+                        confirmDiscard = true
+                    }
                 } label: {
                     Image(systemName: "chevron.backward")
                         .fontWeight(.semibold)
                         .mapBox()
                 }
                 .mapButton()
-                .disabled(recordModel.state != .notStarted)
                 MapScaleView(anchorEdge: .leading, scope: mapScope)
             }
             .padding(10)
@@ -66,7 +71,11 @@ struct RecordView: View {
             .padding(10)
         }
         .mapScope(mapScope)
+        .onAppear {
+            CLLocationManager().requestWhenInUseAuthorization()
+        }
         .sensoryFeedback(.impact, trigger: recordModel.state)
+        .sensoryFeedback(.impact, trigger: recordModel.authorizationStatus)
         .onChange(of: recordModel.state) { _, newState in
             switch newState {
             case .recording:
@@ -80,7 +89,8 @@ struct RecordView: View {
         .toolbar(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $showSheet) {
-            VStack {
+            VStack(spacing: 16) {
+                Spacer()
                 HStack {
                     VStack {
                         TimelineView(PeriodicTimelineSchedule(from: .now, by: 1)) { context in
@@ -98,92 +108,101 @@ struct RecordView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .font(.headline)
-                .padding(.top, 25)
                 Spacer()
                 switch recordModel.state {
                 case .notStarted:
-                    switch recordModel.authorizationStatus {
-                    case .authorizedAlways:
+                    if recordModel.authorizationStatus == .authorizedAlways {
                         Button {
                             recordModel.start()
                         } label: {
-                            Text("Start")
+                            Label("Start", systemImage: "play.fill")
                                 .font(.headline)
                                 .padding(5)
                                 .frame(maxWidth: .infinity)
                         }
-                    default:
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            Link(destination: url) {
-                                Text("Allow Location Access Always")
-                                    .font(.headline)
-                                    .padding(5)
-                                    .frame(maxWidth: .infinity)
-                            }
+                    } else if !recordModel.requested && [CLAuthorizationStatus.authorizedWhenInUse, .notDetermined].contains(recordModel.authorizationStatus) {
+                        Button {
+                            recordModel.requestAuthorization()
+                        } label: {
+                            Text("Allow Location Access")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else if let url = URL(string: UIApplication.openSettingsURLString) {
+                        Link(destination: url) {
+                            Text("Allow Location Access")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
                         }
                     }
                 case .recording:
-                    Button {
-                        recordModel.pause()
-                    } label: {
-                        Text("Pause")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
-                    }
-                    Button {
-                        recordModel.stop()
-                    } label: {
-                        Text("Stop")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
+                    HStack {
+                        Button {
+                            recordModel.pause()
+                        } label: {
+                            Label("Pause", systemImage: "pause.fill")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 case .paused:
-                    Button {
-                        recordModel.resume()
-                    } label: {
-                        Text("Resume")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
-                    }
-                    Button {
-                        recordModel.stop()
-                    } label: {
-                        Text("Stop")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
+                    HStack {
+                        Button {
+                            recordModel.resume()
+                        } label: {
+                            Label("Resume", systemImage: "play.fill")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
+                        Button {
+                            recordModel.stop()
+                        } label: {
+                            Label("Finish", systemImage: "flag.fill")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 case .stopped:
-                    Button {
-                        dismiss()
-                        model.handleCreateFile(locations: recordModel.previousLines, folder: folder, context: modelContext)
-                    } label: {
-                        Text("Save")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
-                    }
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Discard")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
+                    HStack {
+                        Button {
+                            confirmDiscard = true
+                        } label: {
+                            Text("Discard")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.red)
+                        Button {
+                            dismiss()
+                            model.handleCreateFile(locations: recordModel.previousLines, folder: folder, context: modelContext)
+                        } label: {
+                            Text("Save")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 }
             }
             .padding()
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
             .buttonBorderShape(.roundedRectangle(radius: 10))
             .presentationBackgroundInteraction(.enabled)
-            .presentationDetents([.height(250)])
+            .presentationDetents([.height(200)])
             .interactiveDismissDisabled()
-            .onAppear {
-                CLLocationManager().requestWhenInUseAuthorization()
+            .confirmationDialog("Discard Route?", isPresented: $confirmDiscard) {
+                Button("Cancel", role: .cancel) {}
+                Button("Discard Route", role: .destructive) {
+                    recordModel.stop()
+                    dismiss()
+                }
             }
         }
     }
