@@ -7,11 +7,13 @@
 
 import SwiftUI
 import SwiftData
+import CoreLocation
+import CoreGPX
 
 @MainActor
 @Observable
 class Model {
-    var path = NavigationPath()
+    var path: [NavData] = []
     var error: GeoError?
     var showAlert: Bool = false
     
@@ -19,6 +21,16 @@ class Model {
         do {
             let tempURL = try await fetchFile(webURL: webURL)
             let file = try importFile(from: tempURL, webURL: webURL, folder: folder, context: context)
+            load(file: file)
+        } catch {
+            fail(error: error)
+        }
+    }
+    
+    func handleCreateFile(locations: [[CLLocation]], folder: Folder?, context: ModelContext) {
+        do {
+            let tempURL = try createFile(locations: locations)
+            let file = try importFile(from: tempURL, webURL: nil, folder: folder, context: context)
             load(file: file)
         } catch {
             fail(error: error)
@@ -42,7 +54,7 @@ class Model {
                 files.append(file)
             }
             if folder == nil {
-                path.append(true)
+                path.append(.allFiles)
             }
         } catch {
             fail(error: error)
@@ -53,7 +65,7 @@ class Model {
         do {
             let data = try GeoParser().parse(file: file)
             file.date = .now
-            path.append(FileData(file: file, data: data))
+            path.append(.mapFile(file, data))
             Haptics.tap()
         } catch {
             fail(error: error)
@@ -65,7 +77,7 @@ class Model {
         do {
             let parser = GeoParser()
             let data = try folder.files.map(parser.parse).data
-            path.append(FolderData(folder: folder, data: data))
+            path.append(.mapFolder(folder, data))
             Haptics.tap()
         } catch {
             fail(error: error)
@@ -76,6 +88,23 @@ class Model {
         self.error = error
         self.showAlert = true
         Haptics.error()
+    }
+    
+    private func createFile(locations: [[CLLocation]]) throws(GeoError) -> URL {
+        let segments = locations.map(\.segment)
+        let track = GPXTrack(segments: segments)
+        
+        let root = GPXRoot(creator: "Geodata Viewer")
+        root.add(track: track)
+        
+        do {
+            let filename = "New Route"
+            try root.outputToFile(saveAt: .temporaryDirectory, fileName: filename)
+            return .temporaryDirectory.appending(path: filename).appendingPathExtension(for: .gpx)
+        } catch {
+            print(error)
+            throw .saveFile
+        }
     }
     
     private func fetchFile(webURL: URL) async throws(GeoError) -> URL {
@@ -102,7 +131,7 @@ class Model {
             return temp
         } catch {
             print(error)
-            throw .writeFile
+            throw .saveFile
         }
     }
     
@@ -120,7 +149,7 @@ class Model {
             return file
         } catch {
             print(error)
-            throw .writeFile
+            throw .saveFile
         }
     }
 }

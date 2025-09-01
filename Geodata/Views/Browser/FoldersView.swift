@@ -21,17 +21,17 @@ struct FoldersView: View {
         NavigationStack(path: $model.path) {
             List {
                 if folders.isNotEmpty {
-                    NavigationLink(value: true) {
+                    NavigationLink(value: NavData.allFiles) {
                         Label("All Files", systemImage: "folder")
                             .badge(files.isEmpty ? "0" : String(files.count))
                     }
                 }
-                NavigationLink(value: false) {
+                NavigationLink(value: NavData.files) {
                     Label("Files", systemImage: "folder")
                         .badge(noFolder.isEmpty ? "0" : String(noFolder.count))
                 }
                 ForEach(folders) { folder in
-                    NavigationLink(value: folder) {
+                    NavigationLink(value: NavData.folder(folder)) {
                         Label(folder.name, systemImage: "folder")
                             .badge(folder.files.isEmpty ? "0" : String(folder.files.count))
                     }
@@ -60,22 +60,27 @@ struct FoldersView: View {
                     ImportButton(folder: nil)
                 }
             }
-            .navigationDestination(for: Folder.self) { folder in
-                @Bindable var folder = folder
-                FolderView(files: folder.files, folder: folder, showFolder: false)
-                    .navigationTitle($folder.name)
-            }
-            .navigationDestination(for: Bool.self) { all in
-                FolderView(files: all ? files : noFolder, folder: nil, showFolder: all)
-                    .navigationTitle(all ? "All Files" : "Files")
-            }
-            .navigationDestination(for: FileData.self) { fileData in
-                @Bindable var file = fileData.file
-                MapView(title: $file.name, data: fileData.data, folder: false)
-            }
-            .navigationDestination(for: FolderData.self) { folderData in
-                @Bindable var folder = folderData.folder
-                MapView(title: $folder.name, data: folderData.data, folder: true)
+            .navigationDestination(for: NavData.self) { navData in
+                switch navData {
+                case .allFiles:
+                    FolderView(files: files, folder: nil, showFolder: true)
+                        .navigationTitle("All Files")
+                case .files:
+                    FolderView(files: noFolder, folder: nil, showFolder: false)
+                        .navigationTitle("Files")
+                case .folder(let folder):
+                    @Bindable var folder = folder
+                    FolderView(files: folder.files, folder: folder, showFolder: false)
+                        .navigationTitle($folder.name)
+                case .mapFile(let file, let data):
+                    @Bindable var file = file
+                    MapView(title: $file.name, data: data, folder: false)
+                case .mapFolder(let folder, let data):
+                    @Bindable var folder = folder
+                    MapView(title: $folder.name, data: data, folder: true)
+                case .record(let folder):
+                    RecordView(folder: folder)
+                }
             }
         }
         .alert("Import Failed", isPresented: $model.showAlert) {} message: {
@@ -87,7 +92,7 @@ struct FoldersView: View {
             model.handleImportFile(url: url, folder: nil, context: modelContext)
         }
         .onAppear {
-            model.path.append(folders.isNotEmpty)
+            model.path.append(folders.isNotEmpty ? .allFiles : .files)
         }
         .environment(model)
     }
@@ -95,7 +100,7 @@ struct FoldersView: View {
     func newFolder() {
         let folder = Folder()
         modelContext.insert(folder)
-        model.path.append(folder)
+        model.path.append(.folder(folder))
     }
 }
 

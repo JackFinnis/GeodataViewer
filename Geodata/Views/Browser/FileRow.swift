@@ -97,6 +97,6 @@ struct FileRow: View {
         let folder = Folder()
         modelContext.insert(folder)
         file.folder = folder
-        model.path.append(folder)
+        model.path.append(.folder(folder))
     }
 }

@@ -21,44 +21,41 @@ struct MapView: View {
     @State var refreshAnnotations = true
     
     var body: some View {
-        ZStack(alignment: .top) {
-            Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, data: data, mapStandard: mapStandard, preview: false)
-                .ignoresSafeArea()
-            
-            HStack {
-                Button {
-                    showAnnotationsView = false
-                    model.path.removeLast()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .fontWeight(.semibold)
-                        .mapBox()
+        Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, data: data, mapStandard: mapStandard, preview: false)
+            .ignoresSafeArea()
+            .overlay(alignment: .top) {
+                HStack {
+                    Button {
+                        showAnnotationsView = false
+                        model.path.removeLast()
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                            .fontWeight(.semibold)
+                            .mapBox()
+                    }
+                    .mapButton()
+                    Spacer()
+                    Button {
+                        mapStandard.toggle()
+                    } label: {
+                        Image(systemName: mapStandard ? "map" : "globe.europe.africa.fill")
+                            .contentTransition(.symbolEffect(.replace))
+                            .mapBox()
+                    }
+                    .mapButton()
                 }
-                .mapButton()
-                Spacer()
-                Button {
-                    mapStandard.toggle()
-                } label: {
-                    Image(systemName: mapStandard ? "map" : "globe.europe.africa.fill")
-                        .contentTransition(.symbolEffect(.replace))
-                        .mapBox()
-                }
-                .mapButton()
+                .padding(10)
             }
-            .padding(10)
-        }
-        .navigationBarBackButtonHidden()
-        .deleteDisabled(true)
-        .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: $showAnnotationsView) {
-            AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
-                .sheet(item: $selectedAnnotation) { annotation in
-                    PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: annotation, folder: folder)
-                }
-        }
-        .onAppear {
-            CLLocationManager().requestWhenInUseAuthorization()
-        }
+            .navigationBarBackButtonHidden()
+            .sheet(isPresented: $showAnnotationsView) {
+                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
+                    .sheet(item: $selectedAnnotation) { annotation in
+                        PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: annotation, folder: folder)
+                    }
+            }
+            .onAppear {
+                CLLocationManager().requestWhenInUseAuthorization()
+            }
     }
 }
 

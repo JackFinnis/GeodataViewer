@@ -21,16 +21,3 @@ extension Array {
         self[safe: count/2]
     }
 }
-
-extension Array where Element: MKOverlay {
-    var rect: MKMapRect {
-        reduce(MKMapRect.null) { $0.union($1.boundingMapRect) }
-    }
-}
-
-extension Array where Element: MKAnnotation {
-    var rect: MKMapRect {
-        let coords = map(\.coordinate)
-        return MKPolyline(coords: coords).boundingMapRect
-    }
-}

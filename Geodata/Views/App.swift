@@ -23,6 +23,7 @@ struct GeodataApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()
+                .monospacedDigit()
         }
         .modelContainer(for: File.self)
     }

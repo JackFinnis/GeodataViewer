@@ -91,9 +91,6 @@ class GeoParser {
               let root = parser.parsedData() else {
             throw GeoError.invalidGPX
         }
-        guard root.waypoints.isNotEmpty || root.routes.isNotEmpty || root.tracks.isNotEmpty else {
-            throw GeoError.fileEmpty
-        }
         
         points.append(contentsOf: root.waypoints.compactMap { Point(file: file, waypoint: $0) })
         polylines.append(contentsOf: root.routes.map { Polyline(file: file, route: $0) })

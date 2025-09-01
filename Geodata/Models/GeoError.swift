@@ -16,7 +16,7 @@ enum GeoError: Error {
     case invalidGPX
     case invalidKML
     case readFile
-    case writeFile
+    case saveFile
     
     var description: String {
         switch self {
@@ -24,7 +24,7 @@ enum GeoError: Error {
             return "This file type is not supported. Only files with the following file extensions can be imported: .geojson, .gpx, .kml"
         case .readFile:
             return "Unable to read this file."
-        case .writeFile:
+        case .saveFile:
             return "Unable to save this file."
         case .fileEmpty:
             return "This file contains no data that can be shown on the map."

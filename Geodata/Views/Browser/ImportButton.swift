@@ -21,7 +21,7 @@ struct ImportButton: View {
                 Button {
                     showFileImporter = true
                 } label: {
-                    Label("Choose Files...", systemImage: "folder")
+                    Label("Choose Files", systemImage: "folder")
                 }
                 Button {
                     guard let string = UIPasteboard.general.string,
@@ -32,6 +32,13 @@ struct ImportButton: View {
                     }
                 } label: {
                     Label("Paste File URL", systemImage: "document.on.clipboard")
+                }
+            }
+            Section("Create Files") {
+                Button {
+                    model.path.append(.record(folder))
+                } label: {
+                    Label("Record Route", systemImage: "record.circle")
                 }
             }
         } label: {
