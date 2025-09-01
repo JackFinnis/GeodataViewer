@@ -11,6 +11,7 @@ struct PropertiesView: View {
     @Binding var refreshAnnotations: Bool
     let annotation: Annotation
     let folder: Bool
+    let dismissMap: () -> Void
     
     @Environment(Model.self) var model
     @Environment(\.dismiss) var dismiss
@@ -23,8 +24,10 @@ struct PropertiesView: View {
             List {
                 Button {
                     if folder {
-                        dismiss()
-                        model.load(file: file)
+                        dismissMap()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            model.load(file: file)
+                        }
                     }
                 } label: {
                     PropertyRow(key: "File", value: annotation.file.name)

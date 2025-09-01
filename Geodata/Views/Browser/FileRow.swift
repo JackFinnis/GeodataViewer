@@ -85,6 +85,9 @@ struct FileRow: View {
             } label: {
                 Label("Move...", systemImage: "folder")
             }
+            ShareLink(item: file.exportURL) {
+                Label("Export...", systemImage: "square.and.arrow.up")
+            }
             Button(role: .destructive) {
                 file.delete()
             } label: {

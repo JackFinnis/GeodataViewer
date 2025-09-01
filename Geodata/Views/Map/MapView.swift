@@ -26,8 +26,7 @@ struct MapView: View {
             .overlay(alignment: .top) {
                 HStack {
                     Button {
-                        showAnnotationsView = false
-                        model.path.removeLast()
+                        dismiss()
                     } label: {
                         Image(systemName: "chevron.backward")
                             .fontWeight(.semibold)
@@ -50,12 +49,18 @@ struct MapView: View {
             .sheet(isPresented: $showAnnotationsView) {
                 AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
                     .sheet(item: $selectedAnnotation) { annotation in
-                        PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: annotation, folder: folder)
+                        PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: annotation, folder: folder, dismissMap: dismiss)
                     }
             }
             .onAppear {
                 CLLocationManager().requestWhenInUseAuthorization()
             }
+    }
+    
+    func dismiss() {
+        selectedAnnotation = nil
+        showAnnotationsView = false
+        model.path.removeLast()
     }
 }
 

@@ -66,8 +66,12 @@ struct Map: UIViewRepresentable {
             mapView.removeAnnotations(data.polylines)
             mapView.removeAnnotations(data.polygons)
             mapView.removeAnnotations(data.points)
-            mapView.addAnnotations(data.polylines)
-            mapView.addAnnotations(data.polygons)
+            if data.polylines.count < 1000 {
+                mapView.addAnnotations(data.polylines)
+            }
+            if data.polygons.count < 1000 {
+                mapView.addAnnotations(data.polygons)
+            }
             mapView.addAnnotations(data.points)
         }
         

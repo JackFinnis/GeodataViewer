@@ -12,6 +12,13 @@ extension MKMapRect {
     func padding(_ distance: Double = 10000) -> MKMapRect {
         insetBy(dx: -distance, dy: -distance)
     }
+    
+    var center: MKMapPoint {
+        MKMapPoint(
+            x: origin.x + size.width / 2,
+            y: origin.y + size.height / 2
+        )
+    }
 }
 
 extension Array where Element: MKOverlay {

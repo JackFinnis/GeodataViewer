@@ -39,4 +39,16 @@ class File {
             .appending(path: id.uuidString)
             .appendingPathExtension(fileExtension)
     }
+    
+    var exportURL: URL {
+        let tempURL = URL
+            .temporaryDirectory
+            .appending(path: name)
+            .appendingPathExtension(fileExtension)
+        
+        try? FileManager.default.removeItem(at: tempURL)
+        try? FileManager.default.copyItem(at: url, to: tempURL)
+        
+        return tempURL
+    }
 }
