@@ -24,6 +24,7 @@ struct Map: UIViewRepresentable {
         let mapView = context.coordinator.mapView
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = !preview
+        mapView.showsScale = true
         mapView.isPitchEnabled = true
         mapView.selectableMapFeatures = .pointsOfInterest
         mapView.layoutMargins = preview ? .init(length: -25) : .init(top: 44 + 10 + 5, left: 5, bottom: 350, right: 5)

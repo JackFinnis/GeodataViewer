@@ -37,8 +37,12 @@ class Annotation: NSObject, MKAnnotation, Identifiable {
     }
 }
 
-enum AnnotationType {
+enum AnnotationType: String {
     case point, polyline, polygon
+    
+    var name: String {
+        rawValue.capitalized
+    }
     
     var systemImage: String {
         switch self {

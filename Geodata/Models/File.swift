@@ -39,7 +39,9 @@ class File {
             .appending(path: id.uuidString)
             .appendingPathExtension(fileExtension)
     }
-    
+    var lastPathComponent: String {
+        "\(name).\(fileExtension)"
+    }
     var exportURL: URL {
         let tempURL = URL
             .temporaryDirectory

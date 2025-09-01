@@ -33,16 +33,19 @@ struct RecordView: View {
         .contentMargins(5)
         .mapControls {}
         .overlay(alignment: .topLeading) {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "chevron.backward")
-                    .fontWeight(.semibold)
-                    .mapBox()
+            VStack(spacing: 10) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .fontWeight(.semibold)
+                        .mapBox()
+                }
+                .mapButton()
+                .disabled(recordModel.state != .notStarted)
+                MapScaleView(anchorEdge: .leading, scope: mapScope)
             }
-            .mapButton()
             .padding(10)
-            .disabled(recordModel.state != .notStarted)
         }
         .overlay(alignment: .topTrailing) {
             VStack(spacing: 10) {

@@ -30,11 +30,19 @@ struct PropertiesView: View {
                         }
                     }
                 } label: {
-                    PropertyRow(key: "File", value: annotation.file.name)
+                    PropertyRow(key: "File", value: annotation.file.lastPathComponent)
                 }
-                if annotation is Point {
-                    PropertyRow(key: "Latitude", value: String(format: "%.5f", annotation.coordinate.latitude))
-                    PropertyRow(key: "Longitude", value: String(format: "%.5f", annotation.coordinate.longitude))
+                PropertyRow(key: "Type", value: annotation.type.name)
+                if let point = annotation as? Point {
+                    PropertyRow(key: "Latitude", value: String(format: "%.5f", point.coordinate.latitude))
+                    PropertyRow(key: "Longitude", value: String(format: "%.5f", point.coordinate.longitude))
+                }
+                if let polyline = annotation as? Polyline {
+                    PropertyRow(key: "Length", value: Measurement(value: polyline.mkPolyline.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
+                }
+                if let polygon = annotation as? Polygon {
+                    PropertyRow(key: "Area", value: Measurement(value: polygon.mkPolygon.squareMeters, unit: UnitArea.squareMeters).formatted())
+                    PropertyRow(key: "Perimeter", value: Measurement(value: polygon.mkPolygon.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
                 }
                 ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
                     let string = "\(value)"
