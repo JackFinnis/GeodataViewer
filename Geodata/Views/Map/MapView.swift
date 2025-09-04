@@ -59,7 +59,7 @@ struct MapView: View {
             }
             .navigationBarBackButtonHidden()
             .sheet(isPresented: $showAnnotationsView) {
-                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, recordModel: $recordModel, data: data)
+                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, recordModel: $recordModel, data: data, folder: folder)
                     .sheet(item: $selectedAnnotation) { annotation in
                         PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismiss)
                     }

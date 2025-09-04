@@ -126,7 +126,7 @@ struct PropertiesView: View {
             }
         }
         .presentationBackgroundInteraction(.enabled)
-        .presentationDetents([.partial, .large])
+        .presentationDetents([.mediumDetent, .largeDetent])
     }
 }
 

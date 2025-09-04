@@ -13,11 +13,12 @@ struct AnnotationsView: View {
     @Binding var selectedAnnotation: Annotation?
     @Binding var recordModel: RecordModel?
     let data: MapData
+    let folder: Folder?
     
     @State var searchText = ""
     @State var isSearching = false
     @State var sort = false
-    @State var detent: PresentationDetent = .small
+    @State var detent: PresentationDetent = .smallDetent
     @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
@@ -27,15 +28,33 @@ struct AnnotationsView: View {
             || $0.file.name.localizedStandardContains(searchText)
             || $0.properties.string.localizedStandardContains(searchText)
         }
+        let groupedAnnotations = Dictionary(grouping: filteredAnnotations, by: \.file)
         
         NavigationStack {
-            List(filteredAnnotations) { annotation in
-                Button {
-                    zoomToAnnotation = annotation
-                    selectedAnnotation = annotation
-                    detent = .small
-                } label: {
-                    Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
+            List {
+                ForEach(groupedAnnotations.keys.sorted(using: SortDescriptor(\File.name))) { file in
+                    if folder == nil {
+                        ForEach(Array(groupedAnnotations[file]!)) { annotation in
+                            Button {
+                                selectAnnotation(annotation)
+                            } label: {
+                                Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
+                            }
+                        }
+                    } else {
+                        DisclosureGroup {
+                            ForEach(Array(groupedAnnotations[file]!)) { annotation in
+                                Button {
+                                    selectAnnotation(annotation)
+                                } label: {
+                                    Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
+                                }
+                            }
+                        } label: {
+                            Text(file.name)
+                                .font(.headline)
+                        }
+                    }
                 }
             }
             .animation(.default, value: filteredAnnotations)
@@ -69,7 +88,7 @@ struct AnnotationsView: View {
         }
         .interactiveDismissDisabled()
         .presentationBackgroundInteraction(.enabled)
-        .presentationDetents([.small, .partial, .large], selection: $detent)
+        .presentationDetents([.smallDetent, .mediumDetent, .largeDetent], selection: $detent)
         .onChange(of: alwaysOnDisplay) { _, alwaysOnDisplay in
             UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
         }
@@ -77,22 +96,33 @@ struct AnnotationsView: View {
             UIApplication.shared.isIdleTimerDisabled = false
         }
         .onChange(of: detent) { _, detent in
-            if detent != .large {
+            if detent != .largeDetent {
                 isSearching = false
                 searchText = ""
             }
         }
         .onChange(of: isSearching) { _, isSearching in
             if isSearching {
-                detent = .large
+                detent = .largeDetent
             }
         }
+        .onSubmit(of: .search) {
+            if filteredAnnotations.count == 1, let annotation = filteredAnnotations.first {
+                selectAnnotation(annotation)
+            }
+        }
+    }
+    
+    func selectAnnotation(_ annotation: Annotation) {
+        zoomToAnnotation = annotation
+        selectedAnnotation = annotation
     }
 }
 
 extension PresentationDetent {
-    static let small: Self = .height(100)
-    static let partial: Self = .height(350)
+    static let smallDetent: Self    = .height(100)
+    static let mediumDetent: Self   = .height(350)
+    static let largeDetent: Self    = .fraction(0.999)
 }
 
 extension View {

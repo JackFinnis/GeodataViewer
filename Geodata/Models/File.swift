@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUI
 
 @Model
-class File {
+class File: Hashable {
     var id = UUID()
     var fileExtension: String
     var name: String
