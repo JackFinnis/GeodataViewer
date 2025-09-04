@@ -45,16 +45,15 @@ class RecordModel: NSObject, Identifiable {
         locationManager.delegate = self
         locationManager.activityType = .fitness
         locationManager.showsBackgroundLocationIndicator = true
+        locationManager.allowsBackgroundLocationUpdates = true
     }
     
     func startUpdatingLocation() {
         locationManager.startUpdatingLocation()
-        locationManager.allowsBackgroundLocationUpdates = true
     }
     
     func stopUpdatingLocation() {
         locationManager.stopUpdatingLocation()
-        locationManager.allowsBackgroundLocationUpdates = false
     }
     
     func requestAuthorization() {

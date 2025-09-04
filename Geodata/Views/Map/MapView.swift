@@ -71,6 +71,9 @@ struct MapView: View {
                             }
                         }, onDiscard: {
                             self.recordModel = nil
+                            if data == .empty {
+                                dismiss()
+                            }
                         })
                     }
             }
