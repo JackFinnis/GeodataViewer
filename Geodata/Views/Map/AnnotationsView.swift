@@ -51,7 +51,7 @@ struct AnnotationsView: View {
                             Label("Always On Display", systemImage: "eye")
                         }
                         Toggle(isOn: $sort.animation()) {
-                            Label("Sort Alphabetically", systemImage: "arrow.up.arrow.down")
+                            Label("Sort Features", systemImage: "arrow.up.arrow.down")
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")

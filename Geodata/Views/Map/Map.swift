@@ -85,9 +85,7 @@ struct Map: UIViewRepresentable {
                     mapView.setCenter(point.coordinate, animated: true)
                 }
             } else if let overlay = annotation as? MKOverlay {
-                if !mapView.visibleMapRect.contains(overlay.boundingMapRect) {
-                    mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(length: 10), animated: true)
-                }
+                mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(length: 10), animated: true)
             }
         }
     }
