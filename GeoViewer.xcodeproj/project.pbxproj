@@ -76,7 +76,7 @@
 		044C1F8F2D5DF1EF00396E4D /* NSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
 		047BF5602A7405FA0022505C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		047BF5632A7432490022505C /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
-		049C0F71292936F600C6521A /* Geodata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geodata.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		049C0F71292936F600C6521A /* GeoViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		049C0F74292936F600C6521A /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		049C0F78292936F700C6521A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		049C0F9B292953A400C6521A /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 		049C0F68292936F600C6521A = {
 			isa = PBXGroup;
 			children = (
-				049C0F73292936F600C6521A /* Geodata */,
+				049C0F73292936F600C6521A /* GeoViewer */,
 				049C0F72292936F600C6521A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,12 +130,12 @@
 		049C0F72292936F600C6521A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				049C0F71292936F600C6521A /* Geodata.app */,
+				049C0F71292936F600C6521A /* GeoViewer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		049C0F73292936F600C6521A /* Geodata */ = {
+		049C0F73292936F600C6521A /* GeoViewer */ = {
 			isa = PBXGroup;
 			children = (
 				04A65584293D58B30084CC6A /* Extensions */,
@@ -144,7 +144,7 @@
 				049C0FB5292A88B300C6521A /* Resources */,
 				04C71FF12A08DCAC00417249 /* Views */,
 			);
-			path = Geodata;
+			path = GeoViewer;
 			sourceTree = "<group>";
 		};
 		049C0FB5292A88B300C6521A /* Resources */ = {
@@ -247,9 +247,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		049C0F70292936F600C6521A /* Geodata */ = {
+		049C0F70292936F600C6521A /* GeoViewer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "Geodata" */;
+			buildConfigurationList = 049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "GeoViewer" */;
 			buildPhases = (
 				049C0F6D292936F600C6521A /* Sources */,
 				049C0F6E292936F600C6521A /* Frameworks */,
@@ -259,13 +259,13 @@
 			);
 			dependencies = (
 			);
-			name = Geodata;
+			name = GeoViewer;
 			packageProductDependencies = (
 				04C71FFC2A08EC8B00417249 /* CoreGPX */,
 				04BCBC2D2D5BF907002BB5E8 /* GoogleMapsUtils */,
 			);
 			productName = Geojson;
-			productReference = 049C0F71292936F600C6521A /* Geodata.app */;
+			productReference = 049C0F71292936F600C6521A /* GeoViewer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -283,7 +283,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 049C0F6C292936F600C6521A /* Build configuration list for PBXProject "Geodata" */;
+			buildConfigurationList = 049C0F6C292936F600C6521A /* Build configuration list for PBXProject "GeoViewer" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -300,7 +300,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				049C0F70292936F600C6521A /* Geodata */,
+				049C0F70292936F600C6521A /* GeoViewer */,
 			);
 		};
 /* End PBXProject section */
@@ -504,12 +504,12 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Geodata/Resources/Info.plist;
+				INFOPLIST_FILE = Geodata/Resources/GeoViewer.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Geodata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to plot your route even when your phone is in your pocket.";
-				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Your location is used to plot your route even when your phone is in your pocket.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used in the background to track your route.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Your location is used in the background to track your route.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is shown on the map.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -550,12 +550,12 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Geodata/Resources/Info.plist;
+				INFOPLIST_FILE = Geodata/Resources/GeoViewer.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Geodata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to plot your route even when your phone is in your pocket.";
-				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Your location is used to plot your route even when your phone is in your pocket.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used in the background to track your route.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Your location is used in the background to track your route.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is shown on the map.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -587,7 +587,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		049C0F6C292936F600C6521A /* Build configuration list for PBXProject "Geodata" */ = {
+		049C0F6C292936F600C6521A /* Build configuration list for PBXProject "GeoViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				049C0F7E292936F700C6521A /* Debug */,
@@ -596,7 +596,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "Geodata" */ = {
+		049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "GeoViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				049C0F81292936F700C6521A /* Debug */,

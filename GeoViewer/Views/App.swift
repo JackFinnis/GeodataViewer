@@ -18,7 +18,7 @@ import SwiftData
 let defaultColor = UIColor(.orange)
 
 @main
-struct GeodataApp: App {
+struct GeoViewerApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()
