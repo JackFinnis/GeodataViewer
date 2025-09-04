@@ -10,8 +10,9 @@ import MapKit
 
 @MainActor
 @Observable
-class RecordModel: NSObject {
+class RecordModel: NSObject, Identifiable {
     var state: RecordState = .notStarted
+    var confirmDiscard = false
     
     var currentStart: Date = .distantPast
     var previousSeconds: Double = 0
@@ -46,6 +47,16 @@ class RecordModel: NSObject {
         locationManager.showsBackgroundLocationIndicator = true
     }
     
+    func startUpdatingLocation() {
+        locationManager.startUpdatingLocation()
+        locationManager.allowsBackgroundLocationUpdates = true
+    }
+    
+    func stopUpdatingLocation() {
+        locationManager.stopUpdatingLocation()
+        locationManager.allowsBackgroundLocationUpdates = false
+    }
+    
     func requestAuthorization() {
         requested = true
         locationManager.requestAlwaysAuthorization()
@@ -56,17 +67,13 @@ class RecordModel: NSObject {
     }
     
     func resume() {
-        locationManager.startUpdatingLocation()
-        locationManager.allowsBackgroundLocationUpdates = true
-        
+        startUpdatingLocation()
         currentStart = .now
         state = .recording
     }
     
     func pause() {
-        locationManager.stopUpdatingLocation()
-        locationManager.allowsBackgroundLocationUpdates = false
-        
+        stopUpdatingLocation()
         previousSeconds += currentStart.distance(to: .now)
         state = .paused
         if currentLine.isNotEmpty {

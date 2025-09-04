@@ -9,8 +9,9 @@ import SwiftUI
 
 struct PropertiesView: View {
     @Binding var refreshAnnotations: Bool
+    @Binding var zoomToAnnotation: Annotation?
     let annotation: Annotation
-    let folder: Bool
+    let folder: Folder?
     let dismissMap: () -> Void
     
     @Environment(Model.self) var model
@@ -23,14 +24,14 @@ struct PropertiesView: View {
         NavigationStack {
             List {
                 Button {
-                    if folder {
+                    if folder != nil {
                         dismissMap()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             model.load(file: file)
                         }
                     }
                 } label: {
-                    PropertyRow(key: "File", value: annotation.file.lastPathComponent)
+                    PropertyRow(key: "File", value: annotation.file.lastPathComponent, title: false)
                 }
                 PropertyRow(key: "Type", value: annotation.type.name)
                 if let point = annotation as? Point {
@@ -73,20 +74,20 @@ struct PropertiesView: View {
                                 file.titleKey = key
                                 refreshAnnotations = true
                             } label: {
-                                Label("Add Map Label", systemImage: "star")
+                                Label("\(file.titleKey == nil ? "Add" : "Set") Map Label", systemImage: "star")
                             }
                         }
                     } label: {
-                        PropertyRow(key: key, value: string)
+                        PropertyRow(key: key, value: string, title: title)
                     }
-                    .tint(title ? Color.accentColor : .primary)
+                    .menuStyle(.button)
+                    .buttonStyle(.plain)
                 }
             }
             .listStyle(.plain)
-            .navigationTitle(annotation.title ?? "")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .topBarLeading) {
                     if let point = annotation as? Point {
                         Button {
                             Task {
@@ -101,7 +102,17 @@ struct PropertiesView: View {
                         .foregroundStyle(.secondary)
                     }
                 }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .principal) {
+                    Button {
+                        zoomToAnnotation = annotation
+                    } label: {
+                        Text(annotation.title ?? annotation.type.name)
+                            .font(.headline)
+                            .lineLimit(1)
+                    }
+                    .buttonStyle(.plain)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         dismiss()
                     } label: {
@@ -122,9 +133,14 @@ struct PropertiesView: View {
 struct PropertyRow: View {
     let key: String
     let value: String
+    var title = false
     
     var body: some View {
         HStack {
+            if title {
+                Image(systemName: "star.fill")
+                    .foregroundStyle(.accent)
+            }
             Text(key)
                 .layoutPriority(1)
             Spacer()

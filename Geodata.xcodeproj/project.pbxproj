@@ -31,6 +31,7 @@
 		049C0FB22929BEFE00C6521A /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049C0FB12929BEFE00C6521A /* Haptics.swift */; };
 		049E167F2C00EDDE00ABB106 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049E167E2C00EDDE00ABB106 /* MapView.swift */; };
 		049E16812C00F10A00ABB106 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049E16802C00F10A00ABB106 /* UIEdgeInsets.swift */; };
+		04B5C8EA2E69C437001B9439 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B5C8E92E69C437001B9439 /* RecordView.swift */; };
 		04BA4C5B2B9E4A4A006AF820 /* MKPolygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BA4C5A2B9E4A4A006AF820 /* MKPolygon.swift */; };
 		04BA4C5D2B9E4AB5006AF820 /* MKPolyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BA4C5C2B9E4AB5006AF820 /* MKPolyline.swift */; };
 		04BA4C612B9E4FAB006AF820 /* FoldersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BA4C602B9E4FAB006AF820 /* FoldersView.swift */; };
@@ -38,7 +39,6 @@
 		04BA4C652B9E50D5006AF820 /* GeoParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BA4C642B9E50D5006AF820 /* GeoParser.swift */; };
 		04BC71022E64B18E00702B5C /* AnnotationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71012E64B18E00702B5C /* AnnotationsView.swift */; };
 		04BC71042E64BDBD00702B5C /* NavData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71032E64BDBD00702B5C /* NavData.swift */; };
-		04BC71572E64DC8A00702B5C /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71562E64DC8A00702B5C /* RecordView.swift */; };
 		04BC71592E64DCA900702B5C /* RecordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71582E64DC9400702B5C /* RecordModel.swift */; };
 		04BC715B2E64DD6500702B5C /* RecordState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC715A2E64DD6200702B5C /* RecordState.swift */; };
 		04BC715D2E64DFCF00702B5C /* CLLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC715C2E64DFCC00702B5C /* CLLocation.swift */; };
@@ -83,6 +83,7 @@
 		049C0FB12929BEFE00C6521A /* Haptics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		049E167E2C00EDDE00ABB106 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		049E16802C00F10A00ABB106 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
+		04B5C8E92E69C437001B9439 /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		04BA4C5A2B9E4A4A006AF820 /* MKPolygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKPolygon.swift; sourceTree = "<group>"; };
 		04BA4C5C2B9E4AB5006AF820 /* MKPolyline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKPolyline.swift; sourceTree = "<group>"; };
 		04BA4C602B9E4FAB006AF820 /* FoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersView.swift; sourceTree = "<group>"; };
@@ -90,7 +91,6 @@
 		04BA4C642B9E50D5006AF820 /* GeoParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoParser.swift; sourceTree = "<group>"; };
 		04BC71012E64B18E00702B5C /* AnnotationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationsView.swift; sourceTree = "<group>"; };
 		04BC71032E64BDBD00702B5C /* NavData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavData.swift; sourceTree = "<group>"; };
-		04BC71562E64DC8A00702B5C /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		04BC71582E64DC9400702B5C /* RecordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordModel.swift; sourceTree = "<group>"; };
 		04BC715A2E64DD6200702B5C /* RecordState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordState.swift; sourceTree = "<group>"; };
 		04BC715C2E64DFCC00702B5C /* CLLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocation.swift; sourceTree = "<group>"; };
@@ -194,6 +194,7 @@
 				049E167E2C00EDDE00ABB106 /* MapView.swift */,
 				04BC71012E64B18E00702B5C /* AnnotationsView.swift */,
 				044C1F8B2D5D73FE00396E4D /* PropertiesView.swift */,
+				04B5C8E92E69C437001B9439 /* RecordView.swift */,
 				0443D4312B9F968000018470 /* Map.swift */,
 				044C1F8D2D5DF1BC00396E4D /* MapLabel.swift */,
 			);
@@ -211,21 +212,12 @@
 			path = Browser;
 			sourceTree = "<group>";
 		};
-		04BC71552E64DC7A00702B5C /* Record */ = {
-			isa = PBXGroup;
-			children = (
-				04BC71562E64DC8A00702B5C /* RecordView.swift */,
-			);
-			path = Record;
-			sourceTree = "<group>";
-		};
 		04C71FF12A08DCAC00417249 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				049C0F74292936F600C6521A /* App.swift */,
 				04BC70AE2E636D0400702B5C /* Browser */,
 				04BC70AD2E636CE300702B5C /* Map */,
-				04BC71552E64DC7A00702B5C /* Record */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -354,6 +346,7 @@
 				04BC71592E64DCA900702B5C /* RecordModel.swift in Sources */,
 				04BA4C612B9E4FAB006AF820 /* FoldersView.swift in Sources */,
 				04BCBC382D5C28F7002BB5E8 /* Int.swift in Sources */,
+				04B5C8EA2E69C437001B9439 /* RecordView.swift in Sources */,
 				04BA4C652B9E50D5006AF820 /* GeoParser.swift in Sources */,
 				04F435B62D56BD56005CA0ED /* Polygon.swift in Sources */,
 				04F435B22D56BC2D005CA0ED /* UIColor.swift in Sources */,
@@ -362,7 +355,6 @@
 				0402C6272A0D175300238C51 /* Array.swift in Sources */,
 				04BCBC3E2D5C364C002BB5E8 /* Model.swift in Sources */,
 				044C1F662D5D054A00396E4D /* Properties.swift in Sources */,
-				04BC71572E64DC8A00702B5C /* RecordView.swift in Sources */,
 				049C0F9C292953A400C6521A /* Collection.swift in Sources */,
 				04092CED2C378A110015EAE7 /* GeoError.swift in Sources */,
 				0402C6252A0D10FA00238C51 /* GPXWaypoint.swift in Sources */,

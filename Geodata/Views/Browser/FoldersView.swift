@@ -74,12 +74,12 @@ struct FoldersView: View {
                         .navigationTitle($folder.name)
                 case .mapFile(let file, let data):
                     @Bindable var file = file
-                    MapView(title: $file.name, data: data, folder: false)
+                    MapView(title: $file.name, data: data, folder: nil)
                 case .mapFolder(let folder, let data):
                     @Bindable var folder = folder
-                    MapView(title: $folder.name, data: data, folder: true)
+                    MapView(title: $folder.name, data: data, folder: folder)
                 case .record(let folder):
-                    RecordView(folder: folder)
+                    MapView(title: .constant(""), data: .empty, folder: folder, recordModel: .init())
                 }
             }
         }

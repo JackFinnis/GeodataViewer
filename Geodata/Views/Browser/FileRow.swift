@@ -24,7 +24,7 @@ struct FileRow: View {
             VStack(alignment: .leading) {
                 ZStack {
                     if let data {
-                        Map(selectedAnnotation: .constant(nil), zoomToAnnotation: .constant(nil), refreshAnnotations: .constant(false), data: data, mapStandard: true, preview: true)
+                        Map(selectedAnnotation: .constant(nil), zoomToAnnotation: .constant(nil), refreshAnnotations: .constant(false), setUserTrackingMode: .constant(nil), recordModel: nil, data: data, mapStandard: true, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)

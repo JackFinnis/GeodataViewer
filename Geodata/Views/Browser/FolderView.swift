@@ -47,7 +47,7 @@ struct FolderView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if let folder, folder.files.isNotEmpty {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         model.load(folder: folder)
                     } label: {

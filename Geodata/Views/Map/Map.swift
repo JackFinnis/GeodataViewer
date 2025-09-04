@@ -12,6 +12,8 @@ struct Map: UIViewRepresentable {
     @Binding var selectedAnnotation: Annotation?
     @Binding var zoomToAnnotation: Annotation?
     @Binding var refreshAnnotations: Bool
+    @Binding var setUserTrackingMode: MKUserTrackingMode?
+    let recordModel: RecordModel?
     let data: MapData
     let mapStandard: Bool
     let preview: Bool
@@ -37,7 +39,12 @@ struct Map: UIViewRepresentable {
         mapView.addAnnotations(data.points)
         mapView.addOverlays(data.multiPolylines, level: .aboveRoads)
         mapView.addOverlays(data.multiPolygons, level: .aboveRoads)
-        mapView.setVisibleMapRect(data.rect, edgePadding: .init(length: preview ? 35 : 10), animated: false)
+        
+        if data == .empty {
+            mapView.userTrackingMode = .follow
+        } else {
+            mapView.setVisibleMapRect(data.rect, edgePadding: .init(length: preview ? 35 : 10), animated: false)
+        }
         
         let tapRecognizer = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap))
         mapView.addGestureRecognizer(tapRecognizer)
@@ -48,7 +55,25 @@ struct Map: UIViewRepresentable {
     }
     
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        mapView.preferredConfiguration = mapStandard ? MKStandardMapConfiguration(elevationStyle: .realistic) : MKHybridMapConfiguration(elevationStyle: .realistic)
+        if mapStandard {
+            let config = MKStandardMapConfiguration(elevationStyle: .realistic)
+            config.pointOfInterestFilter = preview ? .excludingAll : .includingAll
+            mapView.preferredConfiguration = config
+        } else {
+            let config = MKHybridMapConfiguration(elevationStyle: .realistic)
+            config.pointOfInterestFilter = preview ? .excludingAll : .includingAll
+            mapView.preferredConfiguration = config
+        }
+        
+        mapView.removeOverlays(mapView.overlays(in: .aboveLabels))
+        if let recordModel {
+            mapView.addOverlays(recordModel.polylines, level: .aboveLabels)
+        }
+        if let polyline = selectedAnnotation as? Polyline {
+            mapView.addOverlay(polyline.mkPolyline, level: .aboveLabels)
+        } else if let polygon = selectedAnnotation as? Polygon {
+            mapView.addOverlay(polygon.mkPolygon, level: .aboveLabels)
+        }
         
         if let selectedAnnotation {
             mapView.selectAnnotation(selectedAnnotation, animated: true)
@@ -58,6 +83,13 @@ struct Map: UIViewRepresentable {
                     mapView.deselectAnnotation(point, animated: true)
                 }
             }
+        }
+        
+        if let setUserTrackingMode {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.setUserTrackingMode = nil
+            }
+            mapView.setUserTrackingMode(setUserTrackingMode, animated: true)
         }
         
         if !preview, refreshAnnotations {
@@ -124,6 +156,19 @@ struct Map: UIViewRepresentable {
             } else if let multiPolygon = overlay as? MultiPolygon {
                 let color = multiPolygon.color ?? defaultColor
                 let renderer = MKMultiPolygonRenderer(multiPolygon: multiPolygon.mkMultiPolygon)
+                renderer.lineWidth = lineWidth
+                renderer.strokeColor = color
+                renderer.fillColor = color.withAlphaComponent(0.2)
+                return renderer
+            } else if let polyline = overlay as? MKPolyline {
+                let color = UIColor(.blue)
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.lineWidth = lineWidth
+                renderer.strokeColor = color
+                return renderer
+            } else if let polygon = overlay as? MKPolygon {
+                let color = UIColor(.blue)
+                let renderer = MKPolygonRenderer(polygon: polygon)
                 renderer.lineWidth = lineWidth
                 renderer.strokeColor = color
                 renderer.fillColor = color.withAlphaComponent(0.2)

@@ -11,24 +11,36 @@ import MapKit
 struct MapView: View {
     @Binding var title: String
     let data: MapData
-    let folder: Bool
+    let folder: Folder?
     
     @Environment(Model.self) var model
+    @Environment(\.modelContext) var modelContext
     @State var mapStandard = true
     @State var showAnnotationsView = true
     @State var zoomToAnnotation: Annotation?
     @State var selectedAnnotation: Annotation?
+    @State var setUserTrackingMode: MKUserTrackingMode?
     @State var refreshAnnotations = true
+    @State var recordModel: RecordModel?
     
     var body: some View {
-        Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, data: data, mapStandard: mapStandard, preview: false)
+        Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, setUserTrackingMode: $setUserTrackingMode, recordModel: recordModel, data: data, mapStandard: mapStandard, preview: false)
             .ignoresSafeArea()
             .overlay(alignment: .top) {
                 HStack {
                     Button {
-                        dismiss()
+                        if let recordModel {
+                            if recordModel.state == .notStarted {
+                                self.recordModel = nil
+                            } else {
+                                recordModel.confirmDiscard = true
+                            }
+                        } else {
+                            dismiss()
+                        }
                     } label: {
-                        Image(systemName: "chevron.backward")
+                        Image(systemName: recordModel == nil ? "chevron.backward" : "stop.fill")
+                            .contentTransition(.symbolEffect(.replace))
                             .fontWeight(.semibold)
                             .mapBox()
                     }
@@ -47,9 +59,19 @@ struct MapView: View {
             }
             .navigationBarBackButtonHidden()
             .sheet(isPresented: $showAnnotationsView) {
-                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
+                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, recordModel: $recordModel, data: data)
                     .sheet(item: $selectedAnnotation) { annotation in
-                        PropertiesView(refreshAnnotations: $refreshAnnotations, annotation: annotation, folder: folder, dismissMap: dismiss)
+                        PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismiss)
+                    }
+                    .sheet(item: $recordModel) { recordModel in
+                        RecordView(model: recordModel, setUserTrackingMode: $setUserTrackingMode, onSave: {
+                            dismiss()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                model.handleCreateFile(locations: recordModel.previousLines, folder: folder, context: modelContext)
+                            }
+                        }, onDiscard: {
+                            self.recordModel = nil
+                        })
                     }
             }
             .onAppear {
@@ -58,6 +80,7 @@ struct MapView: View {
     }
     
     func dismiss() {
+        recordModel = nil
         selectedAnnotation = nil
         showAnnotationsView = false
         model.path.removeLast()

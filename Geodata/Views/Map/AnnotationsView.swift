@@ -11,6 +11,7 @@ struct AnnotationsView: View {
     @Binding var title: String
     @Binding var zoomToAnnotation: Annotation?
     @Binding var selectedAnnotation: Annotation?
+    @Binding var recordModel: RecordModel?
     let data: MapData
     
     @State var searchText = ""
@@ -45,7 +46,14 @@ struct AnnotationsView: View {
             .navigationTitle($title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        recordModel = .init()
+                    } label: {
+                        Image(systemName: "record.circle")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Toggle(isOn: $alwaysOnDisplay) {
                             Label("Always On Display", systemImage: "eye")
