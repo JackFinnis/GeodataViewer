@@ -1,6 +1,6 @@
 //
-//  GeojsonApp.swift
-//  Geojson
+//  GeoStudioApp.swift
+//  GeoStudio
 //
 //  Created by Jack Finnis on 19/11/2022.
 //
@@ -18,7 +18,7 @@ import SwiftData
 let defaultColor = UIColor(.orange)
 
 @main
-struct GeoViewerApp: App {
+struct GeoStudioApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()
