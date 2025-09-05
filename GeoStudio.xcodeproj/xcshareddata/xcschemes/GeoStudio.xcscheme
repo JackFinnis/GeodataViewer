@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "049C0F70292936F600C6521A"
-               BuildableName = "GeoViewer.app"
-               BlueprintName = "GeoViewer"
-               ReferencedContainer = "container:GeoViewer.xcodeproj">
+               BuildableName = "GeoStudio.app"
+               BlueprintName = "GeoStudio"
+               ReferencedContainer = "container:GeoStudio.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "049C0F70292936F600C6521A"
-            BuildableName = "GeoViewer.app"
-            BlueprintName = "GeoViewer"
-            ReferencedContainer = "container:GeoViewer.xcodeproj">
+            BuildableName = "GeoStudio.app"
+            BlueprintName = "GeoStudio"
+            ReferencedContainer = "container:GeoStudio.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "049C0F70292936F600C6521A"
-            BuildableName = "GeoViewer.app"
-            BlueprintName = "GeoViewer"
-            ReferencedContainer = "container:GeoViewer.xcodeproj">
+            BuildableName = "GeoStudio.app"
+            BlueprintName = "GeoStudio"
+            ReferencedContainer = "container:GeoStudio.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
