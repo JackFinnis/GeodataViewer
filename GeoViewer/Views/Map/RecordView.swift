@@ -121,7 +121,7 @@ struct RecordView: View {
         .buttonBorderShape(.roundedRectangle(radius: 10))
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.height(200)])
-        .interactiveDismissDisabled()
+        .interactiveDismissDisabled(model.state != .notStarted)
         .confirmationDialog("Discard Route?", isPresented: $model.confirmDiscard) {
             Button("Cancel", role: .cancel) {}
             Button("Discard Route", role: .destructive) {

@@ -63,7 +63,11 @@ struct MapView: View {
                     .sheet(item: $selectedAnnotation) { annotation in
                         PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismiss)
                     }
-                    .sheet(item: $recordModel) { recordModel in
+                    .sheet(item: $recordModel, onDismiss: {
+                        if data == .empty && showAnnotationsView {
+                            dismiss()
+                        }
+                    }) { recordModel in
                         RecordView(model: recordModel, setUserTrackingMode: $setUserTrackingMode, onSave: {
                             dismiss()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -71,9 +75,6 @@ struct MapView: View {
                             }
                         }, onDiscard: {
                             self.recordModel = nil
-                            if data == .empty {
-                                dismiss()
-                            }
                         })
                     }
             }
