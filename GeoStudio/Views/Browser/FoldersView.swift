@@ -8,10 +8,12 @@
 import SwiftUI
 import SwiftData
 import MapKit
+import StoreKit
 
 struct FoldersView: View {
     @State var model = Model()
     @Environment(\.modelContext) var modelContext
+    @Environment(\.requestReview) var requestReview
     @Query(sort: \Folder.name) var folders: [Folder]
     @Query(sort: \File.name) var files: [File]
     
@@ -44,7 +46,19 @@ struct FoldersView: View {
                     }
                 }
             }
-            .navigationTitle("Folders")
+            .navigationTitle("GeoStudio")
+            .navigationBarTitleDisplayMode(.inline)
+            .contentMargins(.top, 5)
+            .toolbarTitleMenu {
+                Button {
+                    requestReview()
+                } label: {
+                    Label("Rate GeoStudio", systemImage: "star")
+                }
+                Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=GeoStudio%20Feedback")!) {
+                    Label("Improve GeoStudio", systemImage: "envelope")
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Button {
