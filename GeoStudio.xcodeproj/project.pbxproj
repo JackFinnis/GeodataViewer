@@ -504,7 +504,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GeoViewer/Resources/Info.plist;
+				INFOPLIST_FILE = GeoStudio/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GeoStudio;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
@@ -550,7 +550,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GeoViewer/Resources/Info.plist;
+				INFOPLIST_FILE = GeoStudio/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GeoStudio;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
