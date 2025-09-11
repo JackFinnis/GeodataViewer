@@ -11,7 +11,6 @@ struct AnnotationsView: View {
     @Binding var title: String
     @Binding var zoomToAnnotation: Annotation?
     @Binding var selectedAnnotation: Annotation?
-    @Binding var recordModel: RecordModel?
     let data: MapData
     let folder: Folder?
     
@@ -19,7 +18,6 @@ struct AnnotationsView: View {
     @State var isSearching = false
     @State var sort = false
     @State var detent: PresentationDetent = .smallDetent
-    @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
         let annotations = sort ? data.annotations.sorted(using: SortDescriptor(\Annotation.title)) : data.annotations
@@ -65,23 +63,11 @@ struct AnnotationsView: View {
             .navigationTitle($title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        recordModel = .init()
-                    } label: {
-                        Image(systemName: "record.circle")
-                    }
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Toggle(isOn: $alwaysOnDisplay) {
-                            Label("Always On Display", systemImage: "eye")
-                        }
-                        Toggle(isOn: $sort.animation()) {
-                            Label("Sort Features", systemImage: "arrow.up.arrow.down")
-                        }
+                        Toggle("Sort Features", isOn: $sort.animation())
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: "arrow.up.arrow.down")
                     }
                 }
             }
@@ -89,12 +75,6 @@ struct AnnotationsView: View {
         .interactiveDismissDisabled()
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.smallDetent, .mediumDetent, .largeDetent], selection: $detent)
-        .onChange(of: alwaysOnDisplay) { _, alwaysOnDisplay in
-            UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
-        }
-        .onDisappear {
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
         .onChange(of: detent) { _, detent in
             if detent != .largeDetent {
                 isSearching = false

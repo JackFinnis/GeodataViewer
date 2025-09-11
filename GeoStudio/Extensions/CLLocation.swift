@@ -10,7 +10,23 @@ import CoreGPX
 
 extension CLLocation {
     var point: GPXTrackPoint {
-        .init(elevation: altitude, time: timestamp, latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let extensions = GPXExtensions()
+        extensions.append(at: "gpxtpx:TrackPointExtension", contents: [
+            "gpxtpx:speed": String(speed),
+            "gpxtpx:speedAccuracy": String(speedAccuracy),
+            "gpxtpx:course": String(course),
+            "gpxtpx:courseAccuracy": String(courseAccuracy),
+            "gpxtpx:horizontalAccuracy": String(horizontalAccuracy),
+            "gpxtpx:verticalAccuracy": String(verticalAccuracy),
+            "gpxtpx:ellipsoidalAltitude": String(ellipsoidalAltitude)
+        ])
+        return .init(
+            elevation: altitude,
+            time: timestamp,
+            extensions: extensions,
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude
+        )
     }
 }
 

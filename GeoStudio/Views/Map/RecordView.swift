@@ -20,7 +20,7 @@ struct RecordView: View {
             HStack {
                 VStack {
                     TimelineView(PeriodicTimelineSchedule(from: .now, by: 1)) { context in
-                        Text(model.duration.formatted(Duration.TimeFormatStyle(pattern: .minuteSecond(padMinuteToLength: 2))))
+                        Text(model.duration.formatted(Duration.TimeFormatStyle(pattern: model.duration > .seconds(3600) ? .hourMinuteSecond : .minuteSecond(padMinuteToLength: 2))))
                             .font(.title.bold())
                     }
                     Text("Duration")

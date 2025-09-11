@@ -22,12 +22,35 @@ struct MapView: View {
     @State var setUserTrackingMode: MKUserTrackingMode?
     @State var refreshAnnotations = true
     @State var recordModel: RecordModel?
+    @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
         Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, setUserTrackingMode: $setUserTrackingMode, recordModel: recordModel, data: data, mapStandard: mapStandard, preview: false)
             .ignoresSafeArea()
-            .overlay(alignment: .top) {
-                HStack {
+            .overlay(alignment: .topTrailing) {
+                Button {
+                    mapStandard.toggle()
+                } label: {
+                    Image(systemName: mapStandard ? "map" : "globe.europe.africa.fill")
+                        .contentTransition(.symbolEffect(.replace))
+                        .mapBox()
+                }
+                .mapButton()
+                .padding(10)
+            }
+            .overlay(alignment: .topLeading) {
+                VStack(spacing: 10) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                            .contentTransition(.symbolEffect(.replace))
+                            .fontWeight(.semibold)
+                            .mapBox()
+                    }
+                    .mapButton()
+                    .disabled(recordModel != nil)
+                    
                     Button {
                         if let recordModel {
                             if recordModel.state == .notStarted {
@@ -36,20 +59,20 @@ struct MapView: View {
                                 recordModel.confirmDiscard = true
                             }
                         } else {
-                            dismiss()
+                            recordModel = .init()
                         }
                     } label: {
-                        Image(systemName: recordModel == nil ? "chevron.backward" : "stop.fill")
+                        Image(systemName: recordModel == nil ? "record.circle" : "stop.fill")
                             .contentTransition(.symbolEffect(.replace))
-                            .fontWeight(.semibold)
                             .mapBox()
                     }
                     .mapButton()
-                    Spacer()
-                    Button {
-                        mapStandard.toggle()
+                    
+                    Menu {
+                        Toggle("Always On Display", isOn: $alwaysOnDisplay)
                     } label: {
-                        Image(systemName: mapStandard ? "map" : "globe.europe.africa.fill")
+                        Image(systemName: "eye")
+                            .symbolVariant(alwaysOnDisplay ? .none : .slash)
                             .contentTransition(.symbolEffect(.replace))
                             .mapBox()
                     }
@@ -59,7 +82,7 @@ struct MapView: View {
             }
             .navigationBarBackButtonHidden()
             .sheet(isPresented: $showAnnotationsView) {
-                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, recordModel: $recordModel, data: data, folder: folder)
+                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data, folder: folder)
                     .sheet(item: $selectedAnnotation) { annotation in
                         PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismiss)
                     }
@@ -80,6 +103,15 @@ struct MapView: View {
             }
             .onAppear {
                 CLLocationManager().requestWhenInUseAuthorization()
+            }
+            .onChange(of: alwaysOnDisplay) { _, alwaysOnDisplay in
+                UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
+            }
+            .onAppear {
+                UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
+            }
+            .onDisappear {
+                UIApplication.shared.isIdleTimerDisabled = false
             }
     }
     
