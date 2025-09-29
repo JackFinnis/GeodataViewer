@@ -48,7 +48,7 @@ struct FoldersView: View {
             }
             .navigationTitle("GeoStudio")
             .navigationBarTitleDisplayMode(.inline)
-            .contentMargins(.top, 5)
+            .contentMargins(.top, 0)
             .toolbarTitleMenu {
                 Button {
                     requestReview()
@@ -60,16 +60,14 @@ struct FoldersView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         newFolder()
                     } label: {
                         Label("New Folder", systemImage: "folder.badge.plus")
                     }
                 }
-                ToolbarItem(placement: .status) {
-                    Text("")
-                }
+                ToolbarSpacer(placement: .bottomBar)
                 ToolbarItem(placement: .bottomBar) {
                     ImportButton(folder: nil)
                 }
@@ -109,6 +107,7 @@ struct FoldersView: View {
             model.path.append(folders.isNotEmpty ? .allFiles : .files)
         }
         .environment(model)
+        .monospacedDigit()
     }
     
     func newFolder() {
@@ -119,6 +118,6 @@ struct FoldersView: View {
 }
 
 #Preview {
-    FoldersView()
+    let container = try! ModelContainer(for: File.self)
+    return FoldersView().modelContainer(container)
 }
-

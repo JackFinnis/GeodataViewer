@@ -44,11 +44,6 @@ struct ImportButton: View {
         } label: {
             Label("Import Files", systemImage: "plus")
         }
-        .foregroundStyle(.background)
-        .font(.headline)
-        .menuStyle(.button)
-        .buttonStyle(.borderedProminent)
-        .buttonBorderShape(.circle)
         .menuOrder(.fixed)
         .fileImporter(isPresented: $showFileImporter, allowedContentTypes: GeoFileType.allCases.map(\.type), allowsMultipleSelection: true) { result in
             switch result {
@@ -63,4 +58,9 @@ struct ImportButton: View {
             }
         }
     }
+}
+
+#Preview {
+    let container = try! ModelContainer(for: File.self)
+    return FoldersView().modelContainer(container)
 }

@@ -31,8 +31,9 @@ struct PropertiesView: View {
                         }
                     }
                 } label: {
-                    PropertyRow(key: "File", value: annotation.file.lastPathComponent, title: false)
+                    PropertyRow(key: "File", value: annotation.file.lastPathComponent)
                 }
+                .listRowBackground(Color.clear)
                 PropertyRow(key: "Type", value: annotation.type.name)
                 if let point = annotation as? Point {
                     PropertyRow(key: "Latitude", value: String(format: "%.5f", point.coordinate.latitude))
@@ -74,14 +75,14 @@ struct PropertiesView: View {
                                 file.titleKey = key
                                 refreshAnnotations = true
                             } label: {
-                                Label("\(file.titleKey == nil ? "Add" : "Set") Map Label", systemImage: "star")
+                                Label("Set Title", systemImage: "star")
                             }
                         }
                     } label: {
-                        PropertyRow(key: key, value: string, title: title)
+                        PropertyRow(key: key, value: string)
                     }
-                    .menuStyle(.button)
-                    .buttonStyle(.plain)
+                    .tint(title ? .accent : .primary)
+                    .listRowBackground(Color.clear)
                 }
             }
             .listStyle(.plain)
@@ -96,10 +97,6 @@ struct PropertiesView: View {
                         } label: {
                             Image(systemName: "map")
                         }
-                        .font(.headline)
-                        .buttonBorderShape(.circle)
-                        .buttonStyle(.bordered)
-                        .foregroundStyle(.secondary)
                     }
                 }
                 ToolbarItem(placement: .principal) {
@@ -110,7 +107,6 @@ struct PropertiesView: View {
                             .font(.headline)
                             .lineLimit(1)
                     }
-                    .buttonStyle(.plain)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -118,10 +114,6 @@ struct PropertiesView: View {
                     } label: {
                         Image(systemName: "xmark")
                     }
-                    .font(.headline)
-                    .buttonBorderShape(.circle)
-                    .buttonStyle(.bordered)
-                    .foregroundStyle(.secondary)
                 }
             }
         }
@@ -133,14 +125,9 @@ struct PropertiesView: View {
 struct PropertyRow: View {
     let key: String
     let value: String
-    var title = false
     
     var body: some View {
         HStack {
-            if title {
-                Image(systemName: "star.fill")
-                    .foregroundStyle(.accent)
-            }
             Text(key)
                 .layoutPriority(1)
             Spacer()
@@ -148,5 +135,13 @@ struct PropertyRow: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
         }
+        .listRowBackground(Color.clear)
     }
+}
+
+#Preview {
+    NavigationStack {
+        MapView(title: .constant("Example"), data: .example, folder: nil)
+    }
+    .environment(Model())
 }

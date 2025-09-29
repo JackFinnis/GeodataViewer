@@ -53,7 +53,7 @@ struct FileRow: View {
             }
             .lineLimit(1)
             .padding(8)
-            .background(Color(.systemGroupedBackground))
+            .background(.background)
         }
         .buttonStyle(.plain)
         .contextMenu {
@@ -68,7 +68,7 @@ struct FileRow: View {
                 }
             }
             Menu {
-                Picker("Move...", selection: $file.folder) {
+                Picker("Move", selection: $file.folder) {
                     Label("Files", systemImage: "folder")
                         .tag(nil as Folder?)
                     ForEach(folders) { folder in
@@ -83,10 +83,10 @@ struct FileRow: View {
                     Label("New Folder", systemImage: "folder.badge.plus")
                 }
             } label: {
-                Label("Move...", systemImage: "folder")
+                Label("Move", systemImage: "folder")
             }
             ShareLink(item: file.exportURL) {
-                Label("Export...", systemImage: "square.and.arrow.up")
+                Label("Export", systemImage: "square.and.arrow.up")
             }
             Button(role: .destructive) {
                 file.delete()
@@ -102,4 +102,9 @@ struct FileRow: View {
         file.folder = folder
         model.path.append(.folder(folder))
     }
+}
+
+#Preview {
+    let container = try! ModelContainer(for: File.self)
+    return FoldersView().modelContainer(container)
 }

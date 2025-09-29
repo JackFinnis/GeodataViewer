@@ -40,7 +40,6 @@
 		04BC71022E64B18E00702B5C /* AnnotationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71012E64B18E00702B5C /* AnnotationsView.swift */; };
 		04BC71042E64BDBD00702B5C /* NavData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71032E64BDBD00702B5C /* NavData.swift */; };
 		04BC71592E64DCA900702B5C /* RecordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC71582E64DC9400702B5C /* RecordModel.swift */; };
-		04BC715B2E64DD6500702B5C /* RecordState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC715A2E64DD6200702B5C /* RecordState.swift */; };
 		04BC715D2E64DFCF00702B5C /* CLLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BC715C2E64DFCC00702B5C /* CLLocation.swift */; };
 		04BCBC2E2D5BF907002BB5E8 /* GoogleMapsUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 04BCBC2D2D5BF907002BB5E8 /* GoogleMapsUtils */; };
 		04BCBC322D5C0CB5002BB5E8 /* GMSPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BCBC312D5C0CB3002BB5E8 /* GMSPath.swift */; };
@@ -92,7 +91,6 @@
 		04BC71012E64B18E00702B5C /* AnnotationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationsView.swift; sourceTree = "<group>"; };
 		04BC71032E64BDBD00702B5C /* NavData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavData.swift; sourceTree = "<group>"; };
 		04BC71582E64DC9400702B5C /* RecordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordModel.swift; sourceTree = "<group>"; };
-		04BC715A2E64DD6200702B5C /* RecordState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordState.swift; sourceTree = "<group>"; };
 		04BC715C2E64DFCC00702B5C /* CLLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocation.swift; sourceTree = "<group>"; };
 		04BCBC312D5C0CB3002BB5E8 /* GMSPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMSPath.swift; sourceTree = "<group>"; };
 		04BCBC352D5C1ED0002BB5E8 /* GeoFileType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoFileType.swift; sourceTree = "<group>"; };
@@ -227,7 +225,6 @@
 			children = (
 				04BCBC3D2D5C364A002BB5E8 /* Model.swift */,
 				04BC71582E64DC9400702B5C /* RecordModel.swift */,
-				04BC715A2E64DD6200702B5C /* RecordState.swift */,
 				04BA4C642B9E50D5006AF820 /* GeoParser.swift */,
 				04092CEC2C378A110015EAE7 /* GeoError.swift */,
 				04BCBC352D5C1ED0002BB5E8 /* GeoFileType.swift */,
@@ -276,7 +273,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					049C0F70292936F600C6521A = {
 						CreatedOnToolsVersion = 14.1;
@@ -337,7 +334,6 @@
 				04BCBC402D5C3B65002BB5E8 /* ImportButton.swift in Sources */,
 				044C1F8C2D5D73FE00396E4D /* PropertiesView.swift in Sources */,
 				049E167F2C00EDDE00ABB106 /* MapView.swift in Sources */,
-				04BC715B2E64DD6500702B5C /* RecordState.swift in Sources */,
 				044C1F902D5DF1F800396E4D /* NSObject.swift in Sources */,
 				049C0F75292936F600C6521A /* App.swift in Sources */,
 				047BF5642A7432490022505C /* CLLocationCoordinate2D.swift in Sources */,
@@ -429,6 +425,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
@@ -486,6 +483,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.0;
@@ -521,7 +519,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
@@ -568,7 +566,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;

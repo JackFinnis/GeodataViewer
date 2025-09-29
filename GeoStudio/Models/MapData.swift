@@ -62,7 +62,14 @@ struct MapData: Hashable {
         return closestOverlay
     }
     
-    static var empty: MapData {
-        .init(points: [], polylines: [], polygons: [])
-    }
+    @MainActor
+    static let empty = MapData(points: [], polylines: [], polygons: [])
+    @MainActor
+    static let example = MapData(points: [
+        .init(file: .example, coordinate: .init(latitude: 51, longitude: 0), properties: nil)
+    ], polylines: [
+        .init(file: .example, mkPolyline: .init(), properties: nil)
+    ], polygons: [
+        .init(file: .example, mkPolygon: .init(), properties: nil)
+    ])
 }

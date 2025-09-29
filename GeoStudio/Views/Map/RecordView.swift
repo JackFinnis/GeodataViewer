@@ -14,6 +14,10 @@ struct RecordView: View {
     let onSave: () -> Void
     let onDiscard: () -> Void
     
+    @Environment(\.dismiss) var dismiss
+    @State var confirmDiscard = false
+    @SceneStorage("requestedAuthorization") var requestedAuthorization = false
+    
     var body: some View {
         VStack(spacing: 16) {
             Spacer()
@@ -21,66 +25,60 @@ struct RecordView: View {
                 VStack {
                     TimelineView(PeriodicTimelineSchedule(from: .now, by: 1)) { context in
                         Text(model.duration.formatted(Duration.TimeFormatStyle(pattern: model.duration > .seconds(3600) ? .hourMinuteSecond : .minuteSecond(padMinuteToLength: 2))))
-                            .font(.title.bold())
+                            .font(.largeTitle.bold())
                     }
                     Text("Duration")
                 }
                 .frame(maxWidth: .infinity)
                 VStack {
                     Text(String(format: "%.2f", model.metres/1000))
-                        .font(.title.bold())
+                        .font(.largeTitle.bold())
                     Text("Distance (km)")
                 }
                 .frame(maxWidth: .infinity)
             }
             .font(.headline)
             Spacer()
-            switch model.state {
-            case .notStarted:
-                if model.authorizationStatus == .authorizedAlways {
-                    Button {
-                        model.start()
-                    } label: {
-                        Label("Start", systemImage: "play.fill")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
+            HStack(spacing: 10) {
+                switch model.state {
+                case .notStarted:
+                    if model.authorizationStatus == .authorizedAlways {
+                        Button {
+                            model.start()
+                        } label: {
+                            Label("Start", systemImage: "play.fill")
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else if !requestedAuthorization && [CLAuthorizationStatus.authorizedWhenInUse, .notDetermined].contains(model.authorizationStatus) {
+                        Button {
+                            requestedAuthorization = true
+                            model.requestAuthorization()
+                        } label: {
+                            Text("Allow Location Access")
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else if let url = URL(string: UIApplication.openSettingsURLString) {
+                        Link(destination: url) {
+                            Text("Allow Location Access")
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
+                        }
                     }
-                } else if !model.requested && [CLAuthorizationStatus.authorizedWhenInUse, .notDetermined].contains(model.authorizationStatus) {
-                    Button {
-                        model.requestAuthorization()
-                    } label: {
-                        Text("Allow Location Access")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
-                    }
-                } else if let url = URL(string: UIApplication.openSettingsURLString) {
-                    Link(destination: url) {
-                        Text("Allow Location Access")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-            case .recording:
-                HStack {
+                case .recording:
                     Button {
                         model.pause()
                     } label: {
                         Label("Pause", systemImage: "pause.fill")
-                            .font(.headline)
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
-                }
-            case .paused:
-                HStack {
+                case .paused:
                     Button {
                         model.resume()
                     } label: {
                         Label("Resume", systemImage: "play.fill")
-                            .font(.headline)
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
@@ -88,46 +86,40 @@ struct RecordView: View {
                         model.stop()
                     } label: {
                         Label("Finish", systemImage: "flag.fill")
-                            .font(.headline)
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
-                }
-            case .stopped:
-                HStack {
+                case .stopped:
                     Button {
-                        model.confirmDiscard = true
+                        confirmDiscard = true
                     } label: {
                         Text("Discard")
-                            .font(.headline)
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .tint(.red)
+                    .confirmationDialog("Discard Route?", isPresented: $confirmDiscard) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Discard Route", role: .destructive) {
+                            onDiscard()
+                        }
+                    }
                     Button {
                         onSave()
                     } label: {
                         Text("Save")
-                            .font(.headline)
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
                 }
             }
+            .font(.title3.bold())
         }
-        .padding()
-        .buttonStyle(.borderedProminent)
-        .buttonBorderShape(.roundedRectangle(radius: 10))
+        .padding(.horizontal, 20)
+        .buttonStyle(.glassProminent)
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.height(200)])
-        .interactiveDismissDisabled(model.state != .notStarted)
-        .confirmationDialog("Discard Route?", isPresented: $model.confirmDiscard) {
-            Button("Cancel", role: .cancel) {}
-            Button("Discard Route", role: .destructive) {
-                onDiscard()
-            }
-        }
         .sensoryFeedback(.impact, trigger: model.state)
         .sensoryFeedback(.impact, trigger: model.authorizationStatus)
         .onChange(of: model.state) { _, newState in
@@ -142,4 +134,11 @@ struct RecordView: View {
             model.stopUpdatingLocation()
         }
     }
+}
+
+#Preview {
+    NavigationStack {
+        MapView(title: .constant("Example"), data: .example, folder: nil)
+    }
+    .environment(Model())
 }

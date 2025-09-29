@@ -8,20 +8,28 @@
 import Foundation
 import MapKit
 
+enum RecordState {
+    case notStarted
+    case recording
+    case paused
+    case stopped
+}
+
 @MainActor
 @Observable
 class RecordModel: NSObject, Identifiable {
     var state: RecordState = .notStarted
-    var confirmDiscard = false
-    
     var currentStart: Date = .distantPast
     var previousSeconds: Double = 0
+    var currentLine: [CLLocation] = []
+    var previousLines: [[CLLocation]] = []
+    
+    var isRecording: Bool {
+        state != .notStarted
+    }
     var duration: Duration {
         .seconds(previousSeconds + (state == .recording ? currentStart.distance(to: .now) : 0))
     }
-    
-    var currentLine: [CLLocation] = []
-    var previousLines: [[CLLocation]] = []
     var lines: [[CLLocation]] {
         previousLines + [currentLine]
     }
@@ -32,33 +40,12 @@ class RecordModel: NSObject, Identifiable {
         lines.map(\.meters).reduce(0) { $0 + $1 }
     }
     
-    var requested = false
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
-    let locationManager = CLLocationManager()
+    private let locationManager = CLLocationManager()
     
     override init() {
         super.init()
         setupLocationManager()
-    }
-    
-    func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.activityType = .fitness
-        locationManager.showsBackgroundLocationIndicator = true
-        locationManager.allowsBackgroundLocationUpdates = true
-    }
-    
-    func startUpdatingLocation() {
-        locationManager.startUpdatingLocation()
-    }
-    
-    func stopUpdatingLocation() {
-        locationManager.stopUpdatingLocation()
-    }
-    
-    func requestAuthorization() {
-        requested = true
-        locationManager.requestAlwaysAuthorization()
     }
     
     func start() {
@@ -90,6 +77,25 @@ class RecordModel: NSObject, Identifiable {
 }
 
 extension RecordModel: CLLocationManagerDelegate {
+    func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.activityType = .fitness
+        locationManager.showsBackgroundLocationIndicator = true
+        locationManager.allowsBackgroundLocationUpdates = true
+    }
+    
+    func startUpdatingLocation() {
+        locationManager.startUpdatingLocation()
+    }
+    
+    func stopUpdatingLocation() {
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func requestAuthorization() {
+        locationManager.requestAlwaysAuthorization()
+    }
+    
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         Task { @MainActor in
             guard state == .recording else { return }

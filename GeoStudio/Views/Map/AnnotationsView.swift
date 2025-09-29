@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct AnnotationsView: View {
     @Binding var title: String
@@ -17,7 +18,7 @@ struct AnnotationsView: View {
     @State var searchText = ""
     @State var isSearching = false
     @State var sort = false
-    @State var detent: PresentationDetent = .smallDetent
+    @State var detent: PresentationDetent = .mediumDetent
     
     var body: some View {
         let annotations = sort ? data.annotations.sorted(using: SortDescriptor(\Annotation.title)) : data.annotations
@@ -54,20 +55,25 @@ struct AnnotationsView: View {
                         }
                     }
                 }
+                .listRowBackground(Color.clear)
             }
             .animation(.default, value: filteredAnnotations)
             .listStyle(.plain)
-            .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search Features"))
-            .searchAvoidsHidingContent()
+            .searchable(text: $searchText.animation(), isPresented: $isSearching, prompt: Text("Search Features"))
+            .searchPresentationToolbarBehavior(.avoidHidingContent)
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)
+            .navigationSubtitle(filteredAnnotations.count.formatted(singular: searchText.isNotEmpty ? "Result" : "Feature"))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: detent == .smallDetent ? .title : nil)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Toggle("Sort Features", isOn: $sort.animation())
-                    } label: {
-                        Image(systemName: "arrow.up.arrow.down")
+                if detent != .smallDetent {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Menu {
+                            Toggle("Sort Features", isOn: $sort.animation())
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down")
+                        }
                     }
                 }
             }
@@ -96,21 +102,19 @@ struct AnnotationsView: View {
     func selectAnnotation(_ annotation: Annotation) {
         zoomToAnnotation = annotation
         selectedAnnotation = annotation
+        detent = .mediumDetent
     }
 }
 
 extension PresentationDetent {
-    static let smallDetent: Self    = .height(100)
+    static let smallDetent: Self    = .height(105)
     static let mediumDetent: Self   = .height(350)
-    static let largeDetent: Self    = .fraction(0.999)
+    static let largeDetent: Self    = .large
 }
 
-extension View {
-    func searchAvoidsHidingContent() -> some View {
-        if #available(iOS 17.1, *) {
-            return searchPresentationToolbarBehavior(.avoidHidingContent)
-        } else {
-            return self
-        }
+#Preview {
+    NavigationStack {
+        MapView(title: .constant("Example"), data: .example, folder: nil)
     }
+    .environment(Model())
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import SwiftData
 
 struct MapView: View {
     @Binding var title: String
@@ -21,83 +22,59 @@ struct MapView: View {
     @State var selectedAnnotation: Annotation?
     @State var setUserTrackingMode: MKUserTrackingMode?
     @State var refreshAnnotations = true
-    @State var recordModel: RecordModel?
+    @State var recordModel = RecordModel()
+    @State var showRecordView = false
     @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
         Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, setUserTrackingMode: $setUserTrackingMode, recordModel: recordModel, data: data, mapStandard: mapStandard, preview: false)
             .ignoresSafeArea()
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    mapStandard.toggle()
-                } label: {
-                    Image(systemName: mapStandard ? "map" : "globe.europe.africa.fill")
-                        .contentTransition(.symbolEffect(.replace))
-                        .mapBox()
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismissMap()
+                    } label: {
+                        Label("Dismiss", systemImage: "chevron.backward")
+                    }
+                    .disabled(recordModel.isRecording)
                 }
-                .mapButton()
-                .padding(10)
-            }
-            .overlay(alignment: .topLeading) {
-                VStack(spacing: 10) {
+                ToolbarItemGroup(placement: .primaryAction) {
                     Button {
-                        dismiss()
+                        showRecordView.toggle()
                     } label: {
-                        Image(systemName: "chevron.backward")
-                            .contentTransition(.symbolEffect(.replace))
-                            .fontWeight(.semibold)
-                            .mapBox()
+                        Label("Record Route", systemImage: "record.circle")
                     }
-                    .mapButton()
-                    .disabled(recordModel != nil)
-                    
-                    Button {
-                        if let recordModel {
-                            if recordModel.state == .notStarted {
-                                self.recordModel = nil
-                            } else {
-                                recordModel.confirmDiscard = true
-                            }
-                        } else {
-                            recordModel = .init()
-                        }
-                    } label: {
-                        Image(systemName: recordModel == nil ? "record.circle" : "stop.fill")
-                            .contentTransition(.symbolEffect(.replace))
-                            .mapBox()
-                    }
-                    .mapButton()
-                    
+                    .tint(recordModel.isRecording ? .red : .none)
                     Menu {
                         Toggle("Always On Display", isOn: $alwaysOnDisplay)
                     } label: {
-                        Image(systemName: "eye")
+                        Label("Always On Display", systemImage: "eye")
                             .symbolVariant(alwaysOnDisplay ? .none : .slash)
                             .contentTransition(.symbolEffect(.replace))
-                            .mapBox()
                     }
-                    .mapButton()
+                    Button {
+                        mapStandard.toggle()
+                    } label: {
+                        Label("Map Type", systemImage: mapStandard ? "map" : "globe.europe.africa.fill")
+                            .contentTransition(.symbolEffect(.replace))
+                    }
                 }
-                .padding(10)
             }
-            .navigationBarBackButtonHidden()
             .sheet(isPresented: $showAnnotationsView) {
                 AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data, folder: folder)
                     .sheet(item: $selectedAnnotation) { annotation in
-                        PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismiss)
+                        PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismissMap)
                     }
-                    .sheet(item: $recordModel, onDismiss: {
-                        if data == .empty && showAnnotationsView {
-                            dismiss()
-                        }
-                    }) { recordModel in
+                    .sheet(isPresented: $showRecordView) {
                         RecordView(model: recordModel, setUserTrackingMode: $setUserTrackingMode, onSave: {
-                            dismiss()
+                            dismissMap()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 model.handleCreateFile(locations: recordModel.previousLines, folder: folder, context: modelContext)
                             }
                         }, onDiscard: {
-                            self.recordModel = nil
+                            self.recordModel = .init()
                         })
                     }
             }
@@ -113,27 +90,24 @@ struct MapView: View {
             .onDisappear {
                 UIApplication.shared.isIdleTimerDisabled = false
             }
+            .monospacedDigit()
     }
     
-    func dismiss() {
-        recordModel = nil
+    func dismissMap() {
         selectedAnnotation = nil
         showAnnotationsView = false
         model.path.removeLast()
     }
 }
 
-extension View {
-    func mapBox() -> some View {
-        frame(width: 44, height: 44)
+#Preview {
+    let container = try! ModelContainer(for: File.self)
+    return FoldersView().modelContainer(container)
+}
+
+#Preview {
+    NavigationStack {
+        MapView(title: .constant("Example"), data: .example, folder: nil)
     }
-    
-    func mapButton() -> some View {
-        self
-            .foregroundStyle(Color.accentColor)
-            .buttonStyle(.plain)
-            .font(.system(size: 20))
-            .background(.ultraThickMaterial)
-            .clipShape(.rect(cornerRadius: 8))
-    }
+    .environment(Model())
 }

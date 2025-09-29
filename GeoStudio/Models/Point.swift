@@ -12,8 +12,9 @@ import GoogleMapsUtils
 
 class Point: Annotation {
     func openInMaps() async throws {
-        guard let placemark = try await CLGeocoder().reverseGeocodeLocation(coordinate.location).first else { return }
-        let mapItem = MKMapItem(placemark: MKPlacemark(placemark: placemark))
+        guard let request = MKReverseGeocodingRequest(location: coordinate.location) else { return }
+        let mapItems = try await request.mapItems
+        guard let mapItem = mapItems.first else { return }
         mapItem.name = properties.title ?? mapItem.name
         mapItem.openInMaps()
     }

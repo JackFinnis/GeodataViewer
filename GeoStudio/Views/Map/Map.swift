@@ -28,7 +28,7 @@ struct Map: UIViewRepresentable {
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
         mapView.selectableMapFeatures = .pointsOfInterest
-        mapView.layoutMargins = preview ? .init(length: -25) : .init(top: 44 + 10 + 5, left: 5, bottom: 350, right: 5)
+        mapView.layoutMargins = preview ? .init(length: -25) : .init(top: -10, left: 0, bottom: 350, right: 0)
         mapView.showsUserTrackingButton = !preview
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
         
@@ -204,13 +204,20 @@ struct Map: UIViewRepresentable {
             guard press.state == .began else { return }
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
-            let mapItem = MKMapItem(placemark: .init(coordinate: coord))
+            let mapItem = MKMapItem(location: coord.location, address: nil)
             mapItem.name = "Dropped Pin"
-            if #available(iOS 18, *), let annotation = MKMapItemAnnotation(mapItem: mapItem) {
+            if let annotation = MKMapItemAnnotation(mapItem: mapItem) {
                 mapView.addAnnotation(annotation)
                 mapView.selectAnnotation(annotation, animated: true)
                 Haptics.tap()
             }
         }
     }
+}
+
+#Preview {
+    NavigationStack {
+        MapView(title: .constant("Example"), data: .example, folder: nil)
+    }
+    .environment(Model())
 }

@@ -53,4 +53,7 @@ class File: Hashable {
         
         return tempURL
     }
+    
+    @MainActor
+    static let example = File(fileExtension: "geojson", name: "Example")
 }

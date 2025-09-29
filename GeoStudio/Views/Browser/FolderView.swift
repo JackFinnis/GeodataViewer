@@ -32,7 +32,6 @@ struct FolderView: View {
             }
             .padding(.horizontal, 8)
         }
-        .background(Color(.systemGroupedBackground))
         .overlay {
             if files.isEmpty {
                 ContentUnavailableView("No Files Yet", systemImage: "mappin.and.ellipse", description: Text("Long press on a file to move it into this folder.\nTap + to import a new file."))
@@ -42,12 +41,13 @@ struct FolderView: View {
                     .allowsHitTesting(false)
             }
         }
+        .navigationSubtitle(files.count.formatted(singular: "File"))
         .searchable(text: $searchText, isPresented: $isSearching)
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if let folder, folder.files.isNotEmpty {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         model.load(folder: folder)
                     } label: {
@@ -55,18 +55,16 @@ struct FolderView: View {
                     }
                 }
             }
-            if !isSearching {
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Text("")
-                }
-                ToolbarItemGroup(placement: .status) {
-                    Text(files.count.formatted(singular: "File"))
-                        .font(.subheadline)
-                }
-                ToolbarItemGroup(placement: .bottomBar) {
-                    ImportButton(folder: folder)
-                }
+            DefaultToolbarItem(kind: .search, placement: .bottomBar)
+            ToolbarSpacer(placement: .bottomBar)
+            ToolbarItemGroup(placement: .bottomBar) {
+                ImportButton(folder: folder)
             }
         }
     }
+}
+
+#Preview {
+    let container = try! ModelContainer(for: File.self)
+    return FoldersView().modelContainer(container)
 }

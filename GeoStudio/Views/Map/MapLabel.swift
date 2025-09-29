@@ -6,7 +6,7 @@
 //
 
 import MapKit
-import UIKit
+import SwiftUI
 
 class MapLabel: UILabel {
     override func drawText(in rect: CGRect) {
@@ -58,4 +58,11 @@ class AnnotationView: MKAnnotationView {
     override func prepareForReuse() {
         label.text = nil
     }
+}
+
+#Preview {
+    NavigationStack {
+        MapView(title: .constant("Example"), data: .example, folder: nil)
+    }
+    .environment(Model())
 }

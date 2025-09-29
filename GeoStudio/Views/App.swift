@@ -15,8 +15,6 @@ import SwiftData
 // Android version
 // I usually copy/paste the coordinate just to see if it falls in the polygon.
 // Once I'm within the polygon to get an option to validate it: like tick or x, or anything you think it would be good. It could be also useful to have "validation mode" to do that even if I'm not in polygon.
-// It would be great if there is some number in brackets to show how many results are filtered when user types a query:
-
 
 // MARK: - Links
 // https://cycling.data.tfl.gov.uk/CycleRoutes/CycleRoutes.json
@@ -30,7 +28,6 @@ struct GeoStudioApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()
-                .monospacedDigit()
         }
         .modelContainer(for: File.self)
     }
