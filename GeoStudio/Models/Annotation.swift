@@ -37,7 +37,7 @@ class Annotation: NSObject, MKAnnotation, Identifiable {
     }
 }
 
-enum AnnotationType: String {
+enum AnnotationType: String, CaseIterable {
     case point, polyline, polygon
     
     var name: String {

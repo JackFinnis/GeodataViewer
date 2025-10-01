@@ -18,16 +18,20 @@ struct AnnotationsView: View {
     @State var searchText = ""
     @State var isSearching = false
     @State var sort = false
+    @State var filterType: AnnotationType?
     @State var detent: PresentationDetent = .mediumDetent
     
     var body: some View {
         let annotations = sort ? data.annotations.sorted(using: SortDescriptor(\Annotation.title)) : data.annotations
         let filteredAnnotations = annotations.filter {
+            filterType == nil || $0.type == filterType
+        }.filter {
             searchText.isEmpty
             || $0.file.name.localizedStandardContains(searchText)
             || $0.properties.string.localizedStandardContains(searchText)
         }
         let groupedAnnotations = Dictionary(grouping: filteredAnnotations, by: \.file)
+        let name = searchText.isNotEmpty ? "Result" : (filterType == nil ? "Feature" : filterType!.name)
         
         NavigationStack {
             List {
@@ -59,21 +63,43 @@ struct AnnotationsView: View {
             }
             .animation(.default, value: filteredAnnotations)
             .listStyle(.plain)
-            .searchable(text: $searchText.animation(), isPresented: $isSearching, prompt: Text("Search Features"))
+            .searchable(text: $searchText.animation(), isPresented: $isSearching, prompt: Text("Search \(name)s"))
             .searchPresentationToolbarBehavior(.avoidHidingContent)
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)
-            .navigationSubtitle(filteredAnnotations.count.formatted(singular: searchText.isNotEmpty ? "Result" : "Feature"))
+            .navigationSubtitle(filteredAnnotations.count.formatted(singular: name))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(removing: detent == .smallDetent ? .title : nil)
             .toolbar {
                 if detent != .smallDetent {
-                    ToolbarItem(placement: .topBarLeading) {
+                    ToolbarItem(placement: .primaryAction) {
                         Menu {
-                            Toggle("Sort Features", isOn: $sort.animation())
+                            Toggle("Sort by Name", isOn: $sort.animation())
+                            Divider()
+                            Picker(selection: $filterType.animation()) {
+                                ForEach(AnnotationType.allCases, id: \.self) { type in
+                                    Label("\(type.name)s", systemImage: type.systemImage)
+                                        .tag(type as AnnotationType?)
+                                }
+                            } label: {
+                                if let filterType {
+                                    Label("Filter", systemImage: filterType.systemImage)
+                                } else {
+                                    Text("Filter")
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            if filterType != nil {
+                                Button {
+                                    filterType = nil
+                                } label: {
+                                    Label("Remove Filter", systemImage: "minus.circle")
+                                }
+                            }
                         } label: {
-                            Image(systemName: "arrow.up.arrow.down")
+                            Image(systemName: filterType == nil ? "line.3.horizontal.decrease" : filterType!.systemImage)
                         }
+                        .menuOrder(.fixed)
                     }
                 }
             }
