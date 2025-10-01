@@ -12,7 +12,6 @@ import SwiftData
 struct MapView: View {
     @Binding var title: String
     let data: MapData
-    let folder: Folder?
     
     @Environment(Model.self) var model
     @Environment(\.modelContext) var modelContext
@@ -27,7 +26,7 @@ struct MapView: View {
     @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
-        Map(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, setUserTrackingMode: $setUserTrackingMode, recordModel: recordModel, data: data, mapStandard: mapStandard, preview: false)
+        MapViewRepresentable(selectedAnnotation: $selectedAnnotation, zoomToAnnotation: $zoomToAnnotation, refreshAnnotations: $refreshAnnotations, setUserTrackingMode: $setUserTrackingMode, recordModel: recordModel, data: data, mapStandard: mapStandard, preview: false)
             .ignoresSafeArea()
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
@@ -63,15 +62,15 @@ struct MapView: View {
                 }
             }
             .sheet(isPresented: $showAnnotationsView) {
-                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data, folder: folder)
+                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
                     .sheet(item: $selectedAnnotation) { annotation in
-                        PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, folder: folder, dismissMap: dismissMap)
+                        PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, dismissMap: dismissMap)
                     }
                     .sheet(isPresented: $showRecordView) {
                         RecordView(model: recordModel, setUserTrackingMode: $setUserTrackingMode, onSave: {
                             dismissMap()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                model.handleCreateFile(locations: recordModel.previousLines, folder: folder, context: modelContext)
+                                model.handleCreateFile(locations: recordModel.previousLines, context: modelContext)
                             }
                         }, onDiscard: {
                             self.recordModel = .init()
@@ -90,11 +89,15 @@ struct MapView: View {
             .onDisappear {
                 UIApplication.shared.isIdleTimerDisabled = false
             }
+            .onChange(of: showRecordView) { _, showRecordView in
+                if !showRecordView && !recordModel.isRecording && data == .empty {
+                    dismissMap()
+                }
+            }
             .monospacedDigit()
     }
     
     func dismissMap() {
-        selectedAnnotation = nil
         showAnnotationsView = false
         model.path.removeLast()
     }
@@ -107,7 +110,7 @@ struct MapView: View {
 
 #Preview {
     NavigationStack {
-        MapView(title: .constant("Example"), data: .example, folder: nil)
+        MapView(title: .constant("Example"), data: .example)
     }
     .environment(Model())
 }

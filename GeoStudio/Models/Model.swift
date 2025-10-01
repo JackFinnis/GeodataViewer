@@ -17,44 +17,50 @@ class Model {
     var error: GeoError?
     var showAlert: Bool = false
     
-    func handleFetchFile(webURL: URL, folder: Folder?, context: ModelContext) async {
+    var folder: Folder? {
+        for nav in path {
+            if let folder = nav.folder {
+                return folder
+            }
+        }
+        return nil
+    }
+    
+    func handleFetchFile(webURL: URL, context: ModelContext) async {
         do {
             let tempURL = try await fetchFile(webURL: webURL)
-            let file = try importFile(from: tempURL, webURL: webURL, folder: folder, context: context)
+            let file = try importFile(from: tempURL, webURL: webURL, context: context)
             load(file: file)
         } catch {
             fail(error: error)
         }
     }
     
-    func handleCreateFile(locations: [[CLLocation]], folder: Folder?, context: ModelContext) {
+    func handleCreateFile(locations: [[CLLocation]], context: ModelContext) {
         do {
             let tempURL = try createFile(locations: locations)
-            let file = try importFile(from: tempURL, webURL: nil, folder: folder, context: context)
+            let file = try importFile(from: tempURL, webURL: nil, context: context)
             load(file: file)
         } catch {
             fail(error: error)
         }
     }
     
-    func handleImportFile(url: URL, folder: Folder?, context: ModelContext) {
+    func handleImportFile(url: URL, context: ModelContext) {
         do {
-            let file = try importFile(from: url, webURL: nil, folder: folder, context: context)
+            let file = try importFile(from: url, webURL: nil, context: context)
             load(file: file)
         } catch {
             fail(error: error)
         }
     }
     
-    func handleImportFiles(urls: [URL], folder: Folder?, context: ModelContext) {
+    func handleImportFiles(urls: [URL], context: ModelContext) {
         do {
             var files: [File] = []
             for url in urls {
-                let file = try importFile(from: url, webURL: nil, folder: folder, context: context)
+                let file = try importFile(from: url, webURL: nil, context: context)
                 files.append(file)
-            }
-            if folder == nil {
-                path.append(.allFiles)
             }
         } catch {
             fail(error: error)
@@ -65,7 +71,7 @@ class Model {
         do {
             let data = try GeoParser().parse(file: file)
             file.date = .now
-            path.append(.mapFile(file, data))
+            push(.mapFile(file, data))
             Haptics.tap()
         } catch {
             fail(error: error)
@@ -77,11 +83,18 @@ class Model {
         do {
             let parser = GeoParser()
             let data = try folder.files.map(parser.parse).data
-            path.append(.mapFolder(folder, data))
+            push(.mapFolder(folder, data))
             Haptics.tap()
         } catch {
             fail(error: error)
         }
+    }
+    
+    func push(_ nav: NavData) {
+        if let last = path.last, last.isMap {
+            path.removeLast()
+        }
+        path.append(nav)
     }
     
     private func fail(error: GeoError) {
@@ -135,10 +148,10 @@ class Model {
         }
     }
     
-    private func importFile(from source: URL, webURL: URL?, folder: Folder?, context: ModelContext) throws(GeoError) -> File {
+    private func importFile(from source: URL, webURL: URL?, context: ModelContext) throws(GeoError) -> File {
         let fileExtension = source.pathExtension
-        let name = source.deletingPathExtension().lastPathComponent
-        let file = File(fileExtension: fileExtension, name: name, webURL: webURL, folder: folder)
+        let name = String(source.deletingPathExtension().lastPathComponent.split(separator: "-").first!)
+        let file = File(fileExtension: fileExtension, name: name, webURL: webURL, folder: path.last?.folder)
         
         do {
             try? FileManager.default.removeItem(at: file.url)

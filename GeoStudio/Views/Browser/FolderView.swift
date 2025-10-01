@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct FolderView: View {
-    let files: [File]
     let folder: Folder?
+    let files: [File]
     let showFolder: Bool
     
     @Environment(Model.self) var model
@@ -41,7 +41,6 @@ struct FolderView: View {
                     .allowsHitTesting(false)
             }
         }
-        .navigationSubtitle(files.count.formatted(singular: "File"))
         .searchable(text: $searchText, isPresented: $isSearching)
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
@@ -58,7 +57,7 @@ struct FolderView: View {
             DefaultToolbarItem(kind: .search, placement: .bottomBar)
             ToolbarSpacer(placement: .bottomBar)
             ToolbarItemGroup(placement: .bottomBar) {
-                ImportButton(folder: folder)
+                ImportButton()
             }
         }
     }

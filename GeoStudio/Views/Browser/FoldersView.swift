@@ -69,29 +69,29 @@ struct FoldersView: View {
                 }
                 ToolbarSpacer(placement: .bottomBar)
                 ToolbarItem(placement: .bottomBar) {
-                    ImportButton(folder: nil)
+                    ImportButton()
                 }
             }
             .navigationDestination(for: NavData.self) { navData in
                 switch navData {
                 case .allFiles:
-                    FolderView(files: files, folder: nil, showFolder: true)
+                    FolderView(folder: nil, files: files, showFolder: true)
                         .navigationTitle("All Files")
                 case .files:
-                    FolderView(files: noFolder, folder: nil, showFolder: false)
+                    FolderView(folder: nil, files: noFolder, showFolder: false)
                         .navigationTitle("Files")
                 case .folder(let folder):
                     @Bindable var folder = folder
-                    FolderView(files: folder.files, folder: folder, showFolder: false)
+                    FolderView(folder: folder, files: folder.files, showFolder: false)
                         .navigationTitle($folder.name)
                 case .mapFile(let file, let data):
                     @Bindable var file = file
-                    MapView(title: $file.name, data: data, folder: nil)
+                    MapView(title: $file.name, data: data)
                 case .mapFolder(let folder, let data):
                     @Bindable var folder = folder
-                    MapView(title: $folder.name, data: data, folder: folder)
-                case .record(let folder):
-                    MapView(title: .constant(""), data: .empty, folder: folder, recordModel: .init())
+                    MapView(title: $folder.name, data: data)
+                case .record:
+                    MapView(title: .constant(""), data: .empty, showRecordView: true)
                 }
             }
         }
@@ -101,10 +101,10 @@ struct FoldersView: View {
             }
         }
         .onOpenURL { url in
-            model.handleImportFile(url: url, folder: nil, context: modelContext)
+            model.handleImportFile(url: url, context: modelContext)
         }
         .onAppear {
-            model.path.append(folders.isNotEmpty ? .allFiles : .files)
+            model.push(folders.isNotEmpty ? .allFiles : .files)
         }
         .environment(model)
         .monospacedDigit()
@@ -113,7 +113,7 @@ struct FoldersView: View {
     func newFolder() {
         let folder = Folder()
         modelContext.insert(folder)
-        model.path.append(.folder(folder))
+        model.push(.folder(folder))
     }
 }
 

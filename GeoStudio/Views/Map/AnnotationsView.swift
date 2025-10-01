@@ -13,8 +13,8 @@ struct AnnotationsView: View {
     @Binding var zoomToAnnotation: Annotation?
     @Binding var selectedAnnotation: Annotation?
     let data: MapData
-    let folder: Folder?
     
+    @Environment(Model.self) var model
     @State var searchText = ""
     @State var isSearching = false
     @State var sort = false
@@ -36,8 +36,9 @@ struct AnnotationsView: View {
         NavigationStack {
             List {
                 ForEach(groupedAnnotations.keys.sorted(using: SortDescriptor(\File.name))) { file in
-                    if folder == nil {
-                        ForEach(Array(groupedAnnotations[file]!)) { annotation in
+                    let annotations = Array(groupedAnnotations[file]!)
+                    if groupedAnnotations.keys.count == 1 {
+                        ForEach(annotations) { annotation in
                             Button {
                                 selectAnnotation(annotation)
                             } label: {
@@ -46,7 +47,7 @@ struct AnnotationsView: View {
                         }
                     } else {
                         DisclosureGroup {
-                            ForEach(Array(groupedAnnotations[file]!)) { annotation in
+                            ForEach(annotations) { annotation in
                                 Button {
                                     selectAnnotation(annotation)
                                 } label: {
@@ -67,7 +68,6 @@ struct AnnotationsView: View {
             .searchPresentationToolbarBehavior(.avoidHidingContent)
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)
-            .navigationSubtitle(filteredAnnotations.count.formatted(singular: name))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(removing: detent == .smallDetent ? .title : nil)
             .toolbar {
@@ -140,7 +140,7 @@ extension PresentationDetent {
 
 #Preview {
     NavigationStack {
-        MapView(title: .constant("Example"), data: .example, folder: nil)
+        MapView(title: .constant("Example"), data: .example)
     }
     .environment(Model())
 }

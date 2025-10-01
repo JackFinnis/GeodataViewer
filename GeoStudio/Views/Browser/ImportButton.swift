@@ -9,8 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct ImportButton: View {
-    let folder: Folder?
-    
     @Environment(Model.self) var model
     @Environment(\.modelContext) var modelContext
     @State var showFileImporter = false
@@ -28,7 +26,7 @@ struct ImportButton: View {
                           let url = URL(string: string)
                     else { return }
                     Task {
-                        await model.handleFetchFile(webURL: url, folder: folder, context: modelContext)
+                        await model.handleFetchFile(webURL: url, context: modelContext)
                     }
                 } label: {
                     Label("Paste File URL", systemImage: "document.on.clipboard")
@@ -36,7 +34,7 @@ struct ImportButton: View {
             }
             Section("Create Files") {
                 Button {
-                    model.path.append(.record(folder))
+                    model.push(.record)
                 } label: {
                     Label("Record Route", systemImage: "record.circle")
                 }
@@ -51,9 +49,9 @@ struct ImportButton: View {
                 print(error)
             case .success(let urls):
                 if urls.count == 1 {
-                    model.handleImportFile(url: urls.first!, folder: folder, context: modelContext)
+                    model.handleImportFile(url: urls.first!, context: modelContext)
                 } else {
-                    model.handleImportFiles(urls: urls, folder: folder, context: modelContext)
+                    model.handleImportFiles(urls: urls, context: modelContext)
                 }
             }
         }

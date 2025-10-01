@@ -24,7 +24,7 @@ struct FileRow: View {
             VStack(alignment: .leading) {
                 ZStack {
                     if let data {
-                        Map(selectedAnnotation: .constant(nil), zoomToAnnotation: .constant(nil), refreshAnnotations: .constant(false), setUserTrackingMode: .constant(nil), recordModel: nil, data: data, mapStandard: true, preview: true)
+                        MapViewRepresentable(selectedAnnotation: .constant(nil), zoomToAnnotation: .constant(nil), refreshAnnotations: .constant(false), setUserTrackingMode: .constant(nil), recordModel: nil, data: data, mapStandard: true, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)
@@ -61,7 +61,7 @@ struct FileRow: View {
                 Button {
                     Task {
                         file.delete()
-                        await model.handleFetchFile(webURL: url, folder: file.folder, context: modelContext)
+                        await model.handleFetchFile(webURL: url, context: modelContext)
                     }
                 } label: {
                     Label("Refresh", systemImage: "arrow.clockwise")
@@ -100,7 +100,7 @@ struct FileRow: View {
         let folder = Folder()
         modelContext.insert(folder)
         file.folder = folder
-        model.path.append(.folder(folder))
+        model.push(.folder(folder))
     }
 }
 

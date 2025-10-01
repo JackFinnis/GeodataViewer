@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct Map: UIViewRepresentable {
+struct MapViewRepresentable: UIViewRepresentable {
     @Binding var selectedAnnotation: Annotation?
     @Binding var zoomToAnnotation: Annotation?
     @Binding var refreshAnnotations: Bool
@@ -122,11 +122,11 @@ struct Map: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, MKMapViewDelegate {
-        let parent: Map
+        let parent: MapViewRepresentable
         
         let mapView = MKMapView()
         
-        init(_ parent: Map) {
+        init(_ parent: MapViewRepresentable) {
             self.parent = parent
         }
         
@@ -217,7 +217,7 @@ struct Map: UIViewRepresentable {
 
 #Preview {
     NavigationStack {
-        MapView(title: .constant("Example"), data: .example, folder: nil)
+        MapView(title: .constant("Example"), data: .example)
     }
     .environment(Model())
 }

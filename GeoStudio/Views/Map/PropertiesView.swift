@@ -11,7 +11,6 @@ struct PropertiesView: View {
     @Binding var refreshAnnotations: Bool
     @Binding var zoomToAnnotation: Annotation?
     let annotation: Annotation
-    let folder: Folder?
     let dismissMap: () -> Void
     
     @Environment(Model.self) var model
@@ -24,7 +23,7 @@ struct PropertiesView: View {
         NavigationStack {
             List {
                 Button {
-                    if folder != nil {
+                    if model.folder != nil {
                         dismissMap()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             model.load(file: file)
@@ -141,7 +140,7 @@ struct PropertyRow: View {
 
 #Preview {
     NavigationStack {
-        MapView(title: .constant("Example"), data: .example, folder: nil)
+        MapView(title: .constant("Example"), data: .example)
     }
     .environment(Model())
 }

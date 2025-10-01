@@ -15,7 +15,7 @@
 		04092CFB2C3AFD880015EAE7 /* FileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04092CFA2C3AFD880015EAE7 /* FileRow.swift */; };
 		04092CFD2C3B00E60015EAE7 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04092CFC2C3B00E60015EAE7 /* File.swift */; };
 		04092D0A2C3E03AB0015EAE7 /* Folder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04092D092C3E03AB0015EAE7 /* Folder.swift */; };
-		0443D4322B9F968000018470 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0443D4312B9F968000018470 /* Map.swift */; };
+		0443D4322B9F968000018470 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0443D4312B9F968000018470 /* MapViewRepresentable.swift */; };
 		044C1F442D5CB6E900396E4D /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F432D5CB6DD00396E4D /* Annotation.swift */; };
 		044C1F5E2D5CC21700396E4D /* GMUPlacemark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F5D2D5CC21600396E4D /* GMUPlacemark.swift */; };
 		044C1F602D5CC5CD00396E4D /* GPXRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F5F2D5CC5CD00396E4D /* GPXRoute.swift */; };
@@ -64,7 +64,7 @@
 		04092CFA2C3AFD880015EAE7 /* FileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRow.swift; sourceTree = "<group>"; };
 		04092CFC2C3B00E60015EAE7 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		04092D092C3E03AB0015EAE7 /* Folder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folder.swift; sourceTree = "<group>"; };
-		0443D4312B9F968000018470 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		0443D4312B9F968000018470 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		044C1F432D5CB6DD00396E4D /* Annotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		044C1F5D2D5CC21600396E4D /* GMUPlacemark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMUPlacemark.swift; sourceTree = "<group>"; };
 		044C1F5F2D5CC5CD00396E4D /* GPXRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXRoute.swift; sourceTree = "<group>"; };
@@ -190,10 +190,10 @@
 			isa = PBXGroup;
 			children = (
 				049E167E2C00EDDE00ABB106 /* MapView.swift */,
+				0443D4312B9F968000018470 /* MapViewRepresentable.swift */,
 				04BC71012E64B18E00702B5C /* AnnotationsView.swift */,
 				044C1F8B2D5D73FE00396E4D /* PropertiesView.swift */,
 				04B5C8E92E69C437001B9439 /* RecordView.swift */,
-				0443D4312B9F968000018470 /* Map.swift */,
 				044C1F8D2D5DF1BC00396E4D /* MapLabel.swift */,
 			);
 			path = Map;
@@ -329,7 +329,7 @@
 				04BCBC362D5C1ED4002BB5E8 /* GeoFileType.swift in Sources */,
 				044C1F642D5D035D00396E4D /* MKMapRect.swift in Sources */,
 				04BA4C5D2B9E4AB5006AF820 /* MKPolyline.swift in Sources */,
-				0443D4322B9F968000018470 /* Map.swift in Sources */,
+				0443D4322B9F968000018470 /* MapViewRepresentable.swift in Sources */,
 				0402C61B2A0D0C3700238C51 /* MKMultiPoint.swift in Sources */,
 				04BCBC402D5C3B65002BB5E8 /* ImportButton.swift in Sources */,
 				044C1F8C2D5D73FE00396E4D /* PropertiesView.swift in Sources */,

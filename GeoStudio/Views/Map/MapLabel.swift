@@ -62,7 +62,7 @@ class AnnotationView: MKAnnotationView {
 
 #Preview {
     NavigationStack {
-        MapView(title: .constant("Example"), data: .example, folder: nil)
+        MapView(title: .constant("Example"), data: .example)
     }
     .environment(Model())
 }
