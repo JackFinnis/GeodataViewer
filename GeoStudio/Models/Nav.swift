@@ -5,7 +5,7 @@
 //  Created by Jack Finnis on 31/08/2025.
 //
 
-enum NavData: Hashable {
+enum Nav: Hashable {
     case allFiles
     case files
     case record
@@ -13,12 +13,21 @@ enum NavData: Hashable {
     case mapFolder(Folder, MapData)
     case mapFile(File, MapData)
     
-    var isMap: Bool {
+    var mapData: MapData? {
         switch self {
         case .allFiles, .files, .record, .folder:
-            return false
-        case .mapFolder, .mapFile:
-            return true
+            return nil
+        case .mapFolder(_, let data), .mapFile(_, let data):
+            return data
+        }
+    }
+    
+    var file: File? {
+        switch self {
+        case .allFiles, .files, .record, .folder, .mapFolder:
+            return nil
+        case .mapFile(let file, _):
+            return file
         }
     }
     

@@ -13,7 +13,7 @@ import CoreGPX
 @MainActor
 @Observable
 class Model {
-    var path: [NavData] = []
+    var path: [Nav] = []
     var error: GeoError?
     var showAlert: Bool = false
     
@@ -71,7 +71,7 @@ class Model {
         do {
             let data = try GeoParser().parse(file: file)
             file.date = .now
-            push(.mapFile(file, data))
+            path.append(.mapFile(file, data))
             Haptics.tap()
         } catch {
             fail(error: error)
@@ -83,18 +83,11 @@ class Model {
         do {
             let parser = GeoParser()
             let data = try folder.files.map(parser.parse).data
-            push(.mapFolder(folder, data))
+            path.append(.mapFolder(folder, data))
             Haptics.tap()
         } catch {
             fail(error: error)
         }
-    }
-    
-    func push(_ nav: NavData) {
-        if let last = path.last, last.isMap {
-            path.removeLast()
-        }
-        path.append(nav)
     }
     
     private func fail(error: GeoError) {

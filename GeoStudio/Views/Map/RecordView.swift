@@ -9,12 +9,12 @@ import SwiftUI
 import MapKit
 
 struct RecordView: View {
-    @Bindable var model: RecordModel
+    @Binding var recordModel: RecordModel
     @Binding var setUserTrackingMode: MKUserTrackingMode?
-    let onSave: () -> Void
-    let onDiscard: () -> Void
     
+    @Environment(Model.self) var model
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     @State var confirmDiscard = false
     @SceneStorage("requestedAuthorization") var requestedAuthorization = false
     
@@ -24,14 +24,14 @@ struct RecordView: View {
             HStack {
                 VStack {
                     TimelineView(PeriodicTimelineSchedule(from: .now, by: 1)) { context in
-                        Text(model.duration.formatted(Duration.TimeFormatStyle(pattern: model.duration > .seconds(3600) ? .hourMinuteSecond : .minuteSecond(padMinuteToLength: 2))))
+                        Text(recordModel.duration.formatted(Duration.TimeFormatStyle(pattern: recordModel.duration > .seconds(3600) ? .hourMinuteSecond : .minuteSecond(padMinuteToLength: 2))))
                             .font(.largeTitle.bold())
                     }
                     Text("Duration")
                 }
                 .frame(maxWidth: .infinity)
                 VStack {
-                    Text(String(format: "%.2f", model.metres/1000))
+                    Text(String(format: "%.2f", recordModel.metres/1000))
                         .font(.largeTitle.bold())
                     Text("Distance (km)")
                 }
@@ -40,20 +40,20 @@ struct RecordView: View {
             .font(.headline)
             Spacer()
             HStack(spacing: 10) {
-                switch model.state {
+                switch recordModel.state {
                 case .notStarted:
-                    if model.authorizationStatus == .authorizedAlways {
+                    if recordModel.authorizationStatus == .authorizedAlways {
                         Button {
-                            model.start()
+                            recordModel.start()
                         } label: {
                             Label("Start", systemImage: "play.fill")
                                 .padding(5)
                                 .frame(maxWidth: .infinity)
                         }
-                    } else if !requestedAuthorization && [CLAuthorizationStatus.authorizedWhenInUse, .notDetermined].contains(model.authorizationStatus) {
+                    } else if !requestedAuthorization && [CLAuthorizationStatus.authorizedWhenInUse, .notDetermined].contains(recordModel.authorizationStatus) {
                         Button {
                             requestedAuthorization = true
-                            model.requestAuthorization()
+                            recordModel.requestAuthorization()
                         } label: {
                             Text("Allow Location Access")
                                 .padding(5)
@@ -68,7 +68,7 @@ struct RecordView: View {
                     }
                 case .recording:
                     Button {
-                        model.pause()
+                        recordModel.pause()
                     } label: {
                         Label("Pause", systemImage: "pause.fill")
                             .padding(5)
@@ -76,14 +76,14 @@ struct RecordView: View {
                     }
                 case .paused:
                     Button {
-                        model.resume()
+                        recordModel.resume()
                     } label: {
                         Label("Resume", systemImage: "play.fill")
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
                     Button {
-                        model.stop()
+                        recordModel.stop()
                     } label: {
                         Label("Finish", systemImage: "flag.fill")
                             .padding(5)
@@ -102,11 +102,11 @@ struct RecordView: View {
                     .confirmationDialog("Discard Route?", isPresented: $confirmDiscard) {
                         Button("Cancel", role: .cancel) {}
                         Button("Discard Route", role: .destructive) {
-                            onDiscard()
+                            recordModel = .init()
                         }
                     }
                     Button {
-                        onSave()
+                        model.handleCreateFile(locations: recordModel.previousLines, context: modelContext)
                     } label: {
                         Text("Save")
                             .padding(5)
@@ -120,9 +120,9 @@ struct RecordView: View {
         .buttonStyle(.glassProminent)
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.height(200)])
-        .sensoryFeedback(.impact, trigger: model.state)
-        .sensoryFeedback(.impact, trigger: model.authorizationStatus)
-        .onChange(of: model.state) { _, newState in
+        .sensoryFeedback(.impact, trigger: recordModel.state)
+        .sensoryFeedback(.impact, trigger: recordModel.authorizationStatus)
+        .onChange(of: recordModel.state) { _, newState in
             switch newState {
             case .recording:
                 setUserTrackingMode = .followWithHeading
@@ -131,7 +131,7 @@ struct RecordView: View {
             }
         }
         .onDisappear {
-            model.stopUpdatingLocation()
+            recordModel.stopUpdatingLocation()
         }
     }
 }

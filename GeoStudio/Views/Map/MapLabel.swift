@@ -23,7 +23,7 @@ class MapLabel: UILabel {
     }
 }
 
-class AnnotationView: MKAnnotationView {
+class AnnotationLabel: MKAnnotationView {
     let label = MapLabel()
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {

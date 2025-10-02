@@ -15,6 +15,7 @@ struct MapView: View {
     
     @Environment(Model.self) var model
     @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var dismiss
     @State var mapStandard = true
     @State var showAnnotationsView = true
     @State var zoomToAnnotation: Annotation?
@@ -22,7 +23,6 @@ struct MapView: View {
     @State var setUserTrackingMode: MKUserTrackingMode?
     @State var refreshAnnotations = true
     @State var recordModel = RecordModel()
-    @State var showRecordView = false
     @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
@@ -33,73 +33,52 @@ struct MapView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
-                        dismissMap()
+                        dismiss()
                     } label: {
                         Label("Dismiss", systemImage: "chevron.backward")
                     }
                     .disabled(recordModel.isRecording)
                 }
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Button {
-                        showRecordView.toggle()
-                    } label: {
-                        Label("Record Route", systemImage: "record.circle")
-                    }
-                    .tint(recordModel.isRecording ? .red : .none)
+                ToolbarItem(placement: .primaryAction) {
                     Menu {
                         Toggle("Always On Display", isOn: $alwaysOnDisplay)
+                        Picker("Map Type", selection: $mapStandard) {
+                            Label("Standard", systemImage: "map")
+                                .tag(true)
+                            Label("Satellite", systemImage: "globe.europe.africa.fill")
+                                .tag(false)
+                        }
                     } label: {
-                        Label("Always On Display", systemImage: "eye")
-                            .symbolVariant(alwaysOnDisplay ? .none : .slash)
-                            .contentTransition(.symbolEffect(.replace))
-                    }
-                    Button {
-                        mapStandard.toggle()
-                    } label: {
-                        Label("Map Type", systemImage: mapStandard ? "map" : "globe.europe.africa.fill")
-                            .contentTransition(.symbolEffect(.replace))
+                        Label("Map Settings", systemImage: "map")
                     }
                 }
             }
             .sheet(isPresented: $showAnnotationsView) {
-                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, data: data)
-                    .sheet(item: $selectedAnnotation) { annotation in
-                        PropertiesView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation, dismissMap: dismissMap)
-                    }
-                    .sheet(isPresented: $showRecordView) {
-                        RecordView(model: recordModel, setUserTrackingMode: $setUserTrackingMode, onSave: {
-                            dismissMap()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                model.handleCreateFile(locations: recordModel.previousLines, context: modelContext)
-                            }
-                        }, onDiscard: {
-                            self.recordModel = .init()
-                        })
-                    }
+                AnnotationsView(title: $title, zoomToAnnotation: $zoomToAnnotation, selectedAnnotation: $selectedAnnotation, setUserTrackingMode: $setUserTrackingMode, refreshAnnotations: $refreshAnnotations, recordModel: $recordModel, data: data)
             }
             .onAppear {
+                showAnnotationsView = true
                 CLLocationManager().requestWhenInUseAuthorization()
-            }
-            .onChange(of: alwaysOnDisplay) { _, alwaysOnDisplay in
-                UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
-            }
-            .onAppear {
                 UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
             }
             .onDisappear {
                 UIApplication.shared.isIdleTimerDisabled = false
             }
-            .onChange(of: showRecordView) { _, showRecordView in
+            .onChange(of: recordModel.showRecordView) { _, showRecordView in
                 if !showRecordView && !recordModel.isRecording && data == .empty {
-                    dismissMap()
+                    dismiss()
                 }
             }
+            .onChange(of: model.path) { _, path in
+                if data != path.last?.mapData {
+                    showAnnotationsView = false
+                    selectedAnnotation = nil
+                }
+            }
+            .onChange(of: alwaysOnDisplay) { _, alwaysOnDisplay in
+                UIApplication.shared.isIdleTimerDisabled = alwaysOnDisplay
+            }
             .monospacedDigit()
-    }
-    
-    func dismissMap() {
-        showAnnotationsView = false
-        model.path.removeLast()
     }
 }
 

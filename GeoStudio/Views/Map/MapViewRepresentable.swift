@@ -18,12 +18,13 @@ struct MapViewRepresentable: UIViewRepresentable {
     let mapStandard: Bool
     let preview: Bool
     
+    @State var mapView = MKMapView()
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
     func makeUIView(context: Context) -> MKMapView {
-        let mapView = context.coordinator.mapView
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
@@ -33,22 +34,24 @@ struct MapViewRepresentable: UIViewRepresentable {
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
         
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMarkerAnnotationView.id)
-        mapView.register(AnnotationView.self, forAnnotationViewWithReuseIdentifier: AnnotationView.id)
+        mapView.register(AnnotationLabel.self, forAnnotationViewWithReuseIdentifier: AnnotationLabel.id)
         
         mapView.addAnnotations(data.points)
         mapView.addOverlays(data.multiPolylines, level: .aboveRoads)
         mapView.addOverlays(data.multiPolygons, level: .aboveRoads)
         
-        if data == .empty {
-            mapView.userTrackingMode = .follow
-        } else {
-            mapView.setVisibleMapRect(data.rect, edgePadding: .init(length: preview ? 35 : 10), animated: false)
-        }
-        
         let tapRecognizer = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap))
         mapView.addGestureRecognizer(tapRecognizer)
         let longPressRecognizer = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress))
         mapView.addGestureRecognizer(longPressRecognizer)
+        
+        DispatchQueue.main.async {
+            if data == .empty {
+                mapView.userTrackingMode = .follow
+            } else {
+                mapView.setVisibleMapRect(data.rect, edgePadding: .init(length: preview ? 35 : 10), animated: false)
+            }
+        }
         
         return mapView
     }
@@ -124,8 +127,6 @@ struct MapViewRepresentable: UIViewRepresentable {
     class Coordinator: NSObject, MKMapViewDelegate {
         let parent: MapViewRepresentable
         
-        let mapView = MKMapView()
-        
         init(_ parent: MapViewRepresentable) {
             self.parent = parent
         }
@@ -186,13 +187,14 @@ struct MapViewRepresentable: UIViewRepresentable {
                     marker?.markerTintColor = point.color ?? UIColor(.orange)
                     return marker
                 }
-                return mapView.dequeueReusableAnnotationView(withIdentifier: AnnotationView.id, for: annotation) as? AnnotationView
+                return mapView.dequeueReusableAnnotationView(withIdentifier: AnnotationLabel.id, for: annotation)
             }
             return nil
         }
         
         @objc
         func handleTap(_ tap: UITapGestureRecognizer) {
+            let mapView = parent.mapView
             let location = tap.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let overlay = parent.data.closestOverlay(to: coord)
@@ -202,6 +204,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         @objc
         func handleLongPress(_ press: UILongPressGestureRecognizer) {
             guard press.state == .began else { return }
+            let mapView = parent.mapView
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let mapItem = MKMapItem(location: coord.location, address: nil)

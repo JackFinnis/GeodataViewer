@@ -7,27 +7,21 @@
 
 import SwiftUI
 
-struct PropertiesView: View {
+struct AnnotationView: View {
     @Binding var refreshAnnotations: Bool
     @Binding var zoomToAnnotation: Annotation?
     let annotation: Annotation
-    let dismissMap: () -> Void
     
     @Environment(Model.self) var model
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     
     var body: some View {
-        let file = annotation.file
-        
         NavigationStack {
             List {
                 Button {
-                    if model.folder != nil {
-                        dismissMap()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            model.load(file: file)
-                        }
+                    if model.path.last?.file != annotation.file {
+                        model.load(file: annotation.file)
                     }
                 } label: {
                     PropertyRow(key: "File", value: annotation.file.lastPathComponent)
@@ -47,7 +41,7 @@ struct PropertiesView: View {
                 }
                 ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
                     let string = "\(value)"
-                    let title = key == file.titleKey
+                    let title = key == annotation.file.titleKey
                     Menu {
                         if let url = URL(string: string), UIApplication.shared.canOpenURL(url) {
                             Button {
@@ -64,14 +58,14 @@ struct PropertiesView: View {
                         }
                         if title {
                             Button(role: .destructive) {
-                                file.titleKey = nil
+                                annotation.file.titleKey = nil
                                 refreshAnnotations = true
                             } label: {
                                 Label("Remove Label", systemImage: "star.slash")
                             }
                         } else {
                             Button {
-                                file.titleKey = key
+                                annotation.file.titleKey = key
                                 refreshAnnotations = true
                             } label: {
                                 Label("Set Title", systemImage: "star")

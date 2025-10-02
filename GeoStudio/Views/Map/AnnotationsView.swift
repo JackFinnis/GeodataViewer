@@ -12,6 +12,9 @@ struct AnnotationsView: View {
     @Binding var title: String
     @Binding var zoomToAnnotation: Annotation?
     @Binding var selectedAnnotation: Annotation?
+    @Binding var setUserTrackingMode: MKUserTrackingMode?
+    @Binding var refreshAnnotations: Bool
+    @Binding var recordModel: RecordModel
     let data: MapData
     
     @Environment(Model.self) var model
@@ -72,6 +75,14 @@ struct AnnotationsView: View {
             .toolbar(removing: detent == .smallDetent ? .title : nil)
             .toolbar {
                 if detent != .smallDetent {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            recordModel.showRecordView.toggle()
+                        } label: {
+                            Label("Record Route", systemImage: "record.circle")
+                        }
+                        .tint(recordModel.isRecording ? .red : .none)
+                    }
                     ToolbarItem(placement: .primaryAction) {
                         Menu {
                             Toggle("Sort by Name", isOn: $sort.animation())
@@ -122,6 +133,12 @@ struct AnnotationsView: View {
             if filteredAnnotations.count == 1, let annotation = filteredAnnotations.first {
                 selectAnnotation(annotation)
             }
+        }
+        .sheet(item: $selectedAnnotation) { annotation in
+            AnnotationView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation)
+        }
+        .sheet(isPresented: $recordModel.showRecordView) {
+            RecordView(recordModel: $recordModel, setUserTrackingMode: $setUserTrackingMode)
         }
     }
     

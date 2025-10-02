@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Folder {
+class Folder: Mapable {
     var id = UUID()
     var name: String
     var date: Date

@@ -23,17 +23,17 @@ struct FoldersView: View {
         NavigationStack(path: $model.path) {
             List {
                 if folders.isNotEmpty {
-                    NavigationLink(value: NavData.allFiles) {
+                    NavigationLink(value: Nav.allFiles) {
                         Label("All Files", systemImage: "folder")
                             .badge(files.isEmpty ? "0" : String(files.count))
                     }
                 }
-                NavigationLink(value: NavData.files) {
+                NavigationLink(value: Nav.files) {
                     Label("Files", systemImage: "folder")
                         .badge(noFolder.isEmpty ? "0" : String(noFolder.count))
                 }
                 ForEach(folders) { folder in
-                    NavigationLink(value: NavData.folder(folder)) {
+                    NavigationLink(value: Nav.folder(folder)) {
                         Label(folder.name, systemImage: "folder")
                             .badge(folder.files.isEmpty ? "0" : String(folder.files.count))
                     }
@@ -72,7 +72,7 @@ struct FoldersView: View {
                     ImportButton()
                 }
             }
-            .navigationDestination(for: NavData.self) { navData in
+            .navigationDestination(for: Nav.self) { navData in
                 switch navData {
                 case .allFiles:
                     FolderView(folder: nil, files: files, showFolder: true)
@@ -91,7 +91,7 @@ struct FoldersView: View {
                     @Bindable var folder = folder
                     MapView(title: $folder.name, data: data)
                 case .record:
-                    MapView(title: .constant(""), data: .empty, showRecordView: true)
+                    MapView(title: .constant(""), data: .empty, recordModel: .init(showRecordView: true))
                 }
             }
         }
@@ -104,7 +104,7 @@ struct FoldersView: View {
             model.handleImportFile(url: url, context: modelContext)
         }
         .onAppear {
-            model.push(folders.isNotEmpty ? .allFiles : .files)
+            model.path.append(folders.isNotEmpty ? .allFiles : .files)
         }
         .environment(model)
         .monospacedDigit()
@@ -113,7 +113,7 @@ struct FoldersView: View {
     func newFolder() {
         let folder = Folder()
         modelContext.insert(folder)
-        model.push(.folder(folder))
+        model.path.append(.folder(folder))
     }
 }
 

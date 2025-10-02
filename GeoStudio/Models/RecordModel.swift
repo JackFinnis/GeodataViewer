@@ -18,6 +18,7 @@ enum RecordState {
 @MainActor
 @Observable
 class RecordModel: NSObject, Identifiable {
+    var showRecordView: Bool
     var state: RecordState = .notStarted
     var currentStart: Date = .distantPast
     var previousSeconds: Double = 0
@@ -43,7 +44,8 @@ class RecordModel: NSObject, Identifiable {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     private let locationManager = CLLocationManager()
     
-    override init() {
+    init(showRecordView: Bool = false) {
+        self.showRecordView = showRecordView
         super.init()
         setupLocationManager()
     }
