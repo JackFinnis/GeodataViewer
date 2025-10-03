@@ -107,6 +107,7 @@ struct RecordView: View {
                     }
                     Button {
                         model.handleCreateFile(locations: recordModel.previousLines, context: modelContext)
+                        recordModel = .init(showRecordView: true)
                     } label: {
                         Text("Save")
                             .padding(5)
