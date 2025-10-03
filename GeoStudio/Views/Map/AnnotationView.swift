@@ -79,6 +79,7 @@ struct AnnotationView: View {
                 }
             }
             .listStyle(.plain)
+            .navigationTitle(annotation.title ?? annotation.type.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -88,24 +89,21 @@ struct AnnotationView: View {
                                 try? await point.openInMaps()
                             }
                         } label: {
-                            Image(systemName: "map")
+                            Label("Open in Maps", systemImage: "map")
                         }
-                    }
-                }
-                ToolbarItem(placement: .principal) {
-                    Button {
-                        zoomToAnnotation = annotation
-                    } label: {
-                        Text(annotation.title ?? annotation.type.name)
-                            .font(.headline)
-                            .lineLimit(1)
+                    } else {
+                        Button {
+                            zoomToAnnotation = annotation
+                        } label: {
+                            Label("Recenter", systemImage: "scope")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         dismiss()
                     } label: {
-                        Image(systemName: "xmark")
+                        Label("Dismiss", systemImage: "xmark")
                     }
                 }
             }

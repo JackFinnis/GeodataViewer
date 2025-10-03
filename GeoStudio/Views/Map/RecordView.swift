@@ -130,9 +130,6 @@ struct RecordView: View {
                 break
             }
         }
-        .onDisappear {
-            recordModel.stopUpdatingLocation()
-        }
     }
 }
 

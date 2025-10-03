@@ -139,6 +139,7 @@ struct AnnotationsView: View {
         }
         .sheet(isPresented: $recordModel.showRecordView) {
             RecordView(recordModel: $recordModel, setUserTrackingMode: $setUserTrackingMode)
+                .interactiveDismissDisabled(data == .empty)
         }
     }
     
