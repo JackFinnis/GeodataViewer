@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIEdgeInsets {
-    init(length: CGFloat) {
+    init(all length: CGFloat) {
         self.init(top: length, left: length, bottom: length, right: length)
     }
 }

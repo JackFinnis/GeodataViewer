@@ -26,7 +26,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
         mapView.selectableMapFeatures = .pointsOfInterest
-        mapView.layoutMargins = preview ? .init(length: -25) : .init(top: 0, left: 0, bottom: horizontalSizeClass == .compact ? 350 : 0, right: 0)
+        mapView.layoutMargins = preview ? .init(all: -25) : .init(top: 0, left: 0, bottom: horizontalSizeClass == .compact ? 350 : 0, right: 0)
         mapView.showsUserTrackingButton = !preview
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
         
@@ -55,7 +55,7 @@ struct MapViewRepresentable: UIViewRepresentable {
             if data == .empty {
                 mapView.userTrackingMode = .follow
             } else {
-                mapView.setVisibleMapRect(data.rect, edgePadding: .init(length: preview ? 35 : 10), animated: false)
+                mapView.setVisibleMapRect(data.rect, edgePadding: .init(all: preview ? 35 : 10), animated: false)
             }
         }
         

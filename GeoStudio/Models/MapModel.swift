@@ -19,7 +19,7 @@ class MapModel: NSObject, Identifiable {
                 mapView.setCenter(point.coordinate, animated: true)
             }
         } else if let overlay = selectedAnnotation as? MKOverlay {
-            mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(length: 10), animated: true)
+            mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(all: 10), animated: true)
         }
     }}
     
