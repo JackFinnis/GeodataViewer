@@ -118,6 +118,7 @@ struct AnnotationsView: View {
         .interactiveDismissDisabled()
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.smallDetent, .mediumDetent, .largeDetent], selection: $detent)
+        .inspectorColumnWidth(ideal: 350)
         .onChange(of: detent) { _, detent in
             if detent != .largeDetent {
                 isSearching = false
