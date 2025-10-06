@@ -19,7 +19,7 @@ struct RecordView: View {
     @SceneStorage("requestedAuthorization") var requestedAuthorization = false
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack {
             Spacer()
             HStack {
                 VStack {
@@ -38,8 +38,9 @@ struct RecordView: View {
                 .frame(maxWidth: .infinity)
             }
             .font(.headline)
+            .padding(30)
             Spacer()
-            HStack(spacing: 10) {
+            HStack {
                 switch recordModel.state {
                 case .notStarted:
                     if recordModel.authorizationStatus == .authorizedAlways {

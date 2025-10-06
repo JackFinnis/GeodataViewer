@@ -34,7 +34,7 @@ struct MapData: Hashable {
     }
     
     var rect: MKMapRect { multiPolygons.rect.union(multiPolylines.rect).union(points.rect) }
-    var empty: Bool { points.isEmpty && polylines.isEmpty && polygons.isEmpty }
+    var isEmpty: Bool { points.isEmpty && polylines.isEmpty && polygons.isEmpty }
     var annotations: [Annotation] { points + polylines + polygons }
     
     func closestOverlay(to targetCoord: CLLocationCoordinate2D) -> Annotation? {

@@ -15,44 +15,44 @@ struct MapView: View {
     
     @Environment(Model.self) var model
     @Environment(\.modelContext) var modelContext
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dismiss) var dismiss
     @State var recordModel = RecordModel()
     @State var mapModel = MapModel()
     @AppStorage("alwaysOnDisplay") var alwaysOnDisplay = false
     
     var body: some View {
-        MapLayout {
-            NavigationStack {
-                MapViewRepresentable(mapModel: mapModel, recordModel: recordModel, data: data, preview: false)
-                    .ignoresSafeArea()
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button {
-                                if recordModel.isRecording {
-                                    recordModel.showRecordView = true
-                                } else {
-                                    dismiss()
-                                }
-                            } label: {
-                                Label("Dismiss", systemImage: "chevron.backward")
+        NavigationStack {
+            MapViewRepresentable(mapModel: mapModel, recordModel: recordModel, data: data, preview: false)
+                .ignoresSafeArea()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            if recordModel.isRecording {
+                                recordModel.showRecordView = true
+                            } else {
+                                dismiss()
                             }
-                        }
-                        ToolbarItem(placement: .primaryAction) {
-                            Menu {
-                                Toggle("Always On Display", isOn: $alwaysOnDisplay)
-                                Picker("Map Type", selection: $mapModel.mapStandard) {
-                                    Label("Standard", systemImage: "map")
-                                        .tag(true)
-                                    Label("Satellite", systemImage: "globe.europe.africa.fill")
-                                        .tag(false)
-                                }
-                            } label: {
-                                Label("Map Settings", systemImage: "map")
-                            }
+                        } label: {
+                            Label("Dismiss", systemImage: "chevron.backward")
                         }
                     }
-            }
-        } sheet: {
+                    ToolbarItem(placement: .primaryAction) {
+                        Menu {
+                            Toggle("Always On Display", isOn: $alwaysOnDisplay)
+                            Picker("Map Type", selection: $mapModel.mapStandard) {
+                                Label("Standard", systemImage: "map")
+                                    .tag(true)
+                                Label("Satellite", systemImage: "globe.europe.africa.fill")
+                                    .tag(false)
+                            }
+                        } label: {
+                            Label("Map Settings", systemImage: "map")
+                        }
+                    }
+                }
+        }
+        .adaptiveSheet(horizontalSizeClass: horizontalSizeClass) {
             AnnotationsView(title: $title, mapModel: mapModel, recordModel: $recordModel, data: data)
         }
         .onAppear {
@@ -85,21 +85,13 @@ struct MapView: View {
     .environment(Model())
 }
 
-struct MapLayout<MapContent: View, SheetContent: View>: View {
-    let map: () -> MapContent
-    let sheet: () -> SheetContent
-    
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    
-    var body: some View {
+extension View {
+    @ViewBuilder
+    func adaptiveSheet(horizontalSizeClass: UserInterfaceSizeClass?, content: @escaping () -> some View) -> some View {
         if horizontalSizeClass == .compact {
-            map().sheet(isPresented: .constant(true), content: sheet)
+            sheet(isPresented: .constant(true), content: content)
         } else {
-            NavigationSplitView(columnVisibility: .constant(.all)) {
-                sheet()
-            } detail: {
-                map()
-            }
+            inspector(isPresented: .constant(true), content: content)
         }
     }
 }

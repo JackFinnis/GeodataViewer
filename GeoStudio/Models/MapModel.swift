@@ -14,17 +14,23 @@ class MapModel: NSObject, Identifiable {
     
     var mapStandard = true
     var selectedAnnotation: Annotation? { didSet {
-        if let point = selectedAnnotation as? Point {
-            if !mapView.visibleMapRect.contains(MKMapPoint(point.coordinate)) {
-                mapView.setCenter(point.coordinate, animated: true)
-            }
-        } else if let overlay = selectedAnnotation as? MKOverlay {
-            mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(all: 10), animated: true)
+        if let selectedAnnotation {
+            zoomToAnnotation(selectedAnnotation)
         }
     }}
     
     func refreshAnnotation(_ annotation: Annotation) {
         mapView.removeAnnotation(annotation)
         mapView.addAnnotation(annotation)
+    }
+    
+    func zoomToAnnotation(_ annotation: Annotation) {
+        if let point = annotation as? Point {
+            if !mapView.visibleMapRect.contains(MKMapPoint(point.coordinate)) {
+                mapView.setCenter(point.coordinate, animated: true)
+            }
+        } else if let overlay = annotation as? MKOverlay {
+            mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(all: 20), animated: true)
+        }
     }
 }

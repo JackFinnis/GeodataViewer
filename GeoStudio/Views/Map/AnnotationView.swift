@@ -87,6 +87,12 @@ struct AnnotationView: View {
                     } label: {
                         Label("Open in Maps", systemImage: "map")
                     }
+                } else {
+                    Button {
+                        mapModel.zoomToAnnotation(annotation)
+                    } label: {
+                        Label("Zoom", systemImage: "scope")
+                    }
                 }
             }
         }

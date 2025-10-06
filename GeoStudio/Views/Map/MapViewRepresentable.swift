@@ -55,7 +55,7 @@ struct MapViewRepresentable: UIViewRepresentable {
             if data == .empty {
                 mapView.userTrackingMode = .follow
             } else {
-                mapView.setVisibleMapRect(data.rect, edgePadding: .init(all: preview ? 35 : 10), animated: false)
+                mapView.setVisibleMapRect(data.rect, edgePadding: .init(all: preview ? 35 : 20), animated: false)
             }
         }
         
@@ -107,9 +107,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         
         func mapView(_ mapView: MKMapView, didSelect annotation: any MKAnnotation) {
             if let annotation = annotation as? Annotation {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.parent.mapModel.selectedAnnotation = annotation
-                }
+                parent.mapModel.selectedAnnotation = annotation
             }
         }
         

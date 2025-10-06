@@ -44,7 +44,7 @@ class GeoParser {
             try parseGPX(file: file)
         }
         
-        guard !data.empty else {
+        guard !data.isEmpty else {
             throw GeoError.fileEmpty
         }
         
