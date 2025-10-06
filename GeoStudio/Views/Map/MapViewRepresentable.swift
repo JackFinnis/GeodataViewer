@@ -26,7 +26,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
         mapView.selectableMapFeatures = .pointsOfInterest
-        mapView.layoutMargins = preview ? .init(all: -25) : .init(top: 0, left: 0, bottom: horizontalSizeClass == .compact ? 350 : 0, right: 0)
+        mapView.layoutMargins = preview ? .init(all: -25) : .init(top: -15, left: 0, bottom: horizontalSizeClass == .compact ? 350 : 0, right: 0)
         mapView.showsUserTrackingButton = !preview
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
         
@@ -39,8 +39,6 @@ struct MapViewRepresentable: UIViewRepresentable {
         mapView.addGestureRecognizer(longPressRecognizer)
         
         mapView.addAnnotations(data.points)
-        mapView.addOverlays(data.multiPolylines, level: .aboveRoads)
-        mapView.addOverlays(data.multiPolygons, level: .aboveRoads)
         if !preview {
             if data.polylines.count < 1000 {
                 mapView.addAnnotations(data.polylines)
@@ -48,8 +46,9 @@ struct MapViewRepresentable: UIViewRepresentable {
             if data.polygons.count < 1000 {
                 mapView.addAnnotations(data.polygons)
             }
-            mapView.addAnnotations(data.points)
         }
+        mapView.addOverlays(data.multiPolylines, level: .aboveRoads)
+        mapView.addOverlays(data.multiPolygons, level: .aboveRoads)
         
         DispatchQueue.main.async {
             if data == .empty {

@@ -56,14 +56,14 @@ struct AnnotationView: View {
                     if title {
                         Button(role: .destructive) {
                             annotation.file.titleKey = nil
-                            mapModel.refreshAnnotation(annotation)
+                            mapModel.refreshAnnotations()
                         } label: {
                             Label("Remove Label", systemImage: "star.slash")
                         }
                     } else {
                         Button {
                             annotation.file.titleKey = key
-                            mapModel.refreshAnnotation(annotation)
+                            mapModel.refreshAnnotations()
                         } label: {
                             Label("Set Title", systemImage: "star")
                         }

@@ -117,9 +117,9 @@ struct RecordView: View {
                 }
             }
             .font(.title3.bold())
+            .buttonStyle(.glassProminent)
         }
         .padding(.horizontal, 20)
-        .buttonStyle(.glassProminent)
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.height(200)])
         .sensoryFeedback(.impact, trigger: recordModel.state)

@@ -72,7 +72,8 @@ struct AnnotationsView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
-                        recordModel.showRecordView.toggle()
+                        recordModel.showRecordView = true
+                        detent = .mediumDetent
                     } label: {
                         Label("Record Route", systemImage: "record.circle")
                     }

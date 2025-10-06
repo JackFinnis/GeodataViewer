@@ -19,9 +19,10 @@ class MapModel: NSObject, Identifiable {
         }
     }}
     
-    func refreshAnnotation(_ annotation: Annotation) {
-        mapView.removeAnnotation(annotation)
-        mapView.addAnnotation(annotation)
+    func refreshAnnotations() {
+        let annotations = mapView.annotations.filter { $0 is Annotation }
+        mapView.removeAnnotations(annotations)
+        mapView.addAnnotations(annotations)
     }
     
     func zoomToAnnotation(_ annotation: Annotation) {
