@@ -116,6 +116,7 @@ struct AnnotationsView: View {
             }
         }
         .interactiveDismissDisabled()
+        .presentationBackground(.background)
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.smallDetent, .mediumDetent, .largeDetent], selection: $detent)
         .inspectorColumnWidth(ideal: 350)

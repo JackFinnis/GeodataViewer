@@ -15,7 +15,6 @@ struct FolderView: View {
     
     @Environment(Model.self) var model
     @State var searchText: String = ""
-    @State var isSearching: Bool = false
     
     var body: some View {
         let filteredFiles = files.filter { filter in
@@ -25,12 +24,12 @@ struct FolderView: View {
         }
         
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 0, alignment: .top)], spacing: 0) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16, alignment: .top)], spacing: 16) {
                 ForEach(filteredFiles) { file in
                     FileRow(file: file, showFolder: showFolder)
                 }
             }
-            .padding(.horizontal, 8)
+            .padding()
         }
         .overlay {
             if files.isEmpty {
@@ -41,7 +40,7 @@ struct FolderView: View {
                     .allowsHitTesting(false)
             }
         }
-        .searchable(text: $searchText, isPresented: $isSearching)
+        .searchable(text: $searchText.animation())
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

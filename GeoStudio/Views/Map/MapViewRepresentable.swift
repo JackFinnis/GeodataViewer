@@ -11,7 +11,7 @@ import MapKit
 struct MapViewRepresentable: UIViewRepresentable {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
-    let mapModel: MapModel
+    let mapModel: MapModel?
     let recordModel: RecordModel?
     let data: MapData
     let preview: Bool
@@ -21,7 +21,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> MKMapView {
-        let mapView = mapModel.mapView
+        let mapView = mapModel?.mapView ?? .init()
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
@@ -63,7 +63,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     }
     
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        if mapModel.mapStandard {
+        if mapModel?.mapStandard ?? true {
             let config = MKStandardMapConfiguration(elevationStyle: .realistic)
             config.pointOfInterestFilter = preview ? .excludingAll : .includingAll
             mapView.preferredConfiguration = config
@@ -77,13 +77,13 @@ struct MapViewRepresentable: UIViewRepresentable {
         if let recordModel {
             mapView.addOverlays(recordModel.polylines, level: .aboveLabels)
         }
-        if let polyline = mapModel.selectedAnnotation as? Polyline {
+        if let polyline = mapModel?.selectedAnnotation as? Polyline {
             mapView.addOverlay(polyline.mkPolyline, level: .aboveLabels)
-        } else if let polygon = mapModel.selectedAnnotation as? Polygon {
+        } else if let polygon = mapModel?.selectedAnnotation as? Polygon {
             mapView.addOverlay(polygon.mkPolygon, level: .aboveLabels)
         }
         
-        if let selectedAnnotation = mapModel.selectedAnnotation {
+        if let selectedAnnotation = mapModel?.selectedAnnotation {
             mapView.selectAnnotation(selectedAnnotation, animated: true)
         } else {
             mapView.selectedAnnotations.forEach { annotation in
@@ -107,7 +107,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         
         func mapView(_ mapView: MKMapView, didSelect annotation: any MKAnnotation) {
             if let annotation = annotation as? Annotation {
-                parent.mapModel.selectedAnnotation = annotation
+                parent.mapModel?.selectedAnnotation = annotation
             }
         }
         
@@ -160,17 +160,18 @@ struct MapViewRepresentable: UIViewRepresentable {
         
         @objc
         func handleTap(_ tap: UITapGestureRecognizer) {
-            let mapView = parent.mapModel.mapView
+            guard let mapView = parent.mapModel?.mapView else { return }
             let location = tap.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let overlay = parent.data.closestOverlay(to: coord)
-            parent.mapModel.selectedAnnotation = overlay
+            parent.mapModel?.selectedAnnotation = overlay
         }
         
         @objc
         func handleLongPress(_ press: UILongPressGestureRecognizer) {
-            guard press.state == .began else { return }
-            let mapView = parent.mapModel.mapView
+            guard press.state == .began,
+                  let mapView = parent.mapModel?.mapView
+            else { return }
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let mapItem = MKMapItem(location: coord.location, address: nil)

@@ -22,80 +22,81 @@ struct FileRow: View {
         Button {
             model.load(file: file)
         } label: {
-            VStack(alignment: .leading) {
+            VStack {
                 ZStack {
                     if let data {
-                        MapViewRepresentable(mapModel: mapModel, recordModel: nil, data: data, preview: true)
+                        MapViewRepresentable(mapModel: nil, recordModel: nil, data: data, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)
-                            .overlay {
-                                ProgressView()
-                            }
                             .onAppear {
                                 data = try? GeoParser().parse(file: file)
                             }
                     }
                 }
                 .aspectRatio(1, contentMode: .fit)
-                .cornerRadius(10)
+                .cornerRadius(16)
                 .allowsHitTesting(false)
                 .compositingGroup()
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(.separator))
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.separator))
                 
                 Text(file.name)
-                    .multilineTextAlignment(.leading)
                     .font(.callout)
                 if showFolder {
-                    Label(file.folder?.name ?? "Files", systemImage: "folder")
+                    Text(file.folder?.name ?? "Files")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
             .lineLimit(1)
-            .padding(8)
             .background(.background)
         }
         .buttonStyle(.plain)
         .contextMenu {
-            if let url = file.webURL {
-                Button {
-                    Task {
-                        file.delete()
-                        await model.handleFetchFile(webURL: url, context: modelContext)
-                    }
-                } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
-                }
-            }
-            Menu {
-                Picker("Move", selection: $file.folder) {
-                    Label("Files", systemImage: "folder")
-                        .tag(nil as Folder?)
-                    ForEach(folders) { folder in
-                        Label(folder.name, systemImage: "folder")
-                            .tag(folder as Folder?)
+            Section(file.name) {
+                if let url = file.webURL {
+                    Button {
+                        Task {
+                            file.delete()
+                            await model.handleFetchFile(webURL: url, context: modelContext)
+                        }
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
                     }
                 }
-                Divider()
-                Button {
-                    let folder = Folder()
-                    modelContext.insert(folder)
-                    file.folder = folder
-                    model.path.append(.folder(folder))
+                Menu {
+                    Picker("Move", selection: $file.folder) {
+                        Label("Files", systemImage: "folder")
+                            .tag(nil as Folder?)
+                        ForEach(folders) { folder in
+                            Label(folder.name, systemImage: "folder")
+                                .tag(folder as Folder?)
+                        }
+                    }
+                    Divider()
+                    Button {
+                        let folder = Folder()
+                        modelContext.insert(folder)
+                        file.folder = folder
+                        model.path.append(.folder(folder))
+                    } label: {
+                        Label("New Folder", systemImage: "folder.badge.plus")
+                    }
                 } label: {
-                    Label("New Folder", systemImage: "folder.badge.plus")
+                    Label("Move", systemImage: "folder")
                 }
-            } label: {
-                Label("Move", systemImage: "folder")
+                ShareLink(item: file.exportURL) {
+                    Label("Export", systemImage: "square.and.arrow.up")
+                }
+                Button(role: .destructive) {
+                    file.delete()
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
             }
-            ShareLink(item: file.exportURL) {
-                Label("Export", systemImage: "square.and.arrow.up")
-            }
-            Button(role: .destructive) {
-                file.delete()
-            } label: {
-                Label("Delete", systemImage: "trash")
+        } preview: {
+            if let data {
+                MapViewRepresentable(mapModel: nil, recordModel: nil, data: data, preview: true)
             }
         }
     }
