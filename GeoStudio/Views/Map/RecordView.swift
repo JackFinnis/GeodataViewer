@@ -120,8 +120,6 @@ struct RecordView: View {
             .buttonStyle(.glassProminent)
         }
         .padding(.horizontal, 20)
-        .presentationBackgroundInteraction(.enabled)
-        .presentationDetents([.height(200)])
         .sensoryFeedback(.impact, trigger: recordModel.state)
         .sensoryFeedback(.impact, trigger: recordModel.authorizationStatus)
         .onChange(of: recordModel.state) { _, newState in

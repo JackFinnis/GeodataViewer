@@ -20,30 +20,27 @@ struct FoldersView: View {
     var body: some View {
         let noFolder = files.filter { $0.folder == nil }
         
-        NavigationStack(path: $model.path) {
-            List {
+        NavigationSplitView {
+            List(selection: $model.nav) {
+                Label("All Files", systemImage: "folder")
+                    .badge(files.isEmpty ? "0" : String(files.count))
+                    .tag(Nav.allFiles)
                 if folders.isNotEmpty {
-                    NavigationLink(value: Nav.allFiles) {
-                        Label("All Files", systemImage: "folder")
-                            .badge(files.isEmpty ? "0" : String(files.count))
-                    }
-                }
-                NavigationLink(value: Nav.files) {
                     Label("Files", systemImage: "folder")
                         .badge(noFolder.isEmpty ? "0" : String(noFolder.count))
+                        .tag(Nav.files)
                 }
                 ForEach(folders) { folder in
-                    NavigationLink(value: Nav.folder(folder)) {
-                        Label(folder.name, systemImage: "folder")
-                            .badge(folder.files.isEmpty ? "0" : String(folder.files.count))
-                    }
-                    .contextMenu {
-                        Button(role: .destructive) {
-                            modelContext.delete(folder)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
+                    Label(folder.name, systemImage: "folder")
+                        .badge(folder.files.isEmpty ? "0" : String(folder.files.count))
+                        .tag(Nav.folder(folder))
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                modelContext.delete(folder)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
-                    }
                 }
             }
             .navigationTitle("GeoStudio")
@@ -64,29 +61,24 @@ struct FoldersView: View {
                     Button {
                         let folder = Folder()
                         modelContext.insert(folder)
-                        model.path.append(Nav.folder(folder))
+                        model.nav = .folder(folder)
                     } label: {
                         Label("New Folder", systemImage: "folder.badge.plus")
                     }
                 }
-                ToolbarSpacer(placement: .bottomBar)
-                ToolbarItem(placement: .bottomBar) {
-                    ImportButton()
-                }
             }
-            .navigationDestination(for: Nav.self) { nav in
-                switch nav {
-                case .allFiles:
-                    FolderView(folder: nil, files: files, showFolder: true)
-                        .navigationTitle("All Files")
-                case .files:
-                    FolderView(folder: nil, files: noFolder, showFolder: false)
-                        .navigationTitle("Files")
-                case .folder(let folder):
-                    @Bindable var folder = folder
-                    FolderView(folder: folder, files: folder.files, showFolder: false)
-                        .navigationTitle($folder.name)
-                }
+        } detail: {
+            switch model.nav {
+            case .allFiles, nil:
+                FolderView(folder: nil, files: files, showFolder: true)
+                    .navigationTitle("All Files")
+            case .files:
+                FolderView(folder: nil, files: noFolder, showFolder: false)
+                    .navigationTitle("Files")
+            case .folder(let folder):
+                @Bindable var folder = folder
+                FolderView(folder: folder, files: folder.files, showFolder: false)
+                    .navigationTitle($folder.name)
             }
         }
         .fullScreenCover(item: $model.map) { map in
@@ -115,9 +107,6 @@ struct FoldersView: View {
         }
         .onOpenURL { url in
             model.handleImportFile(url: url, context: modelContext)
-        }
-        .onAppear {
-            model.path.append(folders.isNotEmpty ? Nav.allFiles : Nav.files)
         }
         .sensoryFeedback(.error, trigger: model.error)
         .sensoryFeedback(.impact, trigger: model.map)

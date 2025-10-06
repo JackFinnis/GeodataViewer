@@ -78,7 +78,7 @@ struct FileRow: View {
                         let folder = Folder()
                         modelContext.insert(folder)
                         file.folder = folder
-                        model.path.append(.folder(folder))
+                        model.nav = .folder(folder)
                     } label: {
                         Label("New Folder", systemImage: "folder.badge.plus")
                     }

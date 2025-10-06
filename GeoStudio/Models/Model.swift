@@ -13,7 +13,7 @@ import CoreGPX
 @MainActor
 @Observable
 class Model {
-    var path: [Nav] = []
+    var nav: Nav? = .allFiles
     var map: Map?
     var error: GeoError?
     
@@ -127,7 +127,7 @@ class Model {
     private func importFile(from source: URL, webURL: URL?, context: ModelContext) throws(GeoError) -> File {
         let fileExtension = source.pathExtension
         let name = String(source.deletingPathExtension().lastPathComponent.split(separator: "-").first!)
-        let file = File(fileExtension: fileExtension, name: name, webURL: webURL, folder: path.last?.folder)
+        let file = File(fileExtension: fileExtension, name: name, webURL: webURL, folder: nav?.folder)
         
         do {
             try? FileManager.default.removeItem(at: file.url)
