@@ -9,41 +9,47 @@ import SwiftUI
 import MapKit
 
 struct MapViewRepresentable: UIViewRepresentable {
-    @Binding var selectedAnnotation: Annotation?
-    @Binding var zoomToAnnotation: Annotation?
-    @Binding var refreshAnnotations: Bool
-    @Binding var setUserTrackingMode: MKUserTrackingMode?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    
+    let mapModel: MapModel
     let recordModel: RecordModel?
     let data: MapData
-    let mapStandard: Bool
     let preview: Bool
-    
-    @State var mapView = MKMapView()
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
     func makeUIView(context: Context) -> MKMapView {
+        let mapView = mapModel.mapView
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = !preview
         mapView.isPitchEnabled = true
         mapView.selectableMapFeatures = .pointsOfInterest
-        mapView.layoutMargins = preview ? .init(length: -25) : .init(top: -10, left: 0, bottom: 350, right: 0)
+        mapView.layoutMargins = preview ? .init(length: -25) : .init(top: 0, left: 0, bottom: horizontalSizeClass == .compact ? 350 : 0, right: 0)
         mapView.showsUserTrackingButton = !preview
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
         
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMarkerAnnotationView.id)
         mapView.register(AnnotationLabel.self, forAnnotationViewWithReuseIdentifier: AnnotationLabel.id)
         
-        mapView.addAnnotations(data.points)
-        mapView.addOverlays(data.multiPolylines, level: .aboveRoads)
-        mapView.addOverlays(data.multiPolygons, level: .aboveRoads)
-        
         let tapRecognizer = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap))
         mapView.addGestureRecognizer(tapRecognizer)
         let longPressRecognizer = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress))
         mapView.addGestureRecognizer(longPressRecognizer)
+        
+        mapView.addAnnotations(data.points)
+        mapView.addOverlays(data.multiPolylines, level: .aboveRoads)
+        mapView.addOverlays(data.multiPolygons, level: .aboveRoads)
+        if !preview {
+            if data.polylines.count < 1000 {
+                mapView.addAnnotations(data.polylines)
+            }
+            if data.polygons.count < 1000 {
+                mapView.addAnnotations(data.polygons)
+            }
+            mapView.addAnnotations(data.points)
+        }
         
         DispatchQueue.main.async {
             if data == .empty {
@@ -57,7 +63,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     }
     
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        if mapStandard {
+        if mapModel.mapStandard {
             let config = MKStandardMapConfiguration(elevationStyle: .realistic)
             config.pointOfInterestFilter = preview ? .excludingAll : .includingAll
             mapView.preferredConfiguration = config
@@ -71,55 +77,19 @@ struct MapViewRepresentable: UIViewRepresentable {
         if let recordModel {
             mapView.addOverlays(recordModel.polylines, level: .aboveLabels)
         }
-        if let polyline = selectedAnnotation as? Polyline {
+        if let polyline = mapModel.selectedAnnotation as? Polyline {
             mapView.addOverlay(polyline.mkPolyline, level: .aboveLabels)
-        } else if let polygon = selectedAnnotation as? Polygon {
+        } else if let polygon = mapModel.selectedAnnotation as? Polygon {
             mapView.addOverlay(polygon.mkPolygon, level: .aboveLabels)
         }
         
-        if let selectedAnnotation {
+        if let selectedAnnotation = mapModel.selectedAnnotation {
             mapView.selectAnnotation(selectedAnnotation, animated: true)
         } else {
             mapView.selectedAnnotations.forEach { annotation in
                 if let point = annotation as? Point {
                     mapView.deselectAnnotation(point, animated: true)
                 }
-            }
-        }
-        
-        if let setUserTrackingMode {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.setUserTrackingMode = nil
-            }
-            mapView.setUserTrackingMode(setUserTrackingMode, animated: true)
-        }
-        
-        if !preview, refreshAnnotations {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                refreshAnnotations = false
-            }
-            mapView.removeAnnotations(data.polylines)
-            mapView.removeAnnotations(data.polygons)
-            mapView.removeAnnotations(data.points)
-            if data.polylines.count < 1000 {
-                mapView.addAnnotations(data.polylines)
-            }
-            if data.polygons.count < 1000 {
-                mapView.addAnnotations(data.polygons)
-            }
-            mapView.addAnnotations(data.points)
-        }
-        
-        if let annotation = zoomToAnnotation {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                zoomToAnnotation = nil
-            }
-            if let point = annotation as? Point {
-                if !mapView.visibleMapRect.contains(MKMapPoint(point.coordinate)) {
-                    mapView.setCenter(point.coordinate, animated: true)
-                }
-            } else if let overlay = annotation as? MKOverlay {
-                mapView.setVisibleMapRect(overlay.boundingMapRect, edgePadding: .init(length: 10), animated: true)
             }
         }
     }
@@ -131,7 +101,6 @@ struct MapViewRepresentable: UIViewRepresentable {
             self.parent = parent
         }
         
-        @available(iOS 18.0, *)
         func mapView(_ mapView: MKMapView, selectionAccessoryFor annotation: any MKAnnotation) -> MKSelectionAccessory? {
             .mapItemDetail(.openInMaps)
         }
@@ -139,8 +108,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, didSelect annotation: any MKAnnotation) {
             if let annotation = annotation as? Annotation {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.parent.selectedAnnotation = annotation
-                    self.parent.zoomToAnnotation = annotation
+                    self.parent.mapModel.selectedAnnotation = annotation
                 }
             }
         }
@@ -194,17 +162,17 @@ struct MapViewRepresentable: UIViewRepresentable {
         
         @objc
         func handleTap(_ tap: UITapGestureRecognizer) {
-            let mapView = parent.mapView
+            let mapView = parent.mapModel.mapView
             let location = tap.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let overlay = parent.data.closestOverlay(to: coord)
-            parent.selectedAnnotation = overlay
+            parent.mapModel.selectedAnnotation = overlay
         }
         
         @objc
         func handleLongPress(_ press: UILongPressGestureRecognizer) {
             guard press.state == .began else { return }
-            let mapView = parent.mapView
+            let mapView = parent.mapModel.mapView
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
             let mapItem = MKMapItem(location: coord.location, address: nil)
@@ -212,7 +180,6 @@ struct MapViewRepresentable: UIViewRepresentable {
             if let annotation = MKMapItemAnnotation(mapItem: mapItem) {
                 mapView.addAnnotation(annotation)
                 mapView.selectAnnotation(annotation, animated: true)
-                Haptics.tap()
             }
         }
     }

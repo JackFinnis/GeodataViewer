@@ -10,10 +10,7 @@ import MapKit
 
 struct AnnotationsView: View {
     @Binding var title: String
-    @Binding var zoomToAnnotation: Annotation?
-    @Binding var selectedAnnotation: Annotation?
-    @Binding var setUserTrackingMode: MKUserTrackingMode?
-    @Binding var refreshAnnotations: Bool
+    @Bindable var mapModel: MapModel
     @Binding var recordModel: RecordModel
     let data: MapData
     
@@ -23,6 +20,7 @@ struct AnnotationsView: View {
     @State var sort = false
     @State var filterType: AnnotationType?
     @State var detent: PresentationDetent = .mediumDetent
+    @State var selectedAnnotationPoint: CGPoint?
     
     var body: some View {
         let annotations = sort ? data.annotations.sorted(using: SortDescriptor(\Annotation.title)) : data.annotations
@@ -43,7 +41,7 @@ struct AnnotationsView: View {
                     if groupedAnnotations.keys.count == 1 {
                         ForEach(annotations) { annotation in
                             Button {
-                                selectAnnotation(annotation)
+                                mapModel.selectedAnnotation = annotation
                             } label: {
                                 Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
                             }
@@ -52,7 +50,7 @@ struct AnnotationsView: View {
                         DisclosureGroup {
                             ForEach(annotations) { annotation in
                                 Button {
-                                    selectAnnotation(annotation)
+                                    mapModel.selectedAnnotation = annotation
                                 } label: {
                                     Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
                                 }
@@ -67,52 +65,54 @@ struct AnnotationsView: View {
             }
             .animation(.default, value: filteredAnnotations)
             .listStyle(.plain)
-            .searchable(text: $searchText.animation(), isPresented: $isSearching, prompt: Text("Search \(name)s"))
-            .searchPresentationToolbarBehavior(.avoidHidingContent)
+            .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search \(name)s"))
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: detent == .smallDetent ? .title : nil)
             .toolbar {
-                if detent != .smallDetent {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button {
-                            recordModel.showRecordView.toggle()
-                        } label: {
-                            Label("Record Route", systemImage: "record.circle")
-                        }
-                        .tint(recordModel.isRecording ? .red : .none)
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        recordModel.showRecordView.toggle()
+                    } label: {
+                        Label("Record Route", systemImage: "record.circle")
                     }
-                    ToolbarItem(placement: .primaryAction) {
-                        Menu {
-                            Toggle("Sort by Name", isOn: $sort.animation())
-                            Divider()
-                            Picker(selection: $filterType.animation()) {
-                                ForEach(AnnotationType.allCases, id: \.self) { type in
-                                    Label("\(type.name)s", systemImage: type.systemImage)
-                                        .tag(type as AnnotationType?)
-                                }
-                            } label: {
-                                if let filterType {
-                                    Label("Filter", systemImage: filterType.systemImage)
-                                } else {
-                                    Text("Filter")
-                                }
-                            }
-                            .pickerStyle(.menu)
-                            if filterType != nil {
-                                Button {
-                                    filterType = nil
-                                } label: {
-                                    Label("Remove Filter", systemImage: "minus.circle")
-                                }
-                            }
-                        } label: {
-                            Image(systemName: filterType == nil ? "line.3.horizontal.decrease" : filterType!.systemImage)
-                        }
-                        .menuOrder(.fixed)
-                    }
+                    .tint(recordModel.isRecording ? .red : .none)
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Toggle("Sort by Name", isOn: $sort.animation())
+                        Divider()
+                        Picker(selection: $filterType.animation()) {
+                            ForEach(AnnotationType.allCases, id: \.self) { type in
+                                Label("\(type.name)s", systemImage: type.systemImage)
+                                    .tag(type as AnnotationType?)
+                            }
+                        } label: {
+                            if let filterType {
+                                Label("Filter", systemImage: filterType.systemImage)
+                            } else {
+                                Text("Filter")
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        if filterType != nil {
+                            Button {
+                                filterType = nil
+                            } label: {
+                                Label("Remove Filter", systemImage: "minus.circle")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: filterType == nil ? "line.3.horizontal.decrease" : filterType!.systemImage)
+                    }
+                    .menuOrder(.fixed)
+                }
+            }
+            .navigationDestination(item: $mapModel.selectedAnnotation) { annotation in
+                AnnotationView(mapModel: mapModel, annotation: annotation)
+            }
+            .navigationDestination(isPresented: $recordModel.showRecordView) {
+                RecordView(mapModel: mapModel, recordModel: $recordModel)
             }
         }
         .interactiveDismissDisabled()
@@ -129,29 +129,21 @@ struct AnnotationsView: View {
                 detent = .largeDetent
             }
         }
-        .onSubmit(of: .search) {
-            if filteredAnnotations.count == 1, let annotation = filteredAnnotations.first {
-                selectAnnotation(annotation)
+        .onChange(of: mapModel.selectedAnnotation) { _, selectedAnnotation in
+            if selectedAnnotation != nil {
+                detent = .mediumDetent
             }
         }
-        .sheet(item: $selectedAnnotation) { annotation in
-            AnnotationView(refreshAnnotations: $refreshAnnotations, zoomToAnnotation: $zoomToAnnotation, annotation: annotation)
+        .onSubmit(of: .search) {
+            if filteredAnnotations.count == 1, let annotation = filteredAnnotations.first {
+                mapModel.selectedAnnotation = annotation
+            }
         }
-        .sheet(isPresented: $recordModel.showRecordView) {
-            RecordView(recordModel: $recordModel, setUserTrackingMode: $setUserTrackingMode)
-                .interactiveDismissDisabled(data == .empty)
-        }
-    }
-    
-    func selectAnnotation(_ annotation: Annotation) {
-        zoomToAnnotation = annotation
-        selectedAnnotation = annotation
-        detent = .mediumDetent
     }
 }
 
 extension PresentationDetent {
-    static let smallDetent: Self    = .height(105)
+    static let smallDetent: Self    = .height(130)
     static let mediumDetent: Self   = .height(350)
     static let largeDetent: Self    = .large
 }

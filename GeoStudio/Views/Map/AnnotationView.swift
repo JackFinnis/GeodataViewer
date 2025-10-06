@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct AnnotationView: View {
-    @Binding var refreshAnnotations: Bool
-    @Binding var zoomToAnnotation: Annotation?
+    @Bindable var mapModel: MapModel
     let annotation: Annotation
     
     @Environment(Model.self) var model
@@ -17,99 +16,80 @@ struct AnnotationView: View {
     @Environment(\.openURL) var openURL
     
     var body: some View {
-        NavigationStack {
-            List {
-                Button {
-                    if model.path.last?.file != annotation.file {
-                        model.load(file: annotation.file)
-                    }
-                } label: {
-                    PropertyRow(key: "File", value: annotation.file.lastPathComponent)
+        List {
+            Button {
+                if case .folder = model.map {
+                    model.load(file: annotation.file)
                 }
-                .listRowBackground(Color.clear)
-                PropertyRow(key: "Type", value: annotation.type.name)
-                if let point = annotation as? Point {
-                    PropertyRow(key: "Latitude", value: String(format: "%.5f", point.coordinate.latitude))
-                    PropertyRow(key: "Longitude", value: String(format: "%.5f", point.coordinate.longitude))
-                }
-                if let polyline = annotation as? Polyline {
-                    PropertyRow(key: "Length", value: Measurement(value: polyline.mkPolyline.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
-                }
-                if let polygon = annotation as? Polygon {
-                    PropertyRow(key: "Area", value: Measurement(value: polygon.mkPolygon.squareMeters, unit: UnitArea.squareMeters).formatted())
-                    PropertyRow(key: "Perimeter", value: Measurement(value: polygon.mkPolygon.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
-                }
-                ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
-                    let string = "\(value)"
-                    let title = key == annotation.file.titleKey
-                    Menu {
-                        if let url = URL(string: string), UIApplication.shared.canOpenURL(url) {
-                            Button {
-                                openURL(url)
-                            } label: {
-                                Label("Open", systemImage: "safari")
-                            }
-                        }
-                        Button {
-                            UIPasteboard.general.string = string
-                            Haptics.tap()
-                        } label: {
-                            Label("Copy", systemImage: "doc.on.doc")
-                        }
-                        if title {
-                            Button(role: .destructive) {
-                                annotation.file.titleKey = nil
-                                refreshAnnotations = true
-                            } label: {
-                                Label("Remove Label", systemImage: "star.slash")
-                            }
-                        } else {
-                            Button {
-                                annotation.file.titleKey = key
-                                refreshAnnotations = true
-                            } label: {
-                                Label("Set Title", systemImage: "star")
-                            }
-                        }
-                    } label: {
-                        PropertyRow(key: key, value: string)
-                    }
-                    .tint(title ? .accent : .primary)
-                    .listRowBackground(Color.clear)
-                }
+            } label: {
+                PropertyRow(key: "File", value: annotation.file.lastPathComponent)
             }
-            .listStyle(.plain)
-            .navigationTitle(annotation.title ?? annotation.type.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if let point = annotation as? Point {
+            PropertyRow(key: "Type", value: annotation.type.name)
+            if let point = annotation as? Point {
+                PropertyRow(key: "Latitude", value: String(format: "%.5f", point.coordinate.latitude))
+                PropertyRow(key: "Longitude", value: String(format: "%.5f", point.coordinate.longitude))
+            }
+            if let polyline = annotation as? Polyline {
+                PropertyRow(key: "Length", value: Measurement(value: polyline.mkPolyline.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
+            }
+            if let polygon = annotation as? Polygon {
+                PropertyRow(key: "Area", value: Measurement(value: polygon.mkPolygon.squareMeters, unit: UnitArea.squareMeters).formatted())
+                PropertyRow(key: "Perimeter", value: Measurement(value: polygon.mkPolygon.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
+            }
+            
+            ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
+                let string = "\(value)"
+                let title = key == annotation.file.titleKey
+                Menu {
+                    if let url = URL(string: string), UIApplication.shared.canOpenURL(url) {
                         Button {
-                            Task {
-                                try? await point.openInMaps()
-                            }
+                            openURL(url)
                         } label: {
-                            Label("Open in Maps", systemImage: "map")
+                            Label("Open", systemImage: "safari")
+                        }
+                    }
+                    Button {
+                        UIPasteboard.general.string = string
+                    } label: {
+                        Label("Copy", systemImage: "doc.on.doc")
+                    }
+                    if title {
+                        Button(role: .destructive) {
+                            annotation.file.titleKey = nil
+                            mapModel.refreshAnnotation(annotation)
+                        } label: {
+                            Label("Remove Label", systemImage: "star.slash")
                         }
                     } else {
                         Button {
-                            zoomToAnnotation = annotation
+                            annotation.file.titleKey = key
+                            mapModel.refreshAnnotation(annotation)
                         } label: {
-                            Label("Recenter", systemImage: "scope")
+                            Label("Set Title", systemImage: "star")
                         }
                     }
+                } label: {
+                    PropertyRow(key: key, value: string)
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                .tint(title ? .accent : .primary)
+            }
+        }
+        .listStyle(.plain)
+        .navigationTitle(annotation.title ?? annotation.type.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                if let point = annotation as? Point {
                     Button {
-                        dismiss()
+                        Task {
+                            try? await point.openInMaps()
+                        }
                     } label: {
-                        Label("Dismiss", systemImage: "xmark")
+                        Label("Open in Maps", systemImage: "map")
                     }
                 }
             }
         }
-        .presentationBackgroundInteraction(.enabled)
-        .presentationDetents([.mediumDetent, .largeDetent])
     }
 }
 
@@ -126,7 +106,6 @@ struct PropertyRow: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
         }
-        .listRowBackground(Color.clear)
     }
 }
 

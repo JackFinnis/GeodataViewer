@@ -14,17 +14,8 @@ import CoreGPX
 @Observable
 class Model {
     var path: [Nav] = []
+    var map: Map?
     var error: GeoError?
-    var showAlert: Bool = false
-    
-    var folder: Folder? {
-        for nav in path {
-            if let folder = nav.folder {
-                return folder
-            }
-        }
-        return nil
-    }
     
     func handleFetchFile(webURL: URL, context: ModelContext) async {
         do {
@@ -32,7 +23,7 @@ class Model {
             let file = try importFile(from: tempURL, webURL: webURL, context: context)
             load(file: file)
         } catch {
-            fail(error: error)
+            self.error = error
         }
     }
     
@@ -42,7 +33,7 @@ class Model {
             let file = try importFile(from: tempURL, webURL: nil, context: context)
             load(file: file)
         } catch {
-            fail(error: error)
+            self.error = error
         }
     }
     
@@ -51,7 +42,7 @@ class Model {
             let file = try importFile(from: url, webURL: nil, context: context)
             load(file: file)
         } catch {
-            fail(error: error)
+            self.error = error
         }
     }
     
@@ -63,7 +54,7 @@ class Model {
                 files.append(file)
             }
         } catch {
-            fail(error: error)
+            self.error = error
         }
     }
     
@@ -71,10 +62,9 @@ class Model {
         do {
             let data = try GeoParser().parse(file: file)
             file.date = .now
-            path.append(.mapFile(file, data))
-            Haptics.tap()
+            map = .file(file, data)
         } catch {
-            fail(error: error)
+            self.error = error
             file.delete()
         }
     }
@@ -83,17 +73,10 @@ class Model {
         do {
             let parser = GeoParser()
             let data = try folder.files.map(parser.parse).data
-            path.append(.mapFolder(folder, data))
-            Haptics.tap()
+            map = .folder(folder, data)
         } catch {
-            fail(error: error)
+            self.error = error
         }
-    }
-    
-    private func fail(error: GeoError) {
-        self.error = error
-        self.showAlert = true
-        Haptics.error()
     }
     
     private func createFile(locations: [[CLLocation]]) throws(GeoError) -> URL {

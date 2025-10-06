@@ -62,7 +62,9 @@ struct FoldersView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        newFolder()
+                        let folder = Folder()
+                        modelContext.insert(folder)
+                        model.path.append(Nav.folder(folder))
                     } label: {
                         Label("New Folder", systemImage: "folder.badge.plus")
                     }
@@ -72,8 +74,8 @@ struct FoldersView: View {
                     ImportButton()
                 }
             }
-            .navigationDestination(for: Nav.self) { navData in
-                switch navData {
+            .navigationDestination(for: Nav.self) { nav in
+                switch nav {
                 case .allFiles:
                     FolderView(folder: nil, files: files, showFolder: true)
                         .navigationTitle("All Files")
@@ -84,18 +86,29 @@ struct FoldersView: View {
                     @Bindable var folder = folder
                     FolderView(folder: folder, files: folder.files, showFolder: false)
                         .navigationTitle($folder.name)
-                case .mapFile(let file, let data):
+                }
+            }
+        }
+        .fullScreenCover(item: $model.map) { map in
+            Group {
+                switch map {
+                case .file(let file, let data):
                     @Bindable var file = file
                     MapView(title: $file.name, data: data)
-                case .mapFolder(let folder, let data):
+                case .folder(let folder, let data):
                     @Bindable var folder = folder
                     MapView(title: $folder.name, data: data)
                 case .record:
                     MapView(title: .constant(""), data: .empty, recordModel: .init(showRecordView: true))
                 }
             }
+            .id(map)
         }
-        .alert("Import Failed", isPresented: $model.showAlert) {} message: {
+        .alert("Import Failed", isPresented: .init {
+            model.error != nil
+        } set: { _ in
+            model.error = nil
+        }) {} message: {
             if let error = model.error {
                 Text(error.description)
             }
@@ -104,16 +117,12 @@ struct FoldersView: View {
             model.handleImportFile(url: url, context: modelContext)
         }
         .onAppear {
-            model.path.append(folders.isNotEmpty ? .allFiles : .files)
+            model.path.append(folders.isNotEmpty ? Nav.allFiles : Nav.files)
         }
+        .sensoryFeedback(.error, trigger: model.error)
+        .sensoryFeedback(.impact, trigger: model.map)
         .environment(model)
         .monospacedDigit()
-    }
-    
-    func newFolder() {
-        let folder = Folder()
-        modelContext.insert(folder)
-        model.path.append(.folder(folder))
     }
 }
 

@@ -16,6 +16,7 @@ struct FileRow: View {
     @Environment(Model.self) var model
     @Query(sort: \Folder.name) var folders: [Folder]
     @State var data: MapData?
+    @State var mapModel = MapModel()
     
     var body: some View {
         Button {
@@ -24,7 +25,7 @@ struct FileRow: View {
             VStack(alignment: .leading) {
                 ZStack {
                     if let data {
-                        MapViewRepresentable(selectedAnnotation: .constant(nil), zoomToAnnotation: .constant(nil), refreshAnnotations: .constant(false), setUserTrackingMode: .constant(nil), recordModel: nil, data: data, mapStandard: true, preview: true)
+                        MapViewRepresentable(mapModel: mapModel, recordModel: nil, data: data, preview: true)
                     } else {
                         Rectangle()
                             .fill(.fill)
@@ -78,7 +79,10 @@ struct FileRow: View {
                 }
                 Divider()
                 Button {
-                    moveToNewFolder()
+                    let folder = Folder()
+                    modelContext.insert(folder)
+                    file.folder = folder
+                    model.path.append(.folder(folder))
                 } label: {
                     Label("New Folder", systemImage: "folder.badge.plus")
                 }
@@ -94,13 +98,6 @@ struct FileRow: View {
                 Label("Delete", systemImage: "trash")
             }
         }
-    }
-    
-    func moveToNewFolder() {
-        let folder = Folder()
-        modelContext.insert(folder)
-        file.folder = folder
-        model.path.append(.folder(folder))
     }
 }
 

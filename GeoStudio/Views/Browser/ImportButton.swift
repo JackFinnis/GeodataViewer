@@ -34,7 +34,7 @@ struct ImportButton: View {
             }
             Section("Create Files") {
                 Button {
-                    model.path.append(.record)
+                    model.map = .record
                 } label: {
                     Label("Record Route", systemImage: "record.circle")
                 }

@@ -25,10 +25,11 @@
 		044C1F8E2D5DF1C500396E4D /* MapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F8D2D5DF1BC00396E4D /* MapLabel.swift */; };
 		044C1F902D5DF1F800396E4D /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F8F2D5DF1EF00396E4D /* NSObject.swift */; };
 		047BF5642A7432490022505C /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047BF5632A7432490022505C /* CLLocationCoordinate2D.swift */; };
+		04900F212E93450000B4B410 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04900F202E9344FE00B4B410 /* MapModel.swift */; };
+		04900F3C2E9359D600B4B410 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04900F3B2E9359D600B4B410 /* Map.swift */; };
 		049C0F75292936F600C6521A /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049C0F74292936F600C6521A /* App.swift */; };
 		049C0F79292936F700C6521A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 049C0F78292936F700C6521A /* Assets.xcassets */; };
 		049C0F9C292953A400C6521A /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049C0F9B292953A400C6521A /* Collection.swift */; };
-		049C0FB22929BEFE00C6521A /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049C0FB12929BEFE00C6521A /* Haptics.swift */; };
 		049E167F2C00EDDE00ABB106 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049E167E2C00EDDE00ABB106 /* MapView.swift */; };
 		049E16812C00F10A00ABB106 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049E16802C00F10A00ABB106 /* UIEdgeInsets.swift */; };
 		04B5C8EA2E69C437001B9439 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B5C8E92E69C437001B9439 /* RecordView.swift */; };
@@ -75,11 +76,12 @@
 		044C1F8F2D5DF1EF00396E4D /* NSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
 		047BF5602A7405FA0022505C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		047BF5632A7432490022505C /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
+		04900F202E9344FE00B4B410 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
+		04900F3B2E9359D600B4B410 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		049C0F71292936F600C6521A /* GeoStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		049C0F74292936F600C6521A /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		049C0F78292936F700C6521A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		049C0F9B292953A400C6521A /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
-		049C0FB12929BEFE00C6521A /* Haptics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		049E167E2C00EDDE00ABB106 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		049E16802C00F10A00ABB106 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
 		04B5C8E92E69C437001B9439 /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
@@ -137,7 +139,6 @@
 			isa = PBXGroup;
 			children = (
 				04A65584293D58B30084CC6A /* Extensions */,
-				04A65585293D58C00084CC6A /* Helpers */,
 				04C71FF22A08DCBB00417249 /* Models */,
 				049C0FB5292A88B300C6521A /* Resources */,
 				04C71FF12A08DCAC00417249 /* Views */,
@@ -178,14 +179,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		04A65585293D58C00084CC6A /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				049C0FB12929BEFE00C6521A /* Haptics.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		04BC70AD2E636CE300702B5C /* Map */ = {
 			isa = PBXGroup;
 			children = (
@@ -224,11 +217,13 @@
 			isa = PBXGroup;
 			children = (
 				04BCBC3D2D5C364A002BB5E8 /* Model.swift */,
+				04900F202E9344FE00B4B410 /* MapModel.swift */,
 				04BC71582E64DC9400702B5C /* RecordModel.swift */,
 				04BA4C642B9E50D5006AF820 /* GeoParser.swift */,
 				04092CEC2C378A110015EAE7 /* GeoError.swift */,
 				04BCBC352D5C1ED0002BB5E8 /* GeoFileType.swift */,
 				04BC71032E64BDBD00702B5C /* Nav.swift */,
+				04900F3B2E9359D600B4B410 /* Map.swift */,
 				04BA4C622B9E5073006AF820 /* MapData.swift */,
 				04092CFC2C3B00E60015EAE7 /* File.swift */,
 				04092D092C3E03AB0015EAE7 /* Folder.swift */,
@@ -343,11 +338,12 @@
 				04BA4C612B9E4FAB006AF820 /* FoldersView.swift in Sources */,
 				04BCBC382D5C28F7002BB5E8 /* Int.swift in Sources */,
 				04B5C8EA2E69C437001B9439 /* RecordView.swift in Sources */,
+				04900F3C2E9359D600B4B410 /* Map.swift in Sources */,
 				04BA4C652B9E50D5006AF820 /* GeoParser.swift in Sources */,
 				04F435B62D56BD56005CA0ED /* Polygon.swift in Sources */,
 				04F435B22D56BC2D005CA0ED /* UIColor.swift in Sources */,
+				04900F212E93450000B4B410 /* MapModel.swift in Sources */,
 				04BA4C5B2B9E4A4A006AF820 /* MKPolygon.swift in Sources */,
-				049C0FB22929BEFE00C6521A /* Haptics.swift in Sources */,
 				0402C6272A0D175300238C51 /* Array.swift in Sources */,
 				04BCBC3E2D5C364C002BB5E8 /* Model.swift in Sources */,
 				044C1F662D5D054A00396E4D /* Properties.swift in Sources */,
@@ -528,11 +524,11 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -574,11 +570,11 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

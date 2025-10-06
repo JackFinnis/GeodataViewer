@@ -9,12 +9,8 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-protocol Mapable: Observable, Equatable, Hashable {
-    var name: String { get set }
-}
-
 @Model
-class File: Hashable, Mapable {
+class File: Hashable {
     var id = UUID()
     var fileExtension: String
     var name: String

@@ -9,8 +9,8 @@ import SwiftUI
 import MapKit
 
 struct RecordView: View {
+    @Bindable var mapModel: MapModel
     @Binding var recordModel: RecordModel
-    @Binding var setUserTrackingMode: MKUserTrackingMode?
     
     @Environment(Model.self) var model
     @Environment(\.dismiss) var dismiss
@@ -46,7 +46,7 @@ struct RecordView: View {
                         Button {
                             recordModel.start()
                         } label: {
-                            Label("Start", systemImage: "play.fill")
+                            Text("Start")
                                 .padding(5)
                                 .frame(maxWidth: .infinity)
                         }
@@ -70,7 +70,7 @@ struct RecordView: View {
                     Button {
                         recordModel.pause()
                     } label: {
-                        Label("Pause", systemImage: "pause.fill")
+                        Text("Pause")
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
@@ -78,14 +78,14 @@ struct RecordView: View {
                     Button {
                         recordModel.resume()
                     } label: {
-                        Label("Resume", systemImage: "play.fill")
+                        Text("Resume")
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
                     Button {
                         recordModel.stop()
                     } label: {
-                        Label("Finish", systemImage: "flag.fill")
+                        Text("Finish")
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
@@ -126,7 +126,7 @@ struct RecordView: View {
         .onChange(of: recordModel.state) { _, newState in
             switch newState {
             case .recording:
-                setUserTrackingMode = .followWithHeading
+                mapModel.mapView.setUserTrackingMode(.followWithHeading, animated: true)
             case .notStarted, .paused, .stopped:
                 break
             }
