@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 // MARK: - Todo
+// if multiple points at same coordinate, search for that coordinate in annotations view
 // Mark annotations as visited (like London Churches) by storing another property in file Model
 // It would be good to be able to add some pins (points) in gpx file. It could be done at three ways (which is most convenient for you):
 
@@ -29,7 +30,6 @@ struct GeoStudioApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()
-//                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         }
         .modelContainer(for: File.self)
         .handlesExternalEvents(matching: ["*"])
