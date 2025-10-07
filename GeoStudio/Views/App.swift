@@ -29,7 +29,9 @@ struct GeoStudioApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()
+//                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         }
         .modelContainer(for: File.self)
+        .handlesExternalEvents(matching: ["*"])
     }
 }

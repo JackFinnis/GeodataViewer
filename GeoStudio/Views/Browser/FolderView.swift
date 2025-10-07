@@ -21,7 +21,7 @@ struct FolderView: View {
             searchText.isEmpty
             || filter.name.localizedStandardContains(searchText)
             || filter.folder?.name.localizedStandardContains(searchText) ?? false
-        }
+        }.sorted(using: SortDescriptor(\File.name))
         
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16, alignment: .top)], spacing: 16) {
