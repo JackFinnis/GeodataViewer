@@ -11,7 +11,7 @@ import SwiftData
 
 struct MapView: View {
     @Binding var title: String
-    let data: MapData
+    let data: GeoData
     
     @Environment(Model.self) var model
     @Environment(\.modelContext) var modelContext

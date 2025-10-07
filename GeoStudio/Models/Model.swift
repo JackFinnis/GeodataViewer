@@ -83,7 +83,11 @@ class Model {
         let segments = locations.map(\.segment)
         let track = GPXTrack(segments: segments)
         
-        let root = GPXRoot(creator: "Geodata Viewer")
+        let metadata = GPXMetadata()
+        metadata.name = "New Route"
+        metadata.time = .now
+        
+        let root = GPXRoot(creator: "GeoStudio", metadata: metadata)
         root.add(track: track)
         
         do {

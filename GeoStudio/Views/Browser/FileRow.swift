@@ -15,7 +15,7 @@ struct FileRow: View {
     @Environment(\.modelContext) var modelContext
     @Environment(Model.self) var model
     @Query(sort: \Folder.name) var folders: [Folder]
-    @State var data: MapData?
+    @State var data: GeoData?
     @State var mapModel = MapModel()
     
     var body: some View {

@@ -1,6 +1,6 @@
 //
 //  CLLocation.swift
-//  Geodata
+//  GeoStudio
 //
 //  Created by Jack Finnis on 31/08/2025.
 //

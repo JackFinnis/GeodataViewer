@@ -12,7 +12,7 @@ import GoogleMapsUtils
 import UniformTypeIdentifiers
 
 class GeoParser {
-    var data: MapData {
+    var data: GeoData {
         .init(points: points, polylines: polylines, polygons: polygons)
     }
     
@@ -28,7 +28,7 @@ class GeoParser {
         polygons = []
     }
     
-    func parse(file: File) throws(GeoError) -> MapData {
+    func parse(file: File) throws(GeoError) -> GeoData {
         reset()
         
         guard let type = GeoFileType(rawValue: file.url.pathExtension) else {

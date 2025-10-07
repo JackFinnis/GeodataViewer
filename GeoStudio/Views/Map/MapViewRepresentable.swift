@@ -13,7 +13,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     
     let mapModel: MapModel?
     let recordModel: RecordModel?
-    let data: MapData
+    let data: GeoData
     let preview: Bool
     
     func makeCoordinator() -> Coordinator {

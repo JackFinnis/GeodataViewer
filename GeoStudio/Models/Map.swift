@@ -7,10 +7,10 @@
 
 enum Map: Hashable, Identifiable {
     case record
-    case folder(Folder, MapData)
-    case file(File, MapData)
+    case folder(Folder, GeoData)
+    case file(File, GeoData)
     
-    var id: MapData? {
+    var id: GeoData? {
         switch self {
         case .record:
             return nil

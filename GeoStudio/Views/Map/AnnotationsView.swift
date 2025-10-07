@@ -1,6 +1,6 @@
 //
 //  AnnotationsView.swift
-//  Geodata
+//  GeoStudio
 //
 //  Created by Jack Finnis on 31/08/2025.
 //
@@ -12,7 +12,7 @@ struct AnnotationsView: View {
     @Binding var title: String
     @Bindable var mapModel: MapModel
     @Binding var recordModel: RecordModel
-    let data: MapData
+    let data: GeoData
     
     @Environment(Model.self) var model
     @State var searchText = ""
