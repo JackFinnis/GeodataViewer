@@ -43,17 +43,17 @@ struct FoldersView: View {
                         }
                 }
             }
-            .navigationTitle("GeoStudio")
+            .navigationTitle("Geodata")
             .navigationBarTitleDisplayMode(.inline)
             .contentMargins(.top, 0)
             .toolbarTitleMenu {
                 Button {
                     requestReview()
                 } label: {
-                    Label("Rate GeoStudio", systemImage: "star")
+                    Label("Rate Geodata", systemImage: "star")
                 }
-                Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=GeoStudio%20Feedback")!) {
-                    Label("Improve GeoStudio", systemImage: "envelope")
+                Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=Geodata%20Feedback")!) {
+                    Label("Improve Geodata", systemImage: "envelope")
                 }
             }
             .toolbar {

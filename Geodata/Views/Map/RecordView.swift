@@ -1,6 +1,6 @@
 //
 //  RecordView.swift
-//  GeoStudio
+//  Geodata
 //
 //  Created by Jack Finnis on 04/09/2025.
 //

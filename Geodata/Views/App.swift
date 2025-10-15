@@ -1,6 +1,6 @@
 //
-//  GeoStudioApp.swift
-//  GeoStudio
+//  GeodataApp.swift
+//  Geodata
 //
 //  Created by Jack Finnis on 19/11/2022.
 //
@@ -26,7 +26,7 @@ import SwiftData
 let defaultColor = UIColor(.orange)
 
 @main
-struct GeoStudioApp: App {
+struct GeodataApp: App {
     var body: some Scene {
         WindowGroup {
             FoldersView()

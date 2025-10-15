@@ -87,7 +87,7 @@ class Model {
         metadata.name = "New Route"
         metadata.time = .now
         
-        let root = GPXRoot(creator: "GeoStudio", metadata: metadata)
+        let root = GPXRoot(creator: "Geodata", metadata: metadata)
         root.add(track: track)
         
         do {

@@ -1,6 +1,6 @@
 //
 //  MapModel.swift
-//  GeoStudio
+//  Geodata
 //
 //  Created by Jack Finnis on 06/10/2025.
 //
