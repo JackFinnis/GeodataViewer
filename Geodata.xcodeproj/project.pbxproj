@@ -15,6 +15,7 @@
 		04092CFB2C3AFD880015EAE7 /* FileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04092CFA2C3AFD880015EAE7 /* FileRow.swift */; };
 		04092CFD2C3B00E60015EAE7 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04092CFC2C3B00E60015EAE7 /* File.swift */; };
 		04092D0A2C3E03AB0015EAE7 /* Folder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04092D092C3E03AB0015EAE7 /* Folder.swift */; };
+		0441CA032EA0503F007B4243 /* Geodata.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0441CA022EA0503F007B4243 /* Geodata.icon */; };
 		0443D4322B9F968000018470 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0443D4312B9F968000018470 /* MapViewRepresentable.swift */; };
 		044C1F442D5CB6E900396E4D /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F432D5CB6DD00396E4D /* Annotation.swift */; };
 		044C1F5E2D5CC21700396E4D /* GMUPlacemark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F5D2D5CC21600396E4D /* GMUPlacemark.swift */; };
@@ -65,6 +66,7 @@
 		04092CFA2C3AFD880015EAE7 /* FileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRow.swift; sourceTree = "<group>"; };
 		04092CFC2C3B00E60015EAE7 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		04092D092C3E03AB0015EAE7 /* Folder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folder.swift; sourceTree = "<group>"; };
+		0441CA022EA0503F007B4243 /* Geodata.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Geodata.icon; sourceTree = "<group>"; };
 		0443D4312B9F968000018470 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		044C1F432D5CB6DD00396E4D /* Annotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		044C1F5D2D5CC21600396E4D /* GMUPlacemark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMUPlacemark.swift; sourceTree = "<group>"; };
@@ -78,7 +80,7 @@
 		047BF5632A7432490022505C /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
 		04900F202E9344FE00B4B410 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 		04900F3B2E9359D600B4B410 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
-		049C0F71292936F600C6521A /* GeoStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		049C0F71292936F600C6521A /* Geodata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geodata.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		049C0F74292936F600C6521A /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		049C0F78292936F700C6521A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		049C0F9B292953A400C6521A /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
@@ -122,7 +124,7 @@
 		049C0F68292936F600C6521A = {
 			isa = PBXGroup;
 			children = (
-				049C0F73292936F600C6521A /* GeoStudio */,
+				049C0F73292936F600C6521A /* Geodata */,
 				049C0F72292936F600C6521A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,12 +132,12 @@
 		049C0F72292936F600C6521A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				049C0F71292936F600C6521A /* GeoStudio.app */,
+				049C0F71292936F600C6521A /* Geodata.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		049C0F73292936F600C6521A /* GeoStudio */ = {
+		049C0F73292936F600C6521A /* Geodata */ = {
 			isa = PBXGroup;
 			children = (
 				04A65584293D58B30084CC6A /* Extensions */,
@@ -143,12 +145,13 @@
 				049C0FB5292A88B300C6521A /* Resources */,
 				04C71FF12A08DCAC00417249 /* Views */,
 			);
-			path = GeoStudio;
+			path = Geodata;
 			sourceTree = "<group>";
 		};
 		049C0FB5292A88B300C6521A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0441CA022EA0503F007B4243 /* Geodata.icon */,
 				047BF5602A7405FA0022505C /* Info.plist */,
 				049C0F78292936F700C6521A /* Assets.xcassets */,
 			);
@@ -239,9 +242,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		049C0F70292936F600C6521A /* GeoStudio */ = {
+		049C0F70292936F600C6521A /* Geodata */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "GeoStudio" */;
+			buildConfigurationList = 049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "Geodata" */;
 			buildPhases = (
 				049C0F6D292936F600C6521A /* Sources */,
 				049C0F6E292936F600C6521A /* Frameworks */,
@@ -251,13 +254,13 @@
 			);
 			dependencies = (
 			);
-			name = GeoStudio;
+			name = Geodata;
 			packageProductDependencies = (
 				04C71FFC2A08EC8B00417249 /* CoreGPX */,
 				04BCBC2D2D5BF907002BB5E8 /* GoogleMapsUtils */,
 			);
 			productName = Geojson;
-			productReference = 049C0F71292936F600C6521A /* GeoStudio.app */;
+			productReference = 049C0F71292936F600C6521A /* Geodata.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -275,7 +278,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 049C0F6C292936F600C6521A /* Build configuration list for PBXProject "GeoStudio" */;
+			buildConfigurationList = 049C0F6C292936F600C6521A /* Build configuration list for PBXProject "Geodata" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -292,7 +295,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				049C0F70292936F600C6521A /* GeoStudio */,
+				049C0F70292936F600C6521A /* Geodata */,
 			);
 		};
 /* End PBXProject section */
@@ -302,6 +305,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0441CA032EA0503F007B4243 /* Geodata.icon in Resources */,
 				049C0F79292936F700C6521A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -489,7 +493,7 @@
 		049C0F81292936F700C6521A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Geodata;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -498,8 +502,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GeoStudio/Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GeoStudio;
+				INFOPLIST_FILE = Geodata/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Geodata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used in the background to track your route.";
@@ -535,7 +539,7 @@
 		049C0F82292936F700C6521A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Geodata;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -544,8 +548,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GeoStudio/Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GeoStudio;
+				INFOPLIST_FILE = Geodata/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Geodata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used in the background to track your route.";
@@ -581,7 +585,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		049C0F6C292936F600C6521A /* Build configuration list for PBXProject "GeoStudio" */ = {
+		049C0F6C292936F600C6521A /* Build configuration list for PBXProject "Geodata" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				049C0F7E292936F700C6521A /* Debug */,
@@ -590,7 +594,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "GeoStudio" */ = {
+		049C0F80292936F700C6521A /* Build configuration list for PBXNativeTarget "Geodata" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				049C0F81292936F700C6521A /* Debug */,
