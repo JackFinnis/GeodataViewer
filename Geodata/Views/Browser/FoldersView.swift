@@ -12,6 +12,7 @@ import StoreKit
 
 struct FoldersView: View {
     @State var model = Model()
+    @AppStorage("featuresUsed") var featuresUsed = 0
     @Environment(\.modelContext) var modelContext
     @Environment(\.requestReview) var requestReview
     @Query(sort: \Folder.name) var folders: [Folder]
@@ -112,6 +113,16 @@ struct FoldersView: View {
         .sensoryFeedback(.impact, trigger: model.map)
         .environment(model)
         .monospacedDigit()
+        .onChange(of: model.map) { _, _ in
+            if model.map == nil {
+                featuresUsed += 1
+            }
+        }
+        .onChange(of: featuresUsed) { _, _ in
+            if featuresUsed.isMultiple(of: 10) {
+                requestReview()
+            }
+        }
     }
 }
 
