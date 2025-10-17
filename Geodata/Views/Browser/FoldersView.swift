@@ -53,10 +53,10 @@ struct FoldersView: View {
                     Button {
                         requestReview()
                     } label: {
-                        Label("Rate This App", systemImage: "star")
+                        Label("Rate Geodata", systemImage: "star")
                     }
                     Link(destination: URL(string: "https://apps.apple.com/app/id6444589175?action=write-review")!) {
-                        Label("Leave a Review", systemImage: "quote.bubble")
+                        Label("Write a Review", systemImage: "quote.bubble")
                     }
                     Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=Geodata%20Feedback")!) {
                         Label("Send Feedback", systemImage: "envelope")
