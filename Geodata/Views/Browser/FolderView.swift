@@ -44,7 +44,7 @@ struct FolderView: View {
         .searchable(text: $searchText.animation())
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationSubtitle(filteredFiles.count.formatted(singular: searchText.isEmpty ? "File" : "Results"))
+        .navigationSubtitle(filteredFiles.count.formatted(singular: searchText.isEmpty ? "File" : "Result"))
         .toolbar {
             if let folder, folder.files.isNotEmpty {
                 ToolbarItem(placement: .primaryAction) {

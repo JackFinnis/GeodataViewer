@@ -11,6 +11,7 @@ import MapKit
 struct RecordView: View {
     @Bindable var mapModel: MapModel
     @Binding var recordModel: RecordModel
+    let detent: PresentationDetent
     
     @Environment(Model.self) var model
     @Environment(\.dismiss) var dismiss
@@ -120,6 +121,7 @@ struct RecordView: View {
             .buttonStyle(.glassProminent)
         }
         .padding(.horizontal, 20)
+        .navigationTitle(detent == .smallDetent ? "" : "Record")
         .sensoryFeedback(.impact, trigger: recordModel.state)
         .sensoryFeedback(.impact, trigger: recordModel.authorizationStatus)
         .onChange(of: recordModel.state) { _, newState in
@@ -134,8 +136,6 @@ struct RecordView: View {
 }
 
 #Preview {
-    NavigationStack {
-        MapView(title: .constant("Example"), data: .example)
-    }
-    .environment(Model())
+    MapView(title: .constant("Example"), data: .example)
+        .environment(Model())
 }

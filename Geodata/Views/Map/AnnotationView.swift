@@ -17,9 +17,17 @@ struct AnnotationView: View {
     
     var body: some View {
         List {
+            Button {
+                if case .folder = model.map {
+                    model.load(file: annotation.file)
+                }
+            } label: {
+                PropertyRow(key: "File", value: annotation.file.lastPathComponent)
+            }
             if let point = annotation as? Point {
                 PropertyRow(key: "Latitude", value: String(format: "%.5f", point.coordinate.latitude))
                 PropertyRow(key: "Longitude", value: String(format: "%.5f", point.coordinate.longitude))
+                PropertyRow(key: "Distance", value: Measurement(value: point.coordinate.distance(to: mapModel.mapView.userLocation.coordinate), unit: UnitLength.meters).formatted())
             }
             if let polyline = annotation as? Polyline {
                 PropertyRow(key: "Length", value: Measurement(value: polyline.mkPolyline.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
@@ -28,7 +36,7 @@ struct AnnotationView: View {
                 PropertyRow(key: "Area", value: Measurement(value: polygon.mkPolygon.squareMeters, unit: UnitArea.squareMeters).formatted())
                 PropertyRow(key: "Perimeter", value: Measurement(value: polygon.mkPolygon.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
             }
-            ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
+            ForEach(annotation.properties.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
                 let string = "\(value)"
                 let title = key == annotation.file.titleKey
                 Menu {

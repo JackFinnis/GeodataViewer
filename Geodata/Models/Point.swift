@@ -11,6 +11,10 @@ import CoreGPX
 import GoogleMapsUtils
 
 class Point: Annotation {
+    override func isVisible(in rect: MKMapRect) -> Bool {
+        rect.contains(coordinate.point)
+    }
+    
     func openInMaps() async throws {
         guard let request = MKReverseGeocodingRequest(location: coordinate.location) else { return }
         let mapItems = try await request.mapItems
@@ -31,6 +35,6 @@ extension Point {
     }
     
     convenience init(file: File, coordinate: CLLocationCoordinate2D, properties: Properties?) {
-        self.init(file: file, coordinate: coordinate, properties: properties ?? .empty, color: properties?.color)
+        self.init(file: file, coordinate: coordinate, properties: properties ?? [:], color: properties?.color)
     }
 }

@@ -9,9 +9,9 @@ import GoogleMapsUtils
 
 extension GMUPlacemark {
     var properties: Properties {
-        var dict: [String : Any] = [:]
-        dict["title"] = title
-        dict["snippet"] = snippet
-        return .init(dict: dict)
+        var properties: Properties = [:]
+        properties["title"] = title
+        properties["snippet"] = snippet
+        return properties
     }
 }

@@ -11,15 +11,15 @@ import CoreLocation
 
 extension GPXRoute {
     var properties: Properties {
-        var dict: [String : Any] = [:]
-        dict["name"] = name
-        dict["comment"] = comment
-        dict["description"] = desc
-        dict["source"] = source
-        dict["number"] = number
+        var properties: Properties = [:]
+        properties["name"] = name
+        properties["comment"] = comment
+        properties["description"] = desc
+        properties["source"] = source
+        properties["number"] = number
         links.enumerated().forEach { i, link in
-            dict["link\(i)"] = link.href
+            properties["link\(i)"] = link.href
         }
-        return .init(dict: dict)
+        return properties
     }
 }

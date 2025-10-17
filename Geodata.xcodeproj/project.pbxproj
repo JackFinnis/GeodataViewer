@@ -25,6 +25,7 @@
 		044C1F8C2D5D73FE00396E4D /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F8B2D5D73FE00396E4D /* AnnotationView.swift */; };
 		044C1F8E2D5DF1C500396E4D /* MapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F8D2D5DF1BC00396E4D /* MapLabel.swift */; };
 		044C1F902D5DF1F800396E4D /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044C1F8F2D5DF1EF00396E4D /* NSObject.swift */; };
+		0472F9072EA2E97600F3AE94 /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0472F9062EA2E97600F3AE94 /* Set.swift */; };
 		047BF5642A7432490022505C /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047BF5632A7432490022505C /* CLLocationCoordinate2D.swift */; };
 		04900F212E93450000B4B410 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04900F202E9344FE00B4B410 /* MapModel.swift */; };
 		04900F3C2E9359D600B4B410 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04900F3B2E9359D600B4B410 /* Map.swift */; };
@@ -76,6 +77,7 @@
 		044C1F8B2D5D73FE00396E4D /* AnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
 		044C1F8D2D5DF1BC00396E4D /* MapLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLabel.swift; sourceTree = "<group>"; };
 		044C1F8F2D5DF1EF00396E4D /* NSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
+		0472F9062EA2E97600F3AE94 /* Set.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
 		047BF5602A7405FA0022505C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		047BF5632A7432490022505C /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
 		04900F202E9344FE00B4B410 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				044C1F632D5D035D00396E4D /* MKMapRect.swift */,
 				0402C61A2A0D0C3700238C51 /* MKMultiPoint.swift */,
 				044C1F8F2D5DF1EF00396E4D /* NSObject.swift */,
+				0472F9062EA2E97600F3AE94 /* Set.swift */,
 				04F435B72D56BDF4005CA0ED /* String.swift */,
 				04F435B12D56BC2B005CA0ED /* UIColor.swift */,
 				049E16802C00F10A00ABB106 /* UIEdgeInsets.swift */,
@@ -352,6 +355,7 @@
 				04BCBC3E2D5C364C002BB5E8 /* Model.swift in Sources */,
 				044C1F662D5D054A00396E4D /* Properties.swift in Sources */,
 				049C0F9C292953A400C6521A /* Collection.swift in Sources */,
+				0472F9072EA2E97600F3AE94 /* Set.swift in Sources */,
 				04092CED2C378A110015EAE7 /* GeoError.swift in Sources */,
 				0402C6252A0D10FA00238C51 /* GPXWaypoint.swift in Sources */,
 				04BC71042E64BDBD00702B5C /* Nav.swift in Sources */,

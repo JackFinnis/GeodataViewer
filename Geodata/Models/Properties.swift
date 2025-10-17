@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct Properties {
-    let dict: [String : Any]
-    
+typealias Properties = [String : Any]
+
+extension Properties {
     var glyphText: String? {
         getStrings("symbol", "name").compactMap(Int.init).compactMap(String.init).first
     }
@@ -20,23 +20,19 @@ struct Properties {
         getStrings("color", "colour").first?.hexColor
     }
     var string: String {
-        String(describing: dict)
+        String(describing: self)
     }
     
     func getTitle(key: String?) -> String? {
         key.map(getString) ?? title
     }
     func getString(_ key: String) -> String? {
-        guard let string = dict[key].map(String.init(describing:)),
+        guard let string = self[key].map(String.init(describing:)),
               string.isNotEmpty
         else { return nil }
         return string
     }
     func getStrings(_ keys: String...) -> [String] {
         keys.compactMap(getString)
-    }
-    
-    static var empty: Properties {
-        .init(dict: [:])
     }
 }

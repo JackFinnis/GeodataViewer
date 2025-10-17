@@ -12,6 +12,10 @@ import GoogleMapsUtils
 class Polygon: Annotation {
     let mkPolygon: MKPolygon
     
+    override func isVisible(in rect: MKMapRect) -> Bool {
+        boundingMapRect.intersects(rect)
+    }
+    
     init(file: File, mkPolygon: MKPolygon, color: UIColor?, properties: Properties) {
         self.mkPolygon = mkPolygon
         super.init(file: file, coordinate: mkPolygon.coordinate, properties: properties, color: color)
@@ -31,7 +35,7 @@ extension Polygon {
     }
     
     convenience init(file: File, mkPolygon: MKPolygon, properties: Properties?) {
-        self.init(file: file, mkPolygon: mkPolygon, color: properties?.color, properties: properties ?? .empty)
+        self.init(file: file, mkPolygon: mkPolygon, color: properties?.color, properties: properties ?? [:])
     }
 }
 

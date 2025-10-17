@@ -13,6 +13,7 @@ class MapModel: NSObject, Identifiable {
     let mapView = MKMapView()
     
     var mapStandard = true
+    var visibleMapRect: MKMapRect?
     var selectedAnnotation: Annotation? { didSet {
         if let selectedAnnotation {
             zoomToAnnotation(selectedAnnotation)

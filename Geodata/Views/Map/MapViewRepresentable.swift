@@ -110,6 +110,10 @@ struct MapViewRepresentable: UIViewRepresentable {
             }
         }
         
+        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+            parent.mapModel?.visibleMapRect = mapView.visibleMapRect
+        }
+        
         func mapView(_ mapView: MKMapView, rendererFor overlay: any MKOverlay) -> MKOverlayRenderer {
             let lineWidth = parent.preview ? 2.0 : 3.0
             if let multiPolyline = overlay as? MultiPolyline {

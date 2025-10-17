@@ -18,21 +18,25 @@ struct AnnotationsView: View {
     @State var searchText = ""
     @State var isSearching = false
     @State var sort = false
-    @State var filterType: AnnotationType?
+    @State var filterTypes: Set<AnnotationType> = []
+    @State var filterVisible = false
     @State var detent: PresentationDetent = .mediumDetent
     @State var selectedAnnotationPoint: CGPoint?
     
     var body: some View {
-        let annotations = sort ? data.annotations.sorted(using: SortDescriptor(\Annotation.title)) : data.annotations
+        let annotations = sort ? data.annotations.sorted(using: SortDescriptor(\.title)) : data.annotations
         let filteredAnnotations = annotations.filter {
-            filterType == nil || $0.type == filterType
+            filterTypes.isEmpty || filterTypes.contains($0.type)
         }.filter {
             searchText.isEmpty
             || $0.file.name.localizedStandardContains(searchText)
             || $0.properties.string.localizedStandardContains(searchText)
+        }.filter {
+            !filterVisible
+            || $0.isVisible(in: mapModel.visibleMapRect ?? mapModel.mapView.visibleMapRect)
         }
+        let isFiltering = filterTypes.isNotEmpty || filterVisible
         let groupedAnnotations = Dictionary(grouping: filteredAnnotations, by: \.file)
-        let name = searchText.isNotEmpty ? "Result" : (filterType == nil ? "Feature" : filterType!.name)
         
         NavigationStack {
             List {
@@ -65,10 +69,10 @@ struct AnnotationsView: View {
             }
             .animation(.default, value: filteredAnnotations)
             .listStyle(.plain)
-            .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search \(name)s"))
+            .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search Features"))
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)
-            .navigationSubtitle(filteredAnnotations.count.formatted(singular: searchText.isEmpty ? "Features" : "Results"))
+            .navigationSubtitle(filteredAnnotations.count.formatted(singular: isFiltering ? "Result" : "Feature"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -84,28 +88,25 @@ struct AnnotationsView: View {
                     Menu {
                         Toggle("Sort by Name", isOn: $sort.animation())
                         Divider()
-                        Picker(selection: $filterType.animation()) {
-                            ForEach(AnnotationType.allCases, id: \.self) { type in
-                                Label("\(type.name)s", systemImage: type.systemImage)
-                                    .tag(type as AnnotationType?)
-                            }
-                        } label: {
-                            if let filterType {
-                                Label("Filter", systemImage: filterType.systemImage)
-                            } else {
-                                Text("Filter")
-                            }
-                        }
-                        .pickerStyle(.menu)
-                        if filterType != nil {
-                            Button {
-                                filterType = nil
-                            } label: {
-                                Label("Remove Filter", systemImage: "minus.circle")
-                            }
+                        Toggle("All Features", isOn: .init {
+                            !isFiltering
+                        } set: { _ in
+                            filterVisible = false
+                            filterTypes = []
+                        })
+                        Divider()
+                        Toggle("Visible", systemImage: "eye", isOn: $filterVisible)
+                        ForEach(AnnotationType.allCases, id: \.self) { type in
+                            Toggle("\(type.name)s", systemImage: type.systemImage, isOn: .init {
+                                filterTypes.contains(type)
+                            } set: { _ in
+                                filterTypes.toggle(type)
+                            })
                         }
                     } label: {
-                        Image(systemName: filterType == nil ? "line.3.horizontal.decrease" : filterType!.systemImage)
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                            .symbolVariant(isFiltering ? .fill : .none)
+                            .foregroundStyle(isFiltering ? .accent : .primary)
                     }
                     .menuOrder(.fixed)
                 }
@@ -114,7 +115,7 @@ struct AnnotationsView: View {
                 AnnotationView(mapModel: mapModel, annotation: annotation)
             }
             .navigationDestination(isPresented: $recordModel.showRecordView) {
-                RecordView(mapModel: mapModel, recordModel: $recordModel)
+                RecordView(mapModel: mapModel, recordModel: $recordModel, detent: detent)
             }
         }
         .interactiveDismissDisabled()

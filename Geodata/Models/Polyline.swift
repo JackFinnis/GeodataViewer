@@ -13,6 +13,10 @@ import CoreGPX
 class Polyline: Annotation {
     let mkPolyline: MKPolyline
     
+    override func isVisible(in rect: MKMapRect) -> Bool {
+        boundingMapRect.intersects(rect)
+    }
+    
     init(file: File, mkPolyline: MKPolyline, color: UIColor?, properties: Properties) {
         self.mkPolyline = mkPolyline
         let coordinate = mkPolyline.coordinates.middle ?? mkPolyline.coordinate
@@ -34,11 +38,11 @@ extension Polyline {
     convenience init(file: File, segment: GPXTrackSegment) {
         let coords = segment.points.compactMap(\.coord)
         let mkPolyline = MKPolyline(coords: coords)
-        self.init(file: file, mkPolyline: mkPolyline, color: nil, properties: .empty)
+        self.init(file: file, mkPolyline: mkPolyline, color: nil, properties: [:])
     }
     
     convenience init(file: File, mkPolyline: MKPolyline, properties: Properties?) {
-        self.init(file: file, mkPolyline: mkPolyline, color: properties?.color, properties: properties ?? .empty)
+        self.init(file: file, mkPolyline: mkPolyline, color: properties?.color, properties: properties ?? [:])
     }
     
     convenience init(file: File, line: GMULineString, placemark: GMUPlacemark, style: GMUStyle?) {

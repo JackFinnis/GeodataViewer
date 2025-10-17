@@ -17,6 +17,7 @@ class Annotation: NSObject, MKAnnotation, Identifiable {
     var title: String? {
         properties.getTitle(key: file.titleKey)
     }
+    
     var type: AnnotationType {
         switch self {
         case is Point:
@@ -27,6 +28,10 @@ class Annotation: NSObject, MKAnnotation, Identifiable {
             return .polygon
         default: fatalError()
         }
+    }
+    
+    func isVisible(in rect: MKMapRect) -> Bool {
+        fatalError()
     }
     
     init(file: File, coordinate: CLLocationCoordinate2D, properties: Properties, color: UIColor?) {

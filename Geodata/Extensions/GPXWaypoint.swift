@@ -16,16 +16,16 @@ extension GPXWaypoint {
     }
     
     var properties: Properties {
-        var dict: [String : Any] = [:]
-        dict["name"] = name
-        dict["comment"] = comment
-        dict["description"] = desc
-        dict["elevation"] = elevation
-        dict["source"] = source
-        dict["symbol"] = symbol
+        var properties: Properties = [:]
+        properties["name"] = name
+        properties["comment"] = comment
+        properties["description"] = desc
+        properties["elevation"] = elevation
+        properties["source"] = source
+        properties["symbol"] = symbol
         links.enumerated().forEach { i, link in
-            dict["link\(i)"] = link.href
+            properties["link\(i)"] = link.href
         }
-        return .init(dict: dict)
+        return properties
     }
 }
