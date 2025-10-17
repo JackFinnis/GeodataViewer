@@ -17,14 +17,6 @@ struct AnnotationView: View {
     
     var body: some View {
         List {
-            Button {
-                if case .folder = model.map {
-                    model.load(file: annotation.file)
-                }
-            } label: {
-                PropertyRow(key: "File", value: annotation.file.lastPathComponent)
-            }
-            PropertyRow(key: "Type", value: annotation.type.name)
             if let point = annotation as? Point {
                 PropertyRow(key: "Latitude", value: String(format: "%.5f", point.coordinate.latitude))
                 PropertyRow(key: "Longitude", value: String(format: "%.5f", point.coordinate.longitude))
@@ -36,7 +28,6 @@ struct AnnotationView: View {
                 PropertyRow(key: "Area", value: Measurement(value: polygon.mkPolygon.squareMeters, unit: UnitArea.squareMeters).formatted())
                 PropertyRow(key: "Perimeter", value: Measurement(value: polygon.mkPolygon.coordinates.map(\.location).meters, unit: UnitLength.meters).formatted())
             }
-            
             ForEach(annotation.properties.dict.sorted(using: SortDescriptor(\.key)), id: \.key) { key, value in
                 let string = "\(value)"
                 let title = key == annotation.file.titleKey
@@ -75,7 +66,8 @@ struct AnnotationView: View {
             }
         }
         .listStyle(.plain)
-        .navigationTitle(annotation.title ?? annotation.type.name)
+        .navigationTitle(annotation.title ?? "Untitled")
+        .navigationSubtitle(annotation.type.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

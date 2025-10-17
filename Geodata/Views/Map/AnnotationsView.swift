@@ -68,6 +68,7 @@ struct AnnotationsView: View {
             .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search \(name)s"))
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle($title)
+            .navigationSubtitle(filteredAnnotations.count.formatted(singular: searchText.isEmpty ? "Features" : "Results"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

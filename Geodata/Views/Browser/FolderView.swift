@@ -17,11 +17,12 @@ struct FolderView: View {
     @State var searchText: String = ""
     
     var body: some View {
-        let filteredFiles = files.filter { filter in
+        let filteredFiles = files.filter { file in
             searchText.isEmpty
-            || filter.name.localizedStandardContains(searchText)
-            || filter.folder?.name.localizedStandardContains(searchText) ?? false
-        }.sorted(using: SortDescriptor(\File.name))
+            || file.name.localizedStandardContains(searchText)
+            || file.folder?.name.localizedStandardContains(searchText) ?? false
+        }
+        .sorted(using: SortDescriptor(\File.name))
         
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16, alignment: .top)], spacing: 16) {
@@ -43,6 +44,7 @@ struct FolderView: View {
         .searchable(text: $searchText.animation())
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationSubtitle(filteredFiles.count.formatted(singular: searchText.isEmpty ? "File" : "Results"))
         .toolbar {
             if let folder, folder.files.isNotEmpty {
                 ToolbarItem(placement: .primaryAction) {

@@ -45,16 +45,25 @@ struct FoldersView: View {
                 }
             }
             .navigationTitle("Geodata")
+            .navigationSubtitle(folders.count.formatted(singular: "Folder"))
             .navigationBarTitleDisplayMode(.inline)
             .contentMargins(.top, 0)
             .toolbarTitleMenu {
-                Button {
-                    requestReview()
-                } label: {
-                    Label("Rate Geodata", systemImage: "star")
-                }
-                Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=Geodata%20Feedback")!) {
-                    Label("Improve Geodata", systemImage: "envelope")
+                Section("Geodata") {
+                    Button {
+                        requestReview()
+                    } label: {
+                        Label("Rate This App", systemImage: "star")
+                    }
+                    Link(destination: URL(string: "https://apps.apple.com/app/id6444589175?action=write-review")!) {
+                        Label("Leave a Review", systemImage: "quote.bubble")
+                    }
+                    Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=Geodata%20Feedback")!) {
+                        Label("Send Feedback", systemImage: "envelope")
+                    }
+                    Link(destination: URL(string: "https://apps.apple.com/developer/1633101066")!) {
+                        Label("More Apps by Jack", systemImage: "square.grid.2x2")
+                    }
                 }
             }
             .toolbar {
