@@ -510,7 +510,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Geodata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to record your route, show your location on the map, calculate the distance to selected places.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to show your location on the map, calculate the distance to selected places, and record your route and plot it on the map.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to show your location on the map and calculate the distance to selected places.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -556,7 +556,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Geodata;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to record your route, show your location on the map, calculate the distance to selected places.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to show your location on the map, calculate the distance to selected places, and record your route and plot it on the map.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to show your location on the map and calculate the distance to selected places.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

@@ -71,6 +71,7 @@ struct AnnotationsView: View {
             .listStyle(.plain)
             .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search Features"))
             .scrollDismissesKeyboard(.immediately)
+            .searchPresentationToolbarBehavior(.avoidHidingContent)
             .navigationTitle($title)
             .navigationSubtitle(filteredAnnotations.count.formatted(singular: isFiltering ? "Result" : "Feature"))
             .navigationBarTitleDisplayMode(.inline)
