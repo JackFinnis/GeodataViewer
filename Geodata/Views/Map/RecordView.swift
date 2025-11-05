@@ -121,7 +121,7 @@ struct RecordView: View {
             .buttonStyle(.glassProminent)
         }
         .padding(.horizontal, 20)
-        .navigationTitle(detent == .smallDetent ? "" : "Record")
+        .navigationTitle(detent == .smallDetent ? "" : "Record Route")
         .sensoryFeedback(.impact, trigger: recordModel.state)
         .sensoryFeedback(.impact, trigger: recordModel.authorizationStatus)
         .onChange(of: recordModel.state) { _, newState in

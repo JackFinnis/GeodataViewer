@@ -15,11 +15,13 @@ struct ImportButton: View {
     
     var body: some View {
         Menu {
-            Section("Import Files") {
+            Section("Import") {
                 Button {
                     showFileImporter = true
                 } label: {
-                    Label("Choose Files", systemImage: "folder")
+                    Text("Choose Files")
+                    Text(".gpx, .kml, .geojson")
+                    Image(systemName: "folder")
                 }
                 Button {
                     guard let string = UIPasteboard.general.string,
@@ -29,14 +31,18 @@ struct ImportButton: View {
                         await model.handleFetchFile(webURL: url, context: modelContext)
                     }
                 } label: {
-                    Label("Paste File URL", systemImage: "document.on.clipboard")
+                    Text("Paste Link")
+                    Text("https://example.com/route.gpx")
+                    Image(systemName: "link")
                 }
             }
-            Section("Create Files") {
+            Section("Create") {
                 Button {
                     model.map = .record
                 } label: {
-                    Label("Record Route", systemImage: "record.circle")
+                    Text("Record Route")
+                    Text("Saves as .gpx")
+                    Image(systemName: "record.circle")
                 }
             }
         } label: {

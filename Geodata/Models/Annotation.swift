@@ -45,8 +45,11 @@ class Annotation: NSObject, MKAnnotation, Identifiable {
 enum AnnotationType: String, CaseIterable {
     case point, polyline, polygon
     
-    var name: String {
+    var singular: String {
         rawValue.capitalized
+    }
+    var plural: String {
+        "\(singular)s"
     }
     
     var systemImage: String {

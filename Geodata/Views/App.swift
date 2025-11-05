@@ -11,6 +11,7 @@ import SwiftData
 // MARK: - Todo
 // Mark annotations as visited (like London Churches) by storing another property in file Model
 // It would be good to be able to add some pins (points) in gpx file. It could be done at three ways (which is most convenient for you):
+// Send Paypal to Nemanja
 
 // MARK: - Meh
 // Android version

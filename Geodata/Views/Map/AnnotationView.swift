@@ -75,7 +75,7 @@ struct AnnotationView: View {
         }
         .listStyle(.plain)
         .navigationTitle(annotation.title ?? "Untitled")
-        .navigationSubtitle(annotation.type.name)
+        .navigationSubtitle(annotation.type.singular)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

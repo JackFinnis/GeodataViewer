@@ -36,6 +36,7 @@ struct AnnotationsView: View {
             || $0.isVisible(in: mapModel.visibleMapRect ?? mapModel.mapView.visibleMapRect)
         }
         let isFiltering = filterTypes.isNotEmpty || filterVisible
+        let isFinding = isFiltering || searchText.isNotEmpty
         let groupedAnnotations = Dictionary(grouping: filteredAnnotations, by: \.file)
         
         NavigationStack {
@@ -73,7 +74,7 @@ struct AnnotationsView: View {
             .scrollDismissesKeyboard(.immediately)
             .searchPresentationToolbarBehavior(.avoidHidingContent)
             .navigationTitle($title)
-            .navigationSubtitle(filteredAnnotations.count.formatted(singular: isFiltering ? "Result" : "Feature"))
+            .navigationSubtitle(filteredAnnotations.count.formatted(singular: isFinding ? "Result" : "Feature"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -89,20 +90,34 @@ struct AnnotationsView: View {
                     Menu {
                         Toggle("Sort by Name", isOn: $sort.animation())
                         Divider()
-                        Toggle("All Features", isOn: .init {
-                            !isFiltering
-                        } set: { _ in
-                            filterVisible = false
-                            filterTypes = []
-                        })
-                        Divider()
-                        Toggle("Visible", systemImage: "eye", isOn: $filterVisible)
-                        ForEach(AnnotationType.allCases, id: \.self) { type in
-                            Toggle("\(type.name)s", systemImage: type.systemImage, isOn: .init {
-                                filterTypes.contains(type)
+                        Menu {
+                            Toggle("All Features", systemImage: "list.bullet", isOn: .init {
+                                !isFiltering
                             } set: { _ in
-                                filterTypes.toggle(type)
+                                filterVisible = false
+                                filterTypes = []
                             })
+                            Divider()
+                            Toggle("Visible", systemImage: "eye", isOn: $filterVisible)
+                            ForEach(AnnotationType.allCases, id: \.self) { type in
+                                Toggle(type.plural, systemImage: type.systemImage, isOn: .init {
+                                    filterTypes.contains(type)
+                                } set: { _ in
+                                    filterTypes.toggle(type)
+                                })
+                            }
+                        } label: {
+                            Text("Filter")
+                            Text((filterTypes.map(\.plural) + (filterVisible ? ["Visible"] : [])).joined(separator: ", "))
+                        }
+                        .menuActionDismissBehavior(.disabled)
+                        if isFiltering {
+                            Button {
+                                filterVisible = false
+                                filterTypes = []
+                            } label: {
+                                Label("Remove Filter", systemImage: "minus.circle")
+                            }
                         }
                     } label: {
                         Image(systemName: "line.3.horizontal.decrease.circle")
