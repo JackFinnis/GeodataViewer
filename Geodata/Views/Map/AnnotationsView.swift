@@ -87,44 +87,51 @@ struct AnnotationsView: View {
                     .tint(recordModel.isRecording ? .red : .none)
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Menu {
-                        Toggle("Sort by Name", isOn: $sort.animation())
-                        Divider()
+                    Toggle(isOn: .init {
+                        isFiltering
+                    } set: { _ in }) {
                         Menu {
-                            Toggle("All Features", systemImage: "list.bullet", isOn: .init {
-                                !isFiltering
-                            } set: { _ in
-                                filterVisible = false
-                                filterTypes = []
-                            })
+                            Toggle("Sort by Name", isOn: $sort.animation())
                             Divider()
-                            Toggle("Visible", systemImage: "eye", isOn: $filterVisible)
-                            ForEach(AnnotationType.allCases, id: \.self) { type in
-                                Toggle(type.plural, systemImage: type.systemImage, isOn: .init {
-                                    filterTypes.contains(type)
+                            Menu {
+                                Toggle("All Features", systemImage: "list.bullet", isOn: .init {
+                                    !isFiltering
                                 } set: { _ in
-                                    filterTypes.toggle(type)
+                                    filterVisible = false
+                                    filterTypes = []
                                 })
+                                Divider()
+                                Toggle("Visible", systemImage: "eye", isOn: $filterVisible)
+                                ForEach(AnnotationType.allCases, id: \.self) { type in
+                                    Toggle(type.plural, systemImage: type.systemImage, isOn: .init {
+                                        filterTypes.contains(type)
+                                    } set: { _ in
+                                        filterTypes.toggle(type)
+                                    })
+                                }
+                            } label: {
+                                Text("Filter")
+                                Text((filterTypes.map(\.plural) + (filterVisible ? ["Visible"] : [])).joined(separator: ", "))
+                            }
+                            .menuActionDismissBehavior(.disabled)
+                            if isFiltering {
+                                Button {
+                                    filterVisible = false
+                                    filterTypes = []
+                                } label: {
+                                    Label("Remove Filter", systemImage: "minus.circle")
+                                }
                             }
                         } label: {
-                            Text("Filter")
-                            Text((filterTypes.map(\.plural) + (filterVisible ? ["Visible"] : [])).joined(separator: ", "))
+                            Image(systemName: "line.3.horizontal.decrease")
+                                .frame(width: 24, height: 24)
+                                .foregroundStyle(isFiltering ? .white : .primary)
                         }
-                        .menuActionDismissBehavior(.disabled)
-                        if isFiltering {
-                            Button {
-                                filterVisible = false
-                                filterTypes = []
-                            } label: {
-                                Label("Remove Filter", systemImage: "minus.circle")
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
-                            .symbolVariant(isFiltering ? .fill : .none)
-                            .foregroundStyle(isFiltering ? .accent : .primary)
+                        .menuOrder(.fixed)
+                        .menuStyle(.button)
+                        .buttonBorderShape(.circle)
+                        .toggleStyle(.button)
                     }
-                    .menuOrder(.fixed)
                 }
             }
             .navigationDestination(item: $mapModel.selectedAnnotation) { annotation in
@@ -164,7 +171,7 @@ struct AnnotationsView: View {
 }
 
 extension PresentationDetent {
-    static let smallDetent: Self    = .height(130)
+    static let smallDetent: Self    = .height(101)
     static let mediumDetent: Self   = .height(350)
     static let largeDetent: Self    = .large
 }

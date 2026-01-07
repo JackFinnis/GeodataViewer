@@ -22,20 +22,21 @@ struct GeoData: Hashable {
     let polylines: [Polyline]
     let polygons: [Polygon]
     
+    let annotations: [Annotation]
     let multiPolylines: [MultiPolyline]
     let multiPolygons: [MultiPolygon]
+    
+    var rect: MKMapRect { multiPolygons.rect.union(multiPolylines.rect).union(points.rect) }
+    var isEmpty: Bool { points.isEmpty && polylines.isEmpty && polygons.isEmpty }
     
     init(points: [Point], polylines: [Polyline], polygons: [Polygon]) {
         self.points = points
         self.polylines = polylines
         self.polygons = polygons
+        self.annotations = points + polylines + polygons
         self.multiPolylines = Dictionary(grouping: polylines, by: \.color).map(MultiPolyline.init)
         self.multiPolygons = Dictionary(grouping: polygons, by: \.color).map(MultiPolygon.init)
     }
-    
-    var rect: MKMapRect { multiPolygons.rect.union(multiPolylines.rect).union(points.rect) }
-    var isEmpty: Bool { points.isEmpty && polylines.isEmpty && polygons.isEmpty }
-    var annotations: [Annotation] { points + polylines + polygons }
     
     func closestOverlay(to targetCoord: CLLocationCoordinate2D) -> Annotation? {
         var closestOverlay: Annotation?
