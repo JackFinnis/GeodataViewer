@@ -1,5 +1,5 @@
 # Geodata Viewer
 
-View and analyze GeoJSON, KML, and GPX files on interactive maps. Import files, organize in folders, record GPS routes, and export your data.
+Import and browse any GPX, KML or GeoJSON file on an interactive map.
 
 https://jackfinnis.com/apps/geodata
