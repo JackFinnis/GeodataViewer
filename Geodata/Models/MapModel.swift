@@ -14,11 +14,7 @@ class MapModel: NSObject, Identifiable {
     
     var mapStandard = true
     var visibleMapRect: MKMapRect?
-    var selectedAnnotation: Annotation? { didSet {
-        if let selectedAnnotation {
-            zoomToAnnotation(selectedAnnotation)
-        }
-    }}
+    var selectedAnnotation: Annotation?
     
     func refreshAnnotations() {
         let annotations = mapView.annotations.filter { $0 is Annotation }

@@ -116,6 +116,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         
         func mapView(_ mapView: MKMapView, rendererFor overlay: any MKOverlay) -> MKOverlayRenderer {
             let lineWidth = parent.preview ? 2.0 : 3.0
+            let defaultColor = UIColor(.orange)
             if let multiPolyline = overlay as? MultiPolyline {
                 let color = multiPolyline.color ?? defaultColor
                 let renderer = MKMultiPolylineRenderer(multiPolyline: multiPolyline.mkMultiPolyline)

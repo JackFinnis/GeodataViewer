@@ -39,7 +39,7 @@ struct RecordView: View {
                 .frame(maxWidth: .infinity)
             }
             .font(.headline)
-            .padding(30)
+            .padding(35)
             Spacer()
             HStack {
                 switch recordModel.state {

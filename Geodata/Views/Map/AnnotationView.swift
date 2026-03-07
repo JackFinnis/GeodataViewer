@@ -91,7 +91,7 @@ struct AnnotationView: View {
                     Button {
                         mapModel.zoomToAnnotation(annotation)
                     } label: {
-                        Label("Zoom", systemImage: "scope")
+                        Label("Zoom", systemImage: "arrow.up.left.and.arrow.down.right")
                     }
                 }
             }

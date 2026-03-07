@@ -47,6 +47,7 @@ struct AnnotationsView: View {
                         ForEach(annotations) { annotation in
                             Button {
                                 mapModel.selectedAnnotation = annotation
+                                mapModel.zoomToAnnotation(annotation)
                             } label: {
                                 Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
                             }
@@ -56,6 +57,7 @@ struct AnnotationsView: View {
                             ForEach(annotations) { annotation in
                                 Button {
                                     mapModel.selectedAnnotation = annotation
+                                    mapModel.zoomToAnnotation(annotation)
                                 } label: {
                                     Label(annotation.title ?? annotation.file.name, systemImage: annotation.type.systemImage)
                                 }
@@ -142,7 +144,7 @@ struct AnnotationsView: View {
             }
         }
         .interactiveDismissDisabled()
-        .presentationBackground(.background)
+        .presentationBackground(.bar)
         .presentationBackgroundInteraction(.enabled)
         .presentationDetents([.smallDetent, .mediumDetent, .largeDetent], selection: $detent)
         .inspectorColumnWidth(ideal: 350)
@@ -165,6 +167,7 @@ struct AnnotationsView: View {
         .onSubmit(of: .search) {
             if filteredAnnotations.count == 1, let annotation = filteredAnnotations.first {
                 mapModel.selectedAnnotation = annotation
+                mapModel.zoomToAnnotation(annotation)
             }
         }
     }
