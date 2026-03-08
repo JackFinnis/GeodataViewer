@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -110,6 +110,10 @@
 		04F435B72D56BDF4005CA0ED /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		049FB3782F5DF691002D2CA7 /* Examples */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Examples; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		049C0F6E292936F600C6521A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -153,6 +157,7 @@
 		049C0FB5292A88B300C6521A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				049FB3782F5DF691002D2CA7 /* Examples */,
 				0441CA022EA0503F007B4243 /* Geodata.icon */,
 				047BF5602A7405FA0022505C /* Info.plist */,
 				049C0F78292936F700C6521A /* Assets.xcassets */,
@@ -256,6 +261,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				049FB3782F5DF691002D2CA7 /* Examples */,
 			);
 			name = Geodata;
 			packageProductDependencies = (
