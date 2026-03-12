@@ -17,7 +17,8 @@ struct FoldersView: View {
     @Environment(\.requestReview) var requestReview
     @Query(sort: \Folder.name) var folders: [Folder]
     @Query(sort: \File.name) var files: [File]
-    
+    @State var showShareSheet = false
+
     var body: some View {
         let noFolder = files.filter { $0.folder == nil }
         
@@ -51,18 +52,21 @@ struct FoldersView: View {
             .toolbarTitleMenu {
                 Section("Geodata") {
                     Button {
-                        requestReview()
+                        showShareSheet = true
                     } label: {
-                        Label("Rate Geodata", systemImage: "star")
+                        Label("Share", systemImage: "square.and.arrow.up")
                     }
-                    Link(destination: URL(string: "https://apps.apple.com/app/id6444589175?action=write-review")!) {
-                        Label("Write a Review", systemImage: "quote.bubble")
+                    Link(destination: URL(string: "https://jackfinnis.com/apps/geodata")!) {
+                        Label("Get Help", systemImage: "questionmark.circle")
                     }
                     Link(destination: URL(string: "mailto:jack@jackfinnis.com?subject=Geodata%20Feedback")!) {
                         Label("Send Feedback", systemImage: "envelope")
                     }
+                    Link(destination: URL(string: "https://apps.apple.com/app/id6444589175?action=write-review")!) {
+                        Label("Write a Review", systemImage: "star")
+                    }
                     Link(destination: URL(string: "https://apps.apple.com/developer/1633101066")!) {
-                        Label("More Apps by Jack", systemImage: "square.grid.2x2")
+                        Label("More Apps", systemImage: "square.grid.2x2")
                     }
                 }
             }
@@ -120,6 +124,10 @@ struct FoldersView: View {
         }
         .sensoryFeedback(.error, trigger: model.error)
         .sensoryFeedback(.impact, trigger: model.map)
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheet(items: [URL(string: "https://apps.apple.com/app/id6444589175")!])
+                .presentationDetents([.medium])
+        }
         .environment(model)
         .monospacedDigit()
         .onChange(of: model.map) { _, _ in
@@ -133,6 +141,16 @@ struct FoldersView: View {
             }
         }
     }
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ vc: UIActivityViewController, context: Context) {}
 }
 
 #Preview {
