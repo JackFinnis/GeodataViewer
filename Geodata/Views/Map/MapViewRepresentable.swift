@@ -29,6 +29,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         mapView.layoutMargins = preview ? .init(all: -25) : .init(top: -15, left: 0, bottom: horizontalSizeClass == .compact ? 350 : 0, right: 0)
         mapView.showsUserTrackingButton = !preview
         mapView.pitchButtonVisibility = preview ? .hidden : .visible
+        mapView.showsScale = !preview
         
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMarkerAnnotationView.id)
         mapView.register(AnnotationLabel.self, forAnnotationViewWithReuseIdentifier: AnnotationLabel.id)

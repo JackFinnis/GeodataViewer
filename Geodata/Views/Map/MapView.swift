@@ -49,6 +49,7 @@ struct MapView: View {
                         } label: {
                             Label("Map Settings", systemImage: "map")
                         }
+                        .tint(.accentColor)
                     }
                 }
         }
