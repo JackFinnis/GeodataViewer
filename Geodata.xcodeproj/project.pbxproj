@@ -56,6 +56,7 @@
 		04F435B42D56BD38005CA0ED /* Polyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F435B32D56BD38005CA0ED /* Polyline.swift */; };
 		04F435B62D56BD56005CA0ED /* Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F435B52D56BD54005CA0ED /* Polygon.swift */; };
 		04F435B82D56BDF6005CA0ED /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F435B72D56BDF4005CA0ED /* String.swift */; };
+		284AB9519D354F37A15FD16A /* TelemetryDeck in Frameworks */ = {isa = PBXBuildFile; productRef = FE943B71AB1E40BA8B24287C /* TelemetryDeck */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,8 +120,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04BCBC2E2D5BF907002BB5E8 /* GoogleMapsUtils in Frameworks */,
+04BCBC2E2D5BF907002BB5E8 /* GoogleMapsUtils in Frameworks */,
 				04C71FFD2A08EC8B00417249 /* CoreGPX in Frameworks */,
+				284AB9519D354F37A15FD16A /* TelemetryDeck in Frameworks */,
+			
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +272,8 @@
 			packageProductDependencies = (
 				04C71FFC2A08EC8B00417249 /* CoreGPX */,
 				04BCBC2D2D5BF907002BB5E8 /* GoogleMapsUtils */,
+				FE943B71AB1E40BA8B24287C /* TelemetryDeck */,
+
 			);
 			productName = Geojson;
 			productReference = 049C0F71292936F600C6521A /* Geodata.app */;
@@ -301,6 +306,8 @@
 			packageReferences = (
 				04C71FFB2A08EC8B00417249 /* XCRemoteSwiftPackageReference "CoreGPX" */,
 				04BCBC2C2D5BF907002BB5E8 /* XCRemoteSwiftPackageReference "google-maps-ios-utils" */,
+				CEC8F308FA0145B49A3AD5C6 /* XCRemoteSwiftPackageReference "SwiftSDK" */,
+
 			);
 			productRefGroup = 049C0F72292936F600C6521A /* Products */;
 			projectDirPath = "";
@@ -634,6 +641,14 @@
 				minimumVersion = 0.0.0;
 			};
 		};
+		CEC8F308FA0145B49A3AD5C6 /* XCRemoteSwiftPackageReference "SwiftSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TelemetryDeck/SwiftSDK.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -646,6 +661,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 04C71FFB2A08EC8B00417249 /* XCRemoteSwiftPackageReference "CoreGPX" */;
 			productName = CoreGPX;
+		};
+		FE943B71AB1E40BA8B24287C /* TelemetryDeck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEC8F308FA0145B49A3AD5C6 /* XCRemoteSwiftPackageReference "SwiftSDK" */;
+			productName = TelemetryDeck;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

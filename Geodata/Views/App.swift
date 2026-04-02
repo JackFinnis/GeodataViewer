@@ -7,9 +7,15 @@
 
 import SwiftUI
 import SwiftData
+import TelemetryDeck
 
 @main
 struct GeodataApp: App {
+    init() {
+        let config = TelemetryDeck.Config(appID: "4B45AF9C-C062-4DB2-9286-064CF52934C1")
+        TelemetryDeck.initialize(config: config)
+    }
+    
     var body: some Scene {
         WindowGroup {
             FoldersView()
