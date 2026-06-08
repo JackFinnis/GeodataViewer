@@ -101,6 +101,7 @@ struct MapViewRepresentable: UIViewRepresentable {
             self.parent = parent
         }
         
+        @available(iOS 18.0, *)
         func mapView(_ mapView: MKMapView, selectionAccessoryFor annotation: any MKAnnotation) -> MKSelectionAccessory? {
             .mapItemDetail(.openInMaps)
         }
@@ -175,11 +176,12 @@ struct MapViewRepresentable: UIViewRepresentable {
         @objc
         func handleLongPress(_ press: UILongPressGestureRecognizer) {
             guard press.state == .began,
-                  let mapView = parent.mapModel?.mapView
+                  let mapView = parent.mapModel?.mapView,
+                  #available(iOS 18, *)
             else { return }
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
-            let mapItem = MKMapItem(location: coord.location, address: nil)
+            let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord))
             mapItem.name = "Dropped Pin"
             if let annotation = MKMapItemAnnotation(mapItem: mapItem) {
                 mapView.addAnnotation(annotation)

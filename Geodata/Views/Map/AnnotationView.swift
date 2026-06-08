@@ -75,7 +75,13 @@ struct AnnotationView: View {
         }
         .listStyle(.plain)
         .navigationTitle(annotation.title ?? "Untitled")
-        .navigationSubtitle(annotation.type.singular)
+        .modify { view in
+            if #available(iOS 26, *) {
+                view.navigationSubtitle(annotation.type.singular)
+            } else {
+                view
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

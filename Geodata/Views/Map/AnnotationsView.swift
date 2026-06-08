@@ -74,9 +74,21 @@ struct AnnotationsView: View {
             .listStyle(.plain)
             .searchable(text: $searchText.animation(), isPresented: $isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search Features"))
             .scrollDismissesKeyboard(.immediately)
-            .searchPresentationToolbarBehavior(.avoidHidingContent)
+            .modify { view in
+                if #available(iOS 17.1, *) {
+                    view.searchPresentationToolbarBehavior(.avoidHidingContent)
+                } else {
+                    view
+                }
+            }
             .navigationTitle($title)
-            .navigationSubtitle(filteredAnnotations.count.formatted(singular: isFinding ? "Result" : "Feature"))
+            .modify { view in
+                if #available(iOS 26, *) {
+                    view.navigationSubtitle(filteredAnnotations.count.formatted(singular: isFinding ? "Result" : "Feature"))
+                } else {
+                    view
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

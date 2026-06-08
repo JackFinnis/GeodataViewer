@@ -99,7 +99,13 @@ struct RecordView: View {
                             .padding(5)
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.glass)
+                    .modify { view in
+                        if #available(iOS 26, *) {
+                            view.buttonStyle(.glass)
+                        } else {
+                            view.buttonStyle(.bordered)
+                        }
+                    }
                     .tint(.red)
                     .confirmationDialog("Discard Route?", isPresented: $confirmDiscard) {
                         Button("Cancel", role: .cancel) {}
@@ -118,7 +124,13 @@ struct RecordView: View {
                 }
             }
             .font(.title3.bold())
-            .buttonStyle(.glassProminent)
+            .modify { view in
+                if #available(iOS 26, *) {
+                    view.buttonStyle(.glassProminent)
+                } else {
+                    view.buttonStyle(.borderedProminent)
+                }
+            }
         }
         .padding(.horizontal, 20)
         .navigationTitle(detent == .smallDetent ? "" : "Record Route")

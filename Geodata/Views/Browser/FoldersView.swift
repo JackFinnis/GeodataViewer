@@ -46,7 +46,13 @@ struct FoldersView: View {
                 }
             }
             .navigationTitle("Geodata")
-            .navigationSubtitle(folders.count.formatted(singular: "Folder"))
+            .modify { view in
+                if #available(iOS 26, *) {
+                    view.navigationSubtitle(folders.count.formatted(singular: "Folder"))
+                } else {
+                    view
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .contentMargins(.top, 0)
             .toolbarTitleMenu {
