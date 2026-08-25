@@ -72,7 +72,7 @@ struct FoldersView: View {
                         Label("Write a Review", systemImage: "star")
                     }
                     Link(destination: URL(string: "https://apps.apple.com/developer/1633101066")!) {
-                        Label("More Apps", systemImage: "square.grid.2x2")
+                        Label("More Japps", systemImage: "j.square")
                     }
                 }
             }
@@ -132,7 +132,8 @@ struct FoldersView: View {
         .sensoryFeedback(.impact, trigger: model.map)
         .sheet(isPresented: $showShareSheet) {
             ShareSheet(items: [URL(string: "https://apps.apple.com/app/id6444589175")!])
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.hidden)
         }
         .environment(model)
         .monospacedDigit()

@@ -61,8 +61,10 @@ struct FolderView: View {
                     }
                 }
             }
-            DefaultToolbarItem(kind: .search, placement: .bottomBar)
-            ToolbarSpacer(placement: .bottomBar)
+            if #available(iOS 26, *) {
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                ToolbarSpacer(placement: .bottomBar)
+            }
             ToolbarItemGroup(placement: .bottomBar) {
                 ImportButton()
             }

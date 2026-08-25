@@ -176,17 +176,24 @@ struct MapViewRepresentable: UIViewRepresentable {
         @objc
         func handleLongPress(_ press: UILongPressGestureRecognizer) {
             guard press.state == .began,
-                  let mapView = parent.mapModel?.mapView,
-                  #available(iOS 18, *)
+                  let mapView = parent.mapModel?.mapView
             else { return }
             let location = press.location(in: mapView)
             let coord = mapView.convert(location, toCoordinateFrom: mapView)
-            let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord))
-            mapItem.name = "Dropped Pin"
-            if let annotation = MKMapItemAnnotation(mapItem: mapItem) {
-                mapView.addAnnotation(annotation)
-                mapView.selectAnnotation(annotation, animated: true)
+            let annotation: MKAnnotation
+            if #available(iOS 18, *) {
+                let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coord))
+                mapItem.name = "Dropped Pin"
+                guard let mapItemAnnotation = MKMapItemAnnotation(mapItem: mapItem) else { return }
+                annotation = mapItemAnnotation
+            } else {
+                let pin = MKPointAnnotation()
+                pin.coordinate = coord
+                pin.title = "Dropped Pin"
+                annotation = pin
             }
+            mapView.addAnnotation(annotation)
+            mapView.selectAnnotation(annotation, animated: true)
         }
     }
 }

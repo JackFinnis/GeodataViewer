@@ -15,10 +15,18 @@ class Point: Annotation {
         rect.contains(coordinate.point)
     }
     
+    @MainActor
     func openInMaps() async throws {
-        guard let request = MKReverseGeocodingRequest(location: coordinate.location) else { return }
-        let mapItems = try await request.mapItems
-        guard let mapItem = mapItems.first else { return }
+        let mapItem: MKMapItem
+        if #available(iOS 26, *) {
+            guard let request = MKReverseGeocodingRequest(location: coordinate.location),
+                  let item = try await request.mapItems.first
+            else { return }
+            mapItem = item
+        } else {
+            guard let placemark = try await CLGeocoder().reverseGeocodeLocation(coordinate.location).first else { return }
+            mapItem = MKMapItem(placemark: .init(placemark: placemark))
+        }
         mapItem.name = properties.title ?? mapItem.name
         mapItem.openInMaps()
     }
